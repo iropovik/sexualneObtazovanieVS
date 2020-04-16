@@ -56,6 +56,24 @@ data <- data %>% map_at(., .at = vars(contains("att")), .f =~recode(., "Určite 
                                                                             "Skôr áno" = 3,
                                                                             "Určite áno" = 4)) %>% as.tibble()
 
+data <- data %>% map_at(., .at = vars(starts_with("know")), .f =~recode(., "Určite nie" = 0,
+                                                                    "Skôr nie" = 1,
+                                                                    "Neviem" = 2,
+                                                                    "Skôr áno" = 3,
+                                                                    "Určite áno" = 4)) %>% as.tibble()
+
+data <- data %>% map_at(., .at = vars(starts_with("misconcept")), .f =~recode(., "Úplne nesúhlasím" = 0,
+                                                                        "Skôr nesúhlasím" = 1,
+                                                                        "Neviem" = 2,
+                                                                        "Skôr súhlasím" = 3,
+                                                                        "Úplne súhlasím" = 4)) %>% as.tibble()
+
+data <- data %>% map_at(., .at = vars(c(misconcept2, misconcept3, misconcept4, misconcept11)), .f =~ 4-.) %>% as.tibble() # dealing with the inverse scaling of items
+
+
+data$facultyRegion <- as.factor(data$facultyRegion)
+data$fieldStudy <- as.factor(data$fieldStudy)
+
 # Sample description ------------------------------------------------------
 
 # total N
@@ -189,6 +207,13 @@ data <- data %>% mutate(
                                 genderMotivHarr == 1 ~ 1),
   harrassedSeverity = ifelse(is.na(harrassedSeverity), 0, harrassedSeverity)
 )
+
+data$genderMotivHarr <- as.factor(data$genderMotivHarr)
+data$unwantedSexAtt <- as.factor(data$unwantedSexAtt)
+data$sexAbuse <- as.factor(data$sexAbuse)
+data$harrassed <- as.factor(data$harrassed)
+
+
 
 # frequency table (n's and %) for aggregate categories of abuse across the board
 freqClusters <- data %>%
@@ -498,6 +523,7 @@ impactsFreq <- do.call(rbind.data.frame, data %>% filter(harrassed == 1) %>% sel
 
 
 # Je rozsah uvádzaných dôsledkov podmienený zažitou formou SO?
+data %>% filter(anyYes == 1) %$% cor.test(harrassedSeverity, impactSeverity)
 data %>% filter(anyYes == 1) %$% correlationBF(y = harrassedSeverity, x = impactSeverity, rscale = rScale)
 
 # Je rozsah uvádzaných dôsledkov podmienený tým, kto je páchateľom?
@@ -650,7 +676,203 @@ data %>% filter(satisfaction != 0) %$% table(satisfaction)
 disclosureSatisfaction <- do.call(rbind.data.frame, data %>% select(contains("disclosure_") & !contains("whyNo")) %>% map(~cbind("freq" = table(.), "perc" = prop.table(table(.))))) %>%
   rownames_to_column("disclosureWho") %>% filter(!grepl(".0", disclosureWho, fixed = TRUE)) %>% arrange(desc(freq))
 
-1+1
+# V koľkých percentách prípadov bolo spustené oficiálne konanie voči osobe, ktorá sa dopustila SO?
+investigationN <- data %>%
+  filter(harrassed == 1) %>%
+  group_by(investigation) %>%
+  summarise(n = n(),
+            percent = round(100*n()/nrow(.), 2))
+
+# Existuje súvis medzi zažitou formou SO a spustením oficiálneho konania? & Existuje súvis medzi častosťou (frekvenciou) SO a spustením oficiálneho konania?
+investigationMod0 <- data %>% filter(harrassed == 1) %$% glm(investigation ~ 1, family=binomial(), weights = weight)
+investigationMod <- data %>% filter(harrassed == 1) %$% glm(investigation ~ harrassedSeverity, family=binomial(), weights = weight)
+investigationSummary <- summary(investigationMod)
+investigationAnova <- anova(investigationMod)
+
+investigationBF10 <- 1/exp((BIC(investigationMod) - BIC(investigationMod0))/2) # Bayes Factor based on BIC approximation assuming unit information prior
+investigationPosterior <- investigationBF10/(1+investigationBF10)
+investigationBayesOut <- data.frame(BF10 = round(investigationBF10, 3), Posterior = round(investigationPosterior, 3))
+
+data %$% cor(investigation, harrassedSeverity, use = "complete.obs")
+
+table(data$investigation_worseGrades)
+
+
+# RQ8 ---------------------------------------------------------------------
+
+# Aké dôsledky spojené so zverejnením sťažnosti na pôde VŠ sú uvádzané najčastejšie?
+investigationFreq <- do.call(rbind.data.frame, data %>% select(contains("investigation_") & !contains("_other")) %>% map(~cbind("freq" = table(as.logical(.)), "perc" = prop.table(table(as.logical(.)))))) %>% #Turning disclosure_ vars to logical; T = disclosed, F = not disclosed
+  rownames_to_column("investigationConsq") %>% filter(grepl(".TRUE", investigationConsq, fixed = TRUE)) %>% arrange(desc(freq))
+
+
+# RQ9 ---------------------------------------------------------------------
+# Vnímanie sexuálneho obťažovania (operacionalizovane ako senzitivita)
+# Ktoré prejavy správania považujú respondenti/tky za SO?
+data %>% select(starts_with("att") & !contains(c("unwanted"))) %>%
+  map(~mean(.,na.rm = TRUE)) %>% as.tibble() %>% gather(key = "perception", value = "mean") %>% arrange(desc(mean))
+
+# Existujú rozdiely s ohľadom na klastre foriem SO (1. rodové obťažovanie, 2. nechcená sexuálna pozornosť, 3. sexuálne donútenie/násilie) ?
+# Tazko zodpovedatelne. Alternativa: vztah zavaznosti SO a senzitivity na obtazovanie
+
+data %$% cor.test(harrassedSeverity, sensitivityToHarrasment)
+data %$% correlationBF(harrassedSeverity, sensitivityToHarrasment, rscale = rScale)
+
+# Existujú rozdiely medzi pohlaviami?
+genderSensitivityMod <- lm(sensitivityToHarrasment ~ genderBinary, weights = weight, data)
+genderSensitivityBF <- lmBF(sensitivityToHarrasment ~ genderBinary, data[!is.na(data$genderBinary),], rscaleEffects = rScale)
+genderSensitivitySummary <- summary(genderSensitivityMod)
+genderSensitivityAnova <- anova(genderSensitivityMod)
+
+# Existujú rozdiely v závislosti od veku respondentov/tiek?
+ageSensitivityMod <- lm(sensitivityToHarrasment ~ age, weights = weight, data)
+ageSensitivityBF <- lmBF(sensitivityToHarrasment ~ age, data[!is.na(data$age),], rscaleEffects = rScale)
+ageSensitivitySummary <- summary(ageSensitivityMod)
+ageSensitivityAnova <- anova(ageSensitivityMod)
+
+# Existujú rozdiely v závislosti od odboru štúdia respondentov/tiek?
+fieldSensitivityMod <- lm(sensitivityToHarrasment ~ fieldStudy, weights = weight, data)
+fieldSensitivityBF <- lmBF(sensitivityToHarrasment ~ fieldStudy, data[!is.na(data$fieldStudy),], rscaleEffects = rScale)
+fieldSensitivitySummary <- summary(fieldSensitivityMod)
+fieldSensitivityAnova <- anova(fieldSensitivityMod)
+
+data %>% group_by(fieldStudy) %>% summarise(meanSensitivity = mean(sensitivityToHarrasment, na.rm = T),
+                                            sdSensitivity = sd(sensitivityToHarrasment, na.rm = T))
+
+# Existujú rozdiely v závislosti od regiónov, z ktorých respondenti/tky pochádzajú?
+regionSensitivityMod <- lm(sensitivityToHarrasment ~ facultyRegion, weights = weight, data)
+regionSensitivityBF <- anovaBF(sensitivityToHarrasment ~ facultyRegion, data[!is.na(data$facultyRegion),], rscaleEffects = rScale)
+regionSensitivitySummary <- summary(regionSensitivityMod)
+regionSensitivityAnova <- anova(regionSensitivityMod)
+
+data %>% group_by(facultyRegion) %>% summarise(meanSensitivity = mean(sensitivityToHarrasment, na.rm = T),
+                                            sdSensitivity = sd(sensitivityToHarrasment, na.rm = T))
+
+# Existujú rozdiely v závislosti od vierovyznania respondentov/tiek?
+believerSensitivityMod <- lm(sensitivityToHarrasment ~ believer, weights = weight, data)
+believerSensitivityBF <- anovaBF(sensitivityToHarrasment ~ believer, data[!is.na(data$believer),], rscaleEffects = rScale)
+believerSensitivitySummary <- summary(believerSensitivityMod)
+believerSensitivityAnova <- anova(believerSensitivityMod)
+
+data %>% group_by(believer) %>% summarise(meanSensitivity = mean(sensitivityToHarrasment, na.rm = T),
+                                               sdSensitivity = sd(sensitivityToHarrasment, na.rm = T))
+
+# Existujú rozdiely medzi obeťami SO a osobami, ktoré nemajú osobnú skúsenosť s SO? (častý poznatok - osoby, ktoré majú viac skúseností so SO zvyknú aj viac situácií vyhodnocovať ako SO).
+harrassedSensitivityMod <- lm(sensitivityToHarrasment ~ harrassed, weights = weight, data)
+harrassedSensitivityBF <- anovaBF(sensitivityToHarrasment ~ harrassed, data[!is.na(data$harrassed),], rscaleEffects = rScale)
+harrassedSensitivitySummary <- summary(harrassedSensitivityMod)
+harrassedSensitivityAnova <- anova(harrassedSensitivityMod)
+data %>% group_by(harrassed) %>% summarise(meanSensitivity = mean(sensitivityToHarrasment, na.rm = T),
+                                          sdSensitivity = sd(sensitivityToHarrasment, na.rm = T))
+
+# Existuje súvis medzi tým, čo respondenti/tky považujú za SO a tým, či majú tendenciou hľadať pomoc, ak sa s niektorou z foriem SO osobne stretli?
+# controlling for harrassedSeverity
+disclosureSensitivityMod <- lm(sensitivityToHarrasment ~ disclosureBinary + harrassedSeverity, weights = weight, data)
+disclosureSensitivityBF <- lmBF(sensitivityToHarrasment ~ disclosureBinary + harrassedSeverity, data[!is.na(data$disclosureBinary),], rscaleEffects = rScale)
+disclosureSensitivitySummary <- summary(disclosureSensitivityMod)
+disclosureSensitivityAnova <- anova(disclosureSensitivityMod)
+data %>% group_by(disclosureBinary) %>% summarise(meanSensitivity = mean(sensitivityToHarrasment, na.rm = T),
+                                           sdSensitivity = sd(sensitivityToHarrasment, na.rm = T))
+
+#
+#
+#
+#
+#
+#
+#
+
+
+# RQ10 --------------------------------------------------------------------
+# Poskytla im ich vysoká škola dostatok informácií o SO?
+# dostatok informacii = odpoved skor ano alebo urcite ano
+dostatokInformaciiFreq <- data %>%
+  summarise(dostatokInformaciiN = sum(know3 > 2, na.rm = TRUE),
+            dostatokInformaciiPerc = sum(know3 > 2, na.rm = TRUE)*100/n())
+
+# Existujú rozdiely medzi pohlaviami?
+genderInformationMod <- lm(know3 ~ genderBinary, weights = weight, data)
+genderInformationBF <- lmBF(know3 ~ genderBinary, data[!is.na(data$genderBinary) & !is.na(data$know3),], rscaleEffects = rScale)
+genderInformationSummary <- summary(genderInformationMod)
+genderInformationAnova <- anova(genderInformationMod)
+
+table(data$know3)
+
+# Existujú rozdiely v závislosti od regiónov, z ktorých respondenti/tky pochádzajú?
+regionInformationMod <- lm(know3 ~ facultyRegion, weights = weight, data)
+regionInformationBF <- anovaBF(know3 ~ facultyRegion, data[!is.na(data$facultyRegion) & !is.na(data$know3),], rscaleEffects = rScale)
+regionInformationSummary <- summary(regionInformationMod)
+regionInformationAnova <- anova(regionInformationMod)
+
+# Existujú rozdiely v závislosti od odboru štúdia respondentov/tiek?
+fieldInformationMod <- lm(know3 ~ fieldStudy, weights = weight, data)
+fieldInformationBF <- lmBF(know3 ~ fieldStudy, data[!is.na(data$fieldStudy) & !is.na(data$know3),], rscaleEffects = rScale)
+fieldInformationSummary <- summary(fieldInformationMod)
+fieldInformationAnova <- anova(fieldInformationMod)
+
+
+# RQ10 --------------------------------------------------------------------
+
+
+# Tvrdenia / stereotypy /  predsudky o sexuálnom obťažovaní
+data <- data %>% mutate(misconceptScore = rowSums(data %>% select(starts_with("misconcept")), na.rm = T))
+
+# V akej miere súhlasia respondenti/tky s jednotlivými tvrdeniami?
+# min score = 0, max score 55. The higher the score the higher the agreement with misconceptions
+agreeMisconceptions <- data %>%
+  summarise(meanAgreementMisconceptions = mean(misconceptScore, na.rm = TRUE),
+            sdAgreementMisconceptions = sd(misconceptScore, na.rm = TRUE))
+
+# Existujú rozdiely medzi pohlaviami?
+genderMisconceptionsMod <- lm(misconceptScore ~ genderBinary, weights = weight, data)
+genderMisconceptionsBF <- lmBF(misconceptScore ~ genderBinary, data[!is.na(data$genderBinary) & !is.na(data$misconceptScore),], rscaleEffects = rScale)
+genderMisconceptionsSummary <- summary(genderMisconceptionsMod)
+genderMisconceptionsAnova <- anova(genderMisconceptionsMod)
+
+# Existujú rozdiely v závislosti od veku respondentov/tiek?
+ageMisconceptionsMod <- lm(misconceptScore ~ age, weights = weight, data)
+ageMisconceptionsBF <- lmBF(misconceptScore ~ age, data[!is.na(data$age),], rscaleEffects = rScale)
+ageMisconceptionsSummary <- summary(ageMisconceptionsMod)
+ageMisconceptionsAnova <- anova(ageMisconceptionsMod)
+
+# Existujú rozdiely v závislosti od odboru štúdia respondentov/tiek?
+fieldMisconceptionsMod <- lm(misconceptScore ~ fieldStudy, weights = weight, data)
+fieldMisconceptionsBF <- lmBF(misconceptScore ~ fieldStudy, data[!is.na(data$fieldStudy) & !is.na(data$misconceptScore),], rscaleEffects = rScale)
+fieldMisconceptionsSummary <- summary(fieldMisconceptionsMod)
+fieldMisconceptionsAnova <- anova(fieldMisconceptionsMod)
+
+# Existujú rozdiely v závislosti od regiónov, z ktorých respondenti/tky pochádzajú?
+regionMisconceptionsMod <- lm(misconceptScore ~ facultyRegion, weights = weight, data)
+regionMisconceptionsBF <- anovaBF(misconceptScore ~ facultyRegion, data[!is.na(data$facultyRegion) & !is.na(data$misconceptScore),], rscaleEffects = rScale)
+regionMisconceptionsSummary <- summary(regionMisconceptionsMod)
+regionMisconceptionsAnova <- anova(regionMisconceptionsMod)
+
+# Existujú rozdiely v závislosti od vierovyznania respondentov/tiek?
+believerMisconceptionsMod <- lm(misconceptScore ~ believer, weights = weight, data)
+believerMisconceptionsBF <- anovaBF(misconceptScore ~ believer, data[!is.na(data$believer),], rscaleEffects = rScale)
+believerMisconceptionsSummary <- summary(believerMisconceptionsMod)
+believerMisconceptionsAnova <- anova(believerMisconceptionsMod)
+
+data %>% group_by(believer) %>% summarise(meanMisconceptions = mean(misconceptScore, na.rm = T),
+                                          sdMisconceptions = sd(misconceptScore, na.rm = T))
+
+# Existujú rozdiely medzi obeťami SO a osobami, ktoré nemajú osobnú skúsenosť s SO? (častý poznatok - osoby, ktoré majú viac skúseností so SO zvyknú aj viac situácií vyhodnocovať ako SO).
+harrassedMisconceptionsMod <- lm(misconceptScore ~ harrassed, weights = weight, data)
+harrassedMisconceptionsBF <- anovaBF(misconceptScore ~ harrassed, data[!is.na(data$harrassed),], rscaleEffects = rScale)
+harrassedMisconceptionsSummary <- summary(harrassedMisconceptionsMod)
+harrassedMisconceptionsAnova <- anova(harrassedMisconceptionsMod)
+data %>% group_by(harrassed) %>% summarise(meanMisconceptions = mean(misconceptScore, na.rm = T),
+                                           sdMisconceptions = sd(misconceptScore, na.rm = T))
+
+# Existuje súvis medzi tým, čo respondenti/tky považujú za SO a tým, či majú tendenciou hľadať pomoc, ak sa s niektorou z foriem SO osobne stretli?
+# controlling for harrassedSeverity
+disclosureMisconceptionsMod <- lm(misconceptScore ~ disclosureBinary + harrassedSeverity, weights = weight, data)
+disclosureMisconceptionsBF <- lmBF(misconceptScore ~ disclosureBinary + harrassedSeverity, data[!is.na(data$disclosureBinary),], rscaleEffects = rScale)
+disclosureMisconceptionsSummary <- summary(disclosureMisconceptionsMod)
+disclosureMisconceptionsAnova <- anova(disclosureMisconceptionsMod)
+data %>% group_by(disclosureBinary) %>% summarise(meanMisconceptions = mean(misconceptScore, na.rm = T),
+                                                  sdMisconceptions = sd(misconceptScore, na.rm = T))
+
+
 #'## Bayesian analysis of predictive power
 #'
 #' **For achievement measures**

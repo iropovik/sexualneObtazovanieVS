@@ -5,7 +5,7 @@
 rm(list = ls())
 
 # install required R libraries if not installed already
-list.of.packages <- c("car", "tidyverse", "psych", "epitools", "plotly", "survey", "BayesFactor", "magrittr")
+list.of.packages <- c("car", "tidyverse", "psych", "epitools", "plotly", "survey", "BayesFactor", "magrittr", "careless")
 new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
 if(length(new.packages)) install.packages(new.packages)
 
@@ -19,11 +19,8 @@ cbPalette <- c("#E69F00", "#999999", "#56B4E9", "#009E73", "#F0E442", "#0072B2",
 rScale <- sqrt(2)/4
 
 # read in the data
-data <- read_delim("data/data.csv", delim = ";", skip_empty_rows = TRUE)
+data <- read_delim("data/data.csv", delim = ",", skip_empty_rows = T)
 # View(data)
-
-# participant exclusions
-data <- data[-85,] #89 nema vyplneny odbor
 
 # some initial data recoding
 data <- data %>% filter(!is.na(sexualOrientation)) %>% mutate(
@@ -40,7 +37,7 @@ data <- data %>% mutate(ageOver23 = as.factor(case_when(age < 23 ~ 0, # 0 = '17-
 
                         believer =  as.factor(ifelse(religion %in% c("Katolícke", "Kresťanské ne-katolícke (napr. evanjelické)", "Židovské", "Pravoslávne"), 1, 0)), #Doplniť do kategórie veriaci 1 = "Veriaci", 0 = "Neveriaci"
                         anyYes = recode(anyYes, "Áno" = 1, "Nie" = 0),
-                        investigation = recode(investigation, "Áno" = 1, "Nie" = 0))
+                        investigation = recode(as.factor(investigation), "Áno" = 1, "Nie" = 0, "Neviem" = NA_real_))
 
 data <- data %>% map_at(., .at = vars(contains("disclosure_")), .f =~recode(., "Neoslovil/a som ich" = 0,
                                                                           "Veľmi nespokojný/á s reakciou" = -2,
@@ -70,8 +67,52 @@ data <- data %>% map_at(., .at = vars(c(misconcept2, misconcept3, misconcept4, m
 
 data <- data %>% mutate(satisfaction = rowSums(data %>% select(contains("disclosure_") & !contains(c("whyNo"))), na.rm = T))
 
-data$facultyRegion <- as.factor(data$facultyRegion)
-data$fieldStudy <- as.factor(data$fieldStudy)
+data$facultyRegion <- factor(data$facultyRegion)
+data$fieldStudy <- factor(data$fieldStudy)
+
+# participant exclusions
+
+
+
+# careless responders
+
+data <- data %>% filter(is.na(exclude))
+
+data$longstringAtt <- data %>% select(att1:att19) %>% longstring()
+data$longstringMisconcept <- data %>% select(misconcept1:misconcept11) %>% longstring()
+
+data$irv <- data %>% select(att1:att19) %>% irv()
+data$mahadRaw <- data %>% select(att1:att19, misconcept1:misconcept11) %>% mahad(plot = F, flag = T, confidence = 1) %>% .$raw
+data$mahadFlagged <- data %>% select(att1:att19, misconcept1:misconcept11) %>% mahad(plot = F, flag = T, confidence = 1) %>% .$flagged
+
+randResp <- NA
+classification <- NA
+nsim <-  100
+for(j in 1:nsim){
+items <- length(data[!is.na(data$irv),]$irv)
+for(i in 1:items){
+  randResp[i] <- sd(sample(1:5, 19, replace = TRUE))
+}
+
+df <- data.frame(cbind(sds = c(data[!is.na(data$irv),]$irv, randResp),
+                       genuineResp = c(ifelse(data[!is.na(data$irv),]$irv < 1.3, 1, 0), rep(0, length(randResp)))))
+
+model <- glm(genuineResp ~sds,family=binomial(link='logit'),data=df)
+fittedProbs <- model %>% fitted.values()
+predicted.classes <- ifelse(fittedProbs > 0.5, 1, 0)
+classification[j] <- mean(predicted.classes == df$genuineResp)
+}
+
+table(data$irv > 1.3)/length(data$irv)
+mean(classification)
+
+hist(randResp, breaks = 50)
+quantile(randResp, probs = .5)
+
+data %>% filter(longstringAtt == 19 | longstringMisconcept == 11 |
+                  mahadFlagged == TRUE)
+
+
 
 # Sample description ------------------------------------------------------
 
@@ -80,9 +121,15 @@ ss_total_n <- nrow(data)
 
 # region participant
 ss_region_n <- data %>%
-  group_by(factor(region)) %>%
+  group_by(region = factor(region)) %>%
   summarise(n = n(),
-            percent = round(100*n()/nrow(.), 2))
+            percent = round(100*n()/nrow(.), 2)) %>% arrange(n) %>%
+  na.omit()
+
+
+ss_region_plot <- ggplotly(ggplot(ss_region_n, aes(x = region, y = n)) + geom_bar(stat = "identity",  alpha = .6, fill = cbPalette[1])  +
+           labs(title = "Región", x = "", y = "Počet participantov") + scale_fill_manual(cbPalette[1]) +
+           coord_flip() + scale_x_discrete(limits = ss_region_n$region))
 
 # region of the faculty
 ss_facultyRegion_n <- data %>%
@@ -90,16 +137,22 @@ ss_facultyRegion_n <- data %>%
   summarise(n = n(),
             percent = round(100*n()/nrow(.), 2))
 
+
 # field of study
 ss_fieldStudy_n <- data %>%
-  group_by(factor(fieldStudy)) %>%
+  group_by(Odbor = factor(fieldStudy)) %>%
   summarise(n = n(),
-            percent = round(100*n()/nrow(.), 2))
+            percent = round(100*n()/nrow(.), 2)) %>% arrange(n)
+
+ss_fieldStudy_plot <- ggplotly(data %>% filter(genderBinary %in% c(0, 1)) %>% mutate(genderBinary = fct_rev(genderBinary)) %>%
+           ggplot(aes(fieldStudy, fill = genderBinary)) + geom_histogram(stat = "count", alpha = .6, binwidth=.5, bins = length(data$fieldStudy)) +
+           labs(title = "Odbor štúdia", x = "", y = "Počet participantov", fill = "Pohlavie") + coord_flip() + scale_fill_manual(values=c(cbPalette[1], cbPalette[2])) +
+           scale_x_discrete(limits = ss_fieldStudy_n$Odbor))
 
 # age
 ageRange <- 17:30
-ss_age_plot <- ggplotly(data %>% filter(age %in% ageRange) %>%
-                      ggplot(aes(age, fill = fct_rev(genderBinary))) + geom_histogram(binwidth=.5, bins = length(ageRange), position = position_stack(), alpha = .6) +
+ss_age_plot <- ggplotly(data %>% filter(age %in% ageRange & genderBinary %in% c(0, 1)) %>% mutate(genderBinary = fct_rev(genderBinary)) %>%
+                      ggplot(aes(age, fill = genderBinary)) + geom_histogram(binwidth=.5, bins = length(ageRange), position = position_stack(), alpha = .6) +
                       scale_x_continuous(name = "Vek", breaks=seq(17,30,1)) + labs(title = "Vek podľa pohlavia", y = "Počet", fill = "Pohlavie") +
                       scale_fill_manual(values=c(cbPalette[1], cbPalette[2])))
 
@@ -129,8 +182,8 @@ ss_sexOrien_n <- data %>%
 
 # year of study
 data$yearStudy <- as.factor(as.numeric(gsub("([0-9]+).*$", "\\1", data$yearStudy)))
-ss_yearStudy_plot <- ggplotly(data %>% filter(yearStudy %in% 1:7) %>%
-                      ggplot(aes(yearStudy, fill = fct_rev(genderBinary))) + geom_bar(stat = "count", position = position_stack(), alpha = .6) +
+ss_yearStudy_plot <- ggplotly(data %>% filter(yearStudy %in% 1:7 & genderBinary %in% c(0, 1)) %>%
+                      ggplot(aes(yearStudy, fill = fct_rev(genderBinary))) + geom_bar(stat = "count", position = "stack", alpha = .6) +
                       scale_x_discrete(name = "Rok štúdia") + labs(title = "Rok štúdia", y = "Počet", fill = "Pohlavie") +
                       scale_fill_manual(values=c(cbPalette[1], cbPalette[2])))
 
@@ -140,8 +193,13 @@ ss_fieldStudyYear_n <- data %>%
   summarise(n = n(),
             percent = round(100*n()/nrow(.), 2))
 
+ss_fieldStudyYear_plot <- ggplotly(data %>% filter(yearStudy %in% 1:7 & genderBinary %in% c(0, 1)) %>%
+           ggplot(aes(fieldStudy, fill = yearStudy)) + geom_bar(stat = "count", position = position_stack(), alpha = .6) +
+           scale_x_discrete(name = "Odbor", limits = ss_fieldStudy_n$Odbor) + labs(title = "Rok štúdia v rámci odborov", y = "Počet", fill = "Ročník") +
+           scale_fill_manual(values=cbPalette) + coord_flip())
+
 # field of study by region
-ss_fieldStudyXregion_n <- data %>%
+ss_fieldStudyRegion_n <- data %>%
   group_by(facultyRegion, fieldStudy) %>%
   summarise(n = n(),
             percent = round(100*n()/nrow(.), 2))
@@ -159,13 +217,13 @@ c(12297,	4783,	4471,
 dimnames = list(c("filozofický, humanitný, pedagogický, teologický", "mediálny, umelecký", "prírodovedecký", "spoločenský, ekonomický, právny", "technický", "zdravotnícky"),
                 c("Západné Slovensko", "Stredné Slovensko", "Východné Slovensko")))
 
-popProp <- as.data.frame(t(popCounts)/99205)
+popProp <- as.data.frame(t(round((popCounts)*100/99205, 3)))
 popProp <- cbind(gather(popProp), region = rep(c("Západné Slovensko", "Stredné Slovensko", "Východné Slovensko"), 3))
 names(popProp) <- c("fieldStudy", "popProp", "facultyRegion")
 
 # Compute and trim weights
 data <- data %>% left_join(popProp, by = c("fieldStudy", "facultyRegion")) %>%
-                  left_join(ss_fieldStudyXregion_n[-3], by = c("fieldStudy", "facultyRegion")) %>%
+                  left_join(ss_fieldStudyRegion_n[-3], by = c("fieldStudy", "facultyRegion")) %>%
                   mutate(weight = ifelse(popProp/(percent/100) < .3,  .3, popProp/(percent/100)),
                          weight = ifelse(popProp/(percent/100) > 3,  3, popProp/(percent/100))) %>%
                   select(-c(popProp, percent))
@@ -181,6 +239,13 @@ rq1.1_items_n <- data %>%
                funs(n = sum(., na.rm = TRUE),
                     perc = sum(., na.rm = TRUE)*100/n()))
 
+rq1.1_items_plotData <- as_tibble(cbind(item = names(rq1.1_items_n), t(rq1.1_items_n))) %>% filter(!grepl("_n", item, fixed = TRUE)) %>%
+  mutate(perc = as.numeric(V2), item = str_remove(item, "_perc"), cluster = c(rep("GMH", 8), rep("USA", 8), rep("SAB", 4)), V2 = NULL) %>% arrange(perc)
+
+rq1.1_items_plot <- ggplotly(rq1.1_items_plotData %>% ggplot(aes(x = item, y = perc, fill = cluster)) + geom_bar(stat = "identity",  alpha = .6) +
+           labs(title = "Forma sexuálneho obťažovania", x = "", y = "Percento participantov") + scale_fill_manual("legend", values = c("GMH" = cbPalette[1], "USA" = cbPalette[2], "SAB" = cbPalette[3])) +
+           coord_flip() + scale_x_discrete(limits = rq1.1_items_plotData$item))
+
 # individual forms by gender
 # frequency tables (n's and %) for all individual types of abuse by gender.
 # Dropping other than female, male
@@ -188,7 +253,14 @@ rq1.1_itemsGender_n <- data %>%
   group_by(factor(genderBinary)) %>%
   summarise_at(vars(starts_with("q") & !contains("_")),
                funs(n = sum(., na.rm = TRUE),
-                    perc = sum(., na.rm = TRUE)*100/n()))
+                    perc = sum(., na.rm = TRUE)*100/n())) %>% na.omit()
+
+rq1.1_itemsGender_plotData <- as_tibble(cbind(item = names(rq1.1_itemsGender_n), t(rq1.1_itemsGender_n)))[-1,] %>% filter(!grepl("_n", item, fixed = TRUE)) %>%
+  mutate(male = as.numeric(V2), female = as.numeric(V3), item = str_remove(item, "_perc"), V2 = NULL, V3 = NULL) %>% pivot_longer(cols = c(male, female), names_to = "gender", values_to = "perc")
+
+rq1.1_itemsGender_plot <- ggplotly(rq1.1_itemsGender_plotData %>% ggplot(aes(x = item, y = perc, fill = gender)) + geom_bar(stat = "identity",  alpha = .6, position = "dodge") +
+                               labs(title = "Forma sexuálneho obťažovania podľa pohlavia", x = "", y = "Percento participantov") + scale_fill_manual("legend", values = c("female" = cbPalette[1], "male" = cbPalette[2])) +
+                               coord_flip() + scale_x_discrete(limits = rev(rq1.1_itemsGender_plotData$item)))
 
 ### Frequencies by cluster
 # RQ1.2 Aký je výskyt SO v prvom klastri otázok (rodové obťažovanie), (otázky 2-9)? Aký je výskyt SO v druhom klastri otázok (nechcená sexuálna pozornosť), (otázky 10 - 17)? Aký je výskyt SO v treťom klastri otázok (sexuálne donútenie/násilie), (otázky 18 - 21)?
@@ -197,7 +269,7 @@ data <- data %>% mutate(
   genderMotivHarr = ifelse(rowSums(cbind(q1, q2, q3, q4, q5, q6, q7, q8), na.rm = T) >= 1, ifelse(rowSums(cbind(q1, q2, q3, q4, q5, q6, q7, q8), na.rm = T) >= 2, 2, 1), 0),
   unwantedSexAtt = ifelse(rowSums(cbind(q9, q10, q11, q12, q13, q14, q15, q16), na.rm = T) >= 1, ifelse(rowSums(cbind(q9, q10, q11, q12, q13, q14, q15, q16), na.rm = T) >= 2, 2, 1), 0),
   sexAbuse = ifelse(rowSums(cbind(q17, q18, q19, q20), na.rm = T) >= 1, ifelse(rowSums(cbind(q17, q18, q19, q20), na.rm = T) >= 2, 2, 1), 0),
-  harrassed = ifelse(rowSums(cbind(genderMotivHarr, unwantedSexAtt, sexAbuse)) > 0, 1, 0),
+  harrassed = factor(ifelse(rowSums(cbind(genderMotivHarr, unwantedSexAtt, sexAbuse)) > 0, 1, 0)),
   harrassedSeverity = case_when(sexAbuse == 2 ~ 6,
                                 sexAbuse == 1 ~ 5,
                                 unwantedSexAtt == 2 ~ 4,
@@ -206,12 +278,6 @@ data <- data %>% mutate(
                                 genderMotivHarr == 1 ~ 1),
   harrassedSeverity = ifelse(is.na(harrassedSeverity), 0, harrassedSeverity)
 )
-
-data$genderMotivHarr <- as.factor(data$genderMotivHarr)
-data$unwantedSexAtt <- as.factor(data$unwantedSexAtt)
-data$sexAbuse <- as.factor(data$sexAbuse)
-data$harrassed <- as.factor(data$harrassed)
-
 
 ###
 # frequency table (n's and %) for aggregate categories of abuse across the board
@@ -229,6 +295,14 @@ rq1.2_clusterGender_n <- data %>%
                     perc = sum(as.logical(.), na.rm = TRUE)*100/n())) %>%
   na.omit()
 
+rq1.2_clusterGender_plotData <- as_tibble(cbind(item = names(rq1.2_clusterGender_n), t(rq1.2_clusterGender_n)))[-1,] %>% filter(!grepl("_n", item, fixed = TRUE)) %>%
+  mutate(male = as.numeric(V2), female = as.numeric(V3), item = str_remove(item, "_perc"), V2 = NULL, V3 = NULL) %>% pivot_longer(cols = c(male, female), names_to = "gender", values_to = "perc")
+
+rq1.2_clusterGender_plot <- ggplotly(rq1.2_clusterGender_plotData %>% mutate(gender = fct_recode(gender, "Muži" = "male", "Ženy" = "female")) %>%
+                                     ggplot(aes(x = item, y = perc, fill = gender)) + geom_bar(stat = "identity",  alpha = .6, position = "dodge") +
+                                     labs(title = "Klastre sexuálneho obťažovania podľa pohlavia", x = "", y = "Počet participantov") + scale_fill_manual("Pohlavie", values = c("Ženy" = cbPalette[1], "Muži" = cbPalette[2])) +
+                                     coord_flip() + scale_x_discrete(limits = rev(rq1.2_clusterGender_plotData$item), labels = c(genderMotivHarr = "Rodovo motivované\nobťažovanie", unwantedSexAtt = "Nechcená sexuálna\npozornosť", sexAbuse = "Sexuálne\nnásilie")))
+
 # Computes the proportions (prevalence rates) and CIs of CSA forms in girls
 rq1.2_female_ci <- data %>% filter(gender == "Žena") %>%  select(starts_with("q") & !contains("_"), genderMotivHarr, unwantedSexAtt, sexAbuse) %>%
 map(~binom.exact(sum(as.logical(.),na.rm = TRUE), n = length(.)))
@@ -238,11 +312,13 @@ rq1.2_male_ci <- data %>% filter(gender == "Muž") %>%  select(starts_with("q") 
   map(~binom.exact(sum(as.logical(.),na.rm = TRUE), n = length(.)))
 
 # Computes odds ratios ($measure) for: type of abuse by gender contingency tables.
-rq1.2_clusterGender_or <- data %>% select(starts_with("q") & !contains("_"), genderMotivHarr, unwantedSexAtt, sexAbuse) %>%
+rq1.2_clusterGender_or <- data %>% mutate(genderMotivHarr = as.logical(genderMotivHarr), unwantedSexAtt = as.logical(unwantedSexAtt), sexAbuse = as.logical(sexAbuse)) %>%
+  select(starts_with("q") & !contains("_"), genderMotivHarr, unwantedSexAtt, sexAbuse) %>%
   map(~riskratio.boot(table(data$genderBinary, .), replicates = 1e5))
 
 # Computes Bayes factors (Poisson BF)  for: type of abuse by gender contingency tables.
-rq1.2_clusterGender_bf <- data %>% select(starts_with("q") & !contains("_"), genderMotivHarr, unwantedSexAtt, sexAbuse) %>%
+rq1.2_clusterGender_bf <- data %>% mutate(genderMotivHarr = as.logical(genderMotivHarr), unwantedSexAtt = as.logical(unwantedSexAtt), sexAbuse = as.logical(sexAbuse)) %>%
+  select(starts_with("q") & !contains("_"), genderMotivHarr, unwantedSexAtt, sexAbuse) %>%
   map(~contingencyTableBF(table(data$genderBinary, .), sampleType = "poisson", priorConcentration = 1))
 
 # RQ2 Risk factors ------------------------------------------------------------
@@ -264,43 +340,42 @@ rfData <- data %>% select(genderBinary, nonheterosexual, minority, ageOver23, be
 rq2_props_ci <- rfData %>% map(~binom.exact(table(.), n = length(.)))
 
 # Computes odds ratios ($measure) for genderMotivHarr
-rq2_gmh_or <- rfData %>% map(~riskratio.boot(table(., data$genderMotivHarr), replicates = 1e5))
+rq2_gmh_or <- rfData %>% map(~riskratio.boot(table(., as.logical(data$genderMotivHarr)), replicates = 1e5))
 
 # Computes odds ratios ($measure) for unwantedSexAtt
-rq2_usa_or <- rfData %>% map(~riskratio.boot(table(., data$unwantedSexAtt), replicates = 1e5))
+rq2_usa_or <- rfData %>% map(~riskratio.boot(table(., as.logical(data$unwantedSexAtt)), replicates = 1e5))
 
 # Computes odds ratios ($measure) for sexAbuse
-rq2_sab_or <- rfData %>% map(~riskratio.boot(table(., data$sexAbuse), replicates = 1e5))
+rq2_sab_or <- rfData %>% map(~riskratio.boot(table(., as.logical(data$sexAbuse)), replicates = 1e5))
 
 # Bayes factors (Poisson BF10, BF01)  for: participant risk factors
 # by genderMotivHarr contingency tables
-rq2_gmh_bf <- rfData %>% map(~contingencyTableBF(table(., data$genderMotivHarr), sampleType = "poisson", priorConcentration = 1))
+rq2_gmh_bf <- rfData %>% map(~contingencyTableBF(table(., as.logical(data$genderMotivHarr)), sampleType = "poisson", priorConcentration = 1))
 
 # Bayes factors (Poisson BF10, BF01)  for: participant risk factors
 # by unwantedSexAtt contingency tables
-rq2_usa_bf <- rfData %>% map(~contingencyTableBF(table(., data$unwantedSexAtt), sampleType = "poisson", priorConcentration = 1))
+rq2_usa_bf <- rfData %>% map(~contingencyTableBF(table(., as.logical(data$unwantedSexAtt)), sampleType = "poisson", priorConcentration = 1))
 
 # Bayes factors (Poisson BF10, BF01)  for: participant risk factors
 # by sexAbuse contingency tables
-rq2_sab_bf <- rfData %>% map(~contingencyTableBF(table(., data$sexAbuse), sampleType = "poisson", priorConcentration = 1))
+rq2_sab_bf <- rfData %>% map(~contingencyTableBF(table(., as.logical(data$sexAbuse)), sampleType = "poisson", priorConcentration = 1))
 
 ###
 
 # Regions
 
 # Computes odds ratios ($measure) for: type of abuse by region
-rq2_region_or <- data %>% select(genderMotivHarr, unwantedSexAtt, sexAbuse, harrassed) %>%
+rq2_region_or <- data %>% mutate(genderMotivHarr = as.logical(genderMotivHarr), unwantedSexAtt = as.logical(unwantedSexAtt), sexAbuse = as.logical(sexAbuse)) %>% select(genderMotivHarr, unwantedSexAtt, sexAbuse, harrassed) %>%
   map(~riskratio.boot(table(data$facultyRegion, .), rev = "rows", replicates = 1e5))
 
 # Computes Bayes factors (Poisson BF)  for: type of abuse by region
-rq2_region_bf <- data %>% select(genderMotivHarr, unwantedSexAtt, sexAbuse, harrassed) %>%
+rq2_region_bf <- data %>% mutate(genderMotivHarr = as.logical(genderMotivHarr), unwantedSexAtt = as.logical(unwantedSexAtt), sexAbuse = as.logical(sexAbuse)) %>% select(genderMotivHarr, unwantedSexAtt, sexAbuse, harrassed) %>%
   map(~contingencyTableBF(table(data$facultyRegion, .), sampleType = "poisson", priorConcentration = 1))
 
 rq2_region_mod <- lm(harrassedSeverity ~ facultyRegion, weights = data$weight, data)
 rq2_region_bf <- lmBF(harrassedSeverity ~ facultyRegion, data, rscaleEffects = rScale)
 rq2_region_summary <- summary(rq2_region_mod)
 rq2_region_anova <- anova(rq2_region_mod)
-
 
 # Length of study
 
@@ -313,11 +388,11 @@ rq2_studyLengthAnova <- anova(rq2_studyLengthMod)
 
 # Language
 # Computes odds ratios ($measure) for: type of abuse by language.
-rq2_language_or <- data %>% select(genderMotivHarr, unwantedSexAtt, sexAbuse, harrassed) %>%
+rq2_language_or <- data %>% mutate(genderMotivHarr = as.logical(genderMotivHarr), unwantedSexAtt = as.logical(unwantedSexAtt), sexAbuse = as.logical(sexAbuse)) %>% select(genderMotivHarr, unwantedSexAtt, sexAbuse, harrassed) %>%
   map(~riskratio.boot(table(data$languageOther, .), replicates = 1e5))
 
 # Computes Bayes factors (Poisson BF)  for: type of abuse by language
-rq2_language_bf <- data %>% select(genderMotivHarr, unwantedSexAtt, sexAbuse, harrassed) %>%
+rq2_language_bf <- data %>% mutate(genderMotivHarr = as.logical(genderMotivHarr), unwantedSexAtt = as.logical(unwantedSexAtt), sexAbuse = as.logical(sexAbuse)) %>% select(genderMotivHarr, unwantedSexAtt, sexAbuse, harrassed) %>%
   map(~contingencyTableBF(table(data$languageOther, .), sampleType = "poisson", priorConcentration = 1))
 
 rq2_language_mod <- lm(harrassedSeverity ~ languageOther, weights = data$weight , data)
@@ -327,11 +402,11 @@ rq2_language_summary <- summary(rq2_language_mod)
 # Religious belief
 
 # Computes odds ratios ($measure) for: type of abuse by religious belief
-rq2_belief_or <- data %>% select(genderMotivHarr, unwantedSexAtt, sexAbuse, harrassed) %>%
+rq2_belief_or <- data %>% mutate(genderMotivHarr = as.logical(genderMotivHarr), unwantedSexAtt = as.logical(unwantedSexAtt), sexAbuse = as.logical(sexAbuse)) %>% select(genderMotivHarr, unwantedSexAtt, sexAbuse, harrassed) %>%
   map(~riskratio.boot(table(data$believer, .), replicates = 1e5))
 
 # Computes Bayes factors (Poisson BF)  for: type of abuse by religious belief
-rq2_belief_bf <- data %>% select(genderMotivHarr, unwantedSexAtt, sexAbuse, harrassed) %>%
+rq2_belief_bf <- data %>% mutate(genderMotivHarr = as.logical(genderMotivHarr), unwantedSexAtt = as.logical(unwantedSexAtt), sexAbuse = as.logical(sexAbuse)) %>% select(genderMotivHarr, unwantedSexAtt, sexAbuse, harrassed) %>%
   map(~contingencyTableBF(table(data$believer, .), sampleType = "poisson", priorConcentration = 1))
 
 rq2_belief_mod <- lm(harrassedSeverity ~ believer, weights = data$weight , data)
@@ -341,13 +416,13 @@ rq2_belief_summary <- summary(rq2_belief_mod)
 
 # Minority
 # Computes odds ratios ($measure) for: type of abuse by minority status
-rq2_minority_or <- data %>% select(genderMotivHarr, unwantedSexAtt, sexAbuse, harrassed) %>%
+rq2_minority_or <- data %>% mutate(genderMotivHarr = as.logical(genderMotivHarr), unwantedSexAtt = as.logical(unwantedSexAtt), sexAbuse = as.logical(sexAbuse)) %>% select(genderMotivHarr, unwantedSexAtt, sexAbuse, harrassed) %>%
   map(~riskratio.boot(table(data$minority, .), replicates = 1e5))
 
 rq2_minority_table <- table(data$genderMotivHarr)
 
 # Computes Bayes factors (Poisson BF)  for: type of abuse by minority status
-rq2_minority_bf <- data %>% select(genderMotivHarr, unwantedSexAtt, sexAbuse, harrassed) %>%
+rq2_minority_bf <- data %>% mutate(genderMotivHarr = as.logical(genderMotivHarr), unwantedSexAtt = as.logical(unwantedSexAtt), sexAbuse = as.logical(sexAbuse)) %>% select(genderMotivHarr, unwantedSexAtt, sexAbuse, harrassed) %>%
   map(~contingencyTableBF(table(data$minority, .), sampleType = "poisson", priorConcentration = 1))
 
 rq2_minority_mod <- lm(harrassedSeverity ~ minority, weights = data$weight , data)
@@ -356,11 +431,11 @@ rq2_minority_summary <- summary(rq2_minority_mod)
 
 # Sexual orientation
 # Computes odds ratios ($measure) for: type of abuse by sexual orientation
-rq2_orientation_or <- data %>% select(genderMotivHarr, unwantedSexAtt, sexAbuse, harrassed) %>%
+rq2_orientation_or <- data %>% mutate(genderMotivHarr = as.logical(genderMotivHarr), unwantedSexAtt = as.logical(unwantedSexAtt), sexAbuse = as.logical(sexAbuse)) %>% select(genderMotivHarr, unwantedSexAtt, sexAbuse, harrassed) %>%
   map(~riskratio.boot(table(data$nonheterosexual, .), replicates = 1e5))
 
 # Computes Bayes factors (Poisson BF)  for: type of abuse by minority status
-rq2_orientation_bf <- data %>% select(genderMotivHarr, unwantedSexAtt, sexAbuse, harrassed) %>%
+rq2_orientation_bf <- data %>% mutate(genderMotivHarr = as.logical(genderMotivHarr), unwantedSexAtt = as.logical(unwantedSexAtt), sexAbuse = as.logical(sexAbuse)) %>% select(genderMotivHarr, unwantedSexAtt, sexAbuse, harrassed) %>%
   map(~contingencyTableBF(table(data$nonheterosexual, .), sampleType = "poisson", priorConcentration = 1))
 
 rq2_orientation_mod <- lm(harrassedSeverity ~ nonheterosexual, weights = data$weight , data)
@@ -384,6 +459,9 @@ for(n in 1:6){
     rq3_perpetratorsOverall_n[[i]] <- rq3_perpetratorsItems_n %>% filter(str_detect(who, i) & grepl(".1", who, fixed = TRUE)) %>% summarise(count = colSums(.["freq"]))
   }
 }
+
+rq3_perpetratorsOverall_table <- round(unlist(rq3_perpetratorsOverall_n)*100/sum(unlist(rq3_perpetratorsOverall_n)), 2)
+names(rq3_perpetratorsOverall_table) <- gsub(".count.freq", "", names(rq3_perpetratorsOverall_table))
 
 # Count per cluster
 # GenderMotivHarr
@@ -415,6 +493,9 @@ for(n in 1:6){
   }
 }
 rq3_perpetratorsSAB_n[1] <- NULL
+
+perpertatorsTable <- round(rbind("GMH" = unlist(rq3_perpetratorsGMH_n)*100/sum(unlist(rq3_perpetratorsGMH_n)), "USA" = unlist(rq3_perpetratorsUSA_n)*100/sum(unlist(rq3_perpetratorsUSA_n)), "SAB" = unlist(rq3_perpetratorsSAB_n)*100/sum(unlist(rq3_perpetratorsSAB_n))), 2)
+colnames(perpertatorsTable) <- gsub(".count.freq", "", colnames(perpertatorsTable))
 
 # Sú ženy alebo muži náchylnejší páchať niektorú z foriem SO?
 # Aké osoby (učitelia, spolužiaci, atď.) najčastejšie páchajú aké druhy obťažovania?
@@ -484,6 +565,9 @@ for(n in 1:6){
 }
 rq4_whereOverall_n[1] <- NULL
 
+rq4_whereOverall_table <- round(unlist(rq4_whereOverall_n)*100/sum(unlist(rq4_whereOverall_n)), 2)
+names(rq4_whereOverall_table) <- gsub(".count.freq", "", names(rq4_whereOverall_table))
+
 # Existujú rozdiely medzi klastrami SO a prostredím v ktorom sa SO odohráva?
 # Count per cluster
 # GenderMotivHarr
@@ -516,6 +600,9 @@ for(n in 1:6){
 }
 rq4_whereSAB_n[1] <- NULL
 
+whereTable <- round(rbind("GMH" = unlist(rq4_whereGMH_n)*100/sum(unlist(rq4_whereGMH_n)), "USA" = unlist(rq4_whereUSA_n)*100/sum(unlist(rq4_whereUSA_n)), "SAB" = unlist(rq4_whereSAB_n)*100/sum(unlist(rq4_whereSAB_n))), 2)
+colnames(whereTable) <- gsub(".count.freq", "", colnames(whereTable))
+
 
 # RQ5 Abuse Impacts -----------------------------------------------------------
 # Subjektívne vnímané dôsledky sexuálneho obťažovania
@@ -526,8 +613,8 @@ rq5_impacts_n <- do.call(rbind.data.frame, data %>% filter(harrassed == 1) %>% s
                          map(~cbind("freq" = table(.), "perc" = prop.table(table(.))))) %>%
   rownames_to_column("impactType") %>%
   filter(grepl(".1", impactType, fixed = TRUE)) %>%
-  arrange(desc(freq))
-
+  arrange(desc(freq)) %>% mutate(impactType = str_remove(impactType, ".1"),
+                                 perc = round(perc, 2)*100)
 
 # Je rozsah uvádzaných dôsledkov podmienený zažitou formou SO?
 rq5_harrassedByImpactSeverity_cor <- data %>% filter(anyYes == 1) %$% cor.test(harrassedSeverity, impactSeverity)
@@ -562,6 +649,7 @@ data$mostFreqAbuserSAB <- data %>% select(sabTeacherFreq, sabStudentFreq, sabEmp
 
 # identify the most frequent perpetrator committing the most severe type of abuse
 data$perpetratorMostSevere <- data %$% ifelse(!is.na(mostFreqAbuserSAB), mostFreqAbuserSAB, ifelse(!is.na(mostFreqAbuserUSA), mostFreqAbuserUSA, ifelse(!is.na(mostFreqAbuserGMH), mostFreqAbuserGMH, NA)))
+perpetratorMostFrequent <- table(data$perpetratorMostSevere)
 
 rq5_severPerpMod <- lm(impactSeverity ~ perpetratorMostSevere, weights = data$weight, data)
 rq5_severPerpBF <- lmBF(impactSeverity ~ perpetratorMostSevere, data[!is.na(data$perpetratorMostSevere),], rscaleEffects = rScale)
@@ -574,7 +662,11 @@ rq5_severGenderBF <- data %>% filter(harrassed == 1) %$% lmBF(impactSeverity ~ g
 rq5_severGenderSummary <- summary(rq5_severGenderMod)
 rq5_severGenderAnova <- anova(rq5_severGenderMod)
 
-# Je rozsah uvádzaných dôsledkov podmienený tým, či sa obete zdôverili (či hľadali podporu)? # ADRESOVANE V RQ7 V OPACNEJ DIREKTIVITE
+# Je rozsah uvádzaných dôsledkov podmienený tým, či sa obete zdôverili (či hľadali podporu)? # ADRESOVANE V RQ6 V OPACNEJ DIREKTIVITE
+rq5_severDisclosureMod <- data %>% filter(harrassed == 1) %$% lm(impactSeverity ~ disclosureBinary, weights = weight)
+rq5_severDisclosureBF <- data %>% filter(harrassed == 1) %$% lmBF(impactSeverity ~ disclosureBinary, .[!is.na(disclosureBinary),], rscaleEffects = rScale)
+rq5_severDisclosureSummary <- summary(rq5_severDisclosureMod)
+rq5_severDisclosureAnova <- anova(rq5_severDisclosureMod)
 
 # Je rozsah úvádzaných dôsledkov podmienený tým, či osoba zažila negatívne reakcie zo strany školy?
 data <- data %>% mutate(consequencesSeverity = rowSums(data %>% select(contains("conseq_") & !contains(c("_other", "_none", "dontKnow"))), na.rm = T))
@@ -585,8 +677,8 @@ rq5_severConseqSummary <- summary(rq5_severConseqMod)
 rq5_severConseqAnova <- anova(rq5_severConseqMod)
 
 # Je rozsah uvádzaných dôsledkov podmienený mierou spokojnosti obetí s tým, ako reagovali osoby, u ktorých hľadali pomoc/radu?
-rq5_severSatisfactionMod <- data %>% filter(harrassed == 1) %$% lm(impactSeverity ~ satisfaction, weights = weight)
-rq5_severSatisfactionBF <- data %>% filter(harrassed == 1) %$% lmBF(impactSeverity ~ satisfaction, .[!is.na(satisfaction),], rscaleEffects = rScale)
+rq5_severSatisfactionMod <- data %>% filter(harrassed == 1 & disclosureBinary == 1) %$% lm(impactSeverity ~ satisfaction, weights = weight)
+rq5_severSatisfactionBF <- data %>% filter(harrassed == 1 & disclosureBinary == 1) %$% lmBF(impactSeverity ~ satisfaction, .[!is.na(satisfaction),], rscaleEffects = rScale)
 rq5_severSatisfactionSummary <- summary(rq5_severSatisfactionMod)
 rq5_severSatisfactionAnova <- anova(rq5_severSatisfactionMod)
 
@@ -683,9 +775,12 @@ rq6_satisfaction_n <- data %>% filter(satisfaction != 0) %>% summarise(meanSatis
                    sdSatisfaction = sd(satisfaction, na.rm = T))
 rq6_satisfaction_table <- data %>% filter(satisfaction != 0) %$% table(satisfaction)
 
-
 rq6_disclosureSatisfaction <- do.call(rbind.data.frame, data %>% select(contains("disclosure_") & !contains("whyNo")) %>% map(~cbind("freq" = table(.), "perc" = prop.table(table(.))))) %>%
   rownames_to_column("disclosureWho") %>% filter(!grepl(".0", disclosureWho, fixed = TRUE)) %>% arrange(desc(freq))
+
+# Existuje rozdiel medzi pohlavím obete a mierou spokojnosti s reakciou ľudí, u ktorých obete hľadali pomoc?
+
+rq6_satisfactionGender <- t.test(satisfaction ~ genderBinary, data)
 
 # V koľkých percentách prípadov bolo spustené oficiálne konanie voči osobe, ktorá sa dopustila SO?
 rq6_investigationN <- data %>%
@@ -788,6 +883,7 @@ rq8_fieldSensitivity_means <- data %>% group_by(fieldStudy) %>% summarise(meanSe
                                             sdSensitivity = sd(sensitivityToHarrasment, na.rm = T))
 
 # Existujú rozdiely v závislosti od regiónov, z ktorých respondenti/tky pochádzajú?
+data$facultyRegion <- factor(data$facultyRegion)
 rq8_regionSensitivityMod <- lm(sensitivityToHarrasment ~ facultyRegion, weights = weight, data)
 rq8_regionSensitivityBF <- anovaBF(sensitivityToHarrasment ~ facultyRegion, data[!is.na(data$facultyRegion),], rscaleEffects = rScale)
 rq8_regionSensitivitySummary <- summary(rq8_regionSensitivityMod)
@@ -943,3 +1039,4 @@ rq.10_disclosureMisconceptionsAnova <- anova(rq.10_disclosureMisconceptionsMod)
 
 rq.10_disclosureMisconceptions_means <- data %>% group_by(disclosureBinary) %>% summarise(meanMisconceptions = mean(misconceptScore, na.rm = T),
                                                   sdMisconceptions = sd(misconceptScore, na.rm = T))
+

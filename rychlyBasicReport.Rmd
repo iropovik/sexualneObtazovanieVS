@@ -58,6 +58,8 @@ ss_fieldStudy_plot
 ss_yearStudy_plot
 ```
 
+Vo vzorke bolo celkovo `r sum(table(data$yearStudy)[4:6])` študentov 4-6. ročníka, čo tvorí `r round(sum(table(data$yearStudy)[4:6])/nrow(data)*100, 2)`
+
 ### Odbor podľa roku
 ```{r}
 kable(ss_fieldStudyYear_n, "html", digits = 3) %>%   kable_styling(bootstrap_options = "striped", full_width = F, font_size = 12, position = "left") %>%
@@ -81,6 +83,19 @@ kable(round((popCounts)*100/99205, 3), "html", digits = 3) %>%   kable_styling(b
 ```
 
 ## Vek
+
+Priemerný vek
+
+```{r}
+mean(data$age, na.rm = T)
+```
+SD vek
+
+```{r}
+sd(data$age, na.rm = T)
+```
+
+
 0 = menej ako 23, 1 = 23 rokov a viac
 ```{r}
 kable(ss_ageGroups_n, "html", digits = 3) %>%   kable_styling(bootstrap_options = "striped", full_width = F, font_size = 12, position = "left")
@@ -92,8 +107,37 @@ ss_age_plot
 
 ## Rod a sexuálna orientácia
 ```{r}
+ss_gender_n
+```
+
+```{r}
 kable(ss_sexOrien_n, "html", digits = 3) %>%   kable_styling(bootstrap_options = "striped", full_width = F, font_size = 12, position = "left")
 ```
+
+Mužov = 598, žien = 972. Počet queer participantov bol n = 56 (3.5%). Počty pred exclusions.
+
+## Minority
+Etnické n = 44
+Imigranti n = 17
+Náboženské n = 85
+Postihnutia n = 15
+
+# Vylúčenie careless responders
+Na základe viacerých metód detekcie careless responders bol z datasetu vylúčený nasledujúci počet participantov.
+```{r}
+ss_total_n - nrow(data)
+```
+Kritéria na vylúčenie (pomerne veľmi konzervatívne) boli:
+
+1. doba vyplnenia menej ako 3 minúty
+
+2. menej ako 10% dát o formách SO
+
+3. prítomnosť longstrings v častiach dotazníka zameraných na postoje alebo miskoncepcie. Konkrétne nulová intra-individuálna variabilita v odpovediach - všetky odpovede identické.
+
+4. vysoko nepravdepodobný pattern odpovedí v častiach dotazníka zameraných na postoje alebo miskoncepcie detekovaný metódou Mahalanobisových vzdialeností.
+
+5. zjavne neseriózne odpovede v otvorených otázkach
 
 # Prevalencia SO
 ## Individuálne formy SO
@@ -165,9 +209,13 @@ lapply(rq1.2_male_ci, round, 3)
 
 **Sú niektorým formám SO vystavení častejšie muži alebo ženy?**
 **Aký je pomer pohlaví vo vzťahu k riziku SO všeobecne?**  
-Dievčatá pri individuálnych formách: q6 2x častejšie, q7 o ~54% zriedkavejšie; q9 o 32% menej; q11 o 13% častejšie no miera dôkazov v prospech tvrdenia je slabá, q12 o 220% častejšie; q14 2x častejšie, q16 o 35% zriedkavejšie no miera dôkazov je veĺmi slabá; q17 o 42% častejšie. Pri ostatných položkách nie je rozdiel
 
-Dievčatá pri klastroch: unwantedSexAtt o 40% častejšie no miera dôkazov je striedma, sexAbuse o 12% častejšie - pri dôkladnejšej analýze rozdiel nie je štatisticky robustný
+
+
+
+Dievčatá pri individuálnych formách: q6 1.8x vačšie riziko, q7 o ~74% menšie riziko; q8 o 13% vacsie riziko no miera dôkazov v prospech tvrdenia je mimoriadne slabá; q9 o 44% menšie riziko; q11 o 31% mensie riziko no miera dôkazov v prospech tvrdenia je mimoriadne slabá, q14 2.2x vačšie riziko, q15 o 43% vačšie riziko no miera dôkazov je veĺmi slabá, q16 o 40% menšie riziko no miera dôkazov je skôr slabá; q17 o 52% mensie riziko, no dôkladnejsia analýza indikuje, že rozdiel nie je štatisticky robustný. Pri ostatných položkách nie je rozdiel
+
+Pri klastroch: rozdiel medzi pohlaviami vo výskyte SO nie je štatisticky robustný v žiadnom klastri
 
 **Je u transrodových osôb zvýšené riziko SO?**  
 Na to nemáme a nebudeme mať dostatok dát
@@ -176,7 +224,7 @@ Na to nemáme a nebudeme mať dostatok dát
 
 **Sú študenti / študentky niektorých odborov vystavení väčšiemu riziku SO než u iných študijných odborov**
 
-genderMotivHarr skor nie (mierne vyssie riziko u zdravotnikov, ale nestoji za rec); 
+genderMotivHarr áno (vyssie riziko u zdravotnikov (o 29%), potom prírodovedcov (o 23%), technických odborov (o 17%), a spol-ekon-právnych (o 11%)) -  v porovnaní s fil-hum-ped-teologickými odbormi. 
 
 unwantedSexAtt nie
 
@@ -184,19 +232,19 @@ sexAbuse nie
 
 **Zvyšuje sa s dĺžkou štúdia aj riziko SO?**
 
-genderMotivHarr napodiv nie; 
+genderMotivHarr veľmi mierne áno; 
 
 unwantedSexAtt ano
 
-sexAbuse nie
+sexAbuse paradoxne v prvom ročníku o niečo vyššie riziko
 
 Celkovo ale s dĺžkou štúdia stúpa závažnosť obťažovania.
 
 **Existuje zvýšené riziko SO s ohľadom na to, akým jazykom respondenti/respondentky hovoria?**
 
-genderMotivHarr minimalne ano; 
+genderMotivHarr nie; 
 
-unwantedSexAtt skôr nie (ak nehovoria slovensky, tak to riziko je mierne nizsie no nie signifikantne);
+unwantedSexAtt skôr nie;
 
 sexAbuse nie
 
@@ -222,16 +270,15 @@ genderMotivHarr nie;
 
 unwantedSexAtt nie;
 
-sexAbuse áno =  relatívne riziko je takmer 4x väčšie. Toto zistenie je ale založené na 7 pozitívnych pripadoch z 53. Jednak je to veľmi nestabilný odhad, jednak sa pravdepodobne zníži, keď vyhodím podozrivo vypĺňajúcich ľudí (vtipálkov typu "bojová helikoptéra" a tých čo to vyplnili nerealisticky rýchlo) =  to urobím, keď budú všetky dáta 
+sexAbuse áno =  relatívne riziko je 2.5x väčšie. Toto zistenie je ale založené na 5 pozitívnych pripadoch z 60 (jedná sa o vážené počty). Je to veľmi nestabilný odhad.
 
 **Existuje rozdiel vo výskyte SO z hľadiska regiónov (krajov)?**
 
-genderMotivHarr nie; 
+genderMotivHarr viac prípadov na východe; 
 
 unwantedSexAtt nie;
 
-sexAbuse menej pripadov na strednom slovensku
-Celkovo prevalencia obťažovania je mierne nižšia na strednom Slovesku (ale nie signifikantne)
+sexAbuse vyrazne viac pripadov na strednom Slovensku.
 
 
 # Páchatelia SO? 
@@ -244,8 +291,8 @@ kable(rq3_perpetratorsOverall_table, "html", digits = 3, col.names = "%") %>%   
 
 **Aký je pomer pohlaví páchateľov pri jednotlivých formách SO osobitne?. Sú ženy alebo muži náchylnejší páchať niektorú z foriem SO?. Aké osoby (učitelia, spolužiaci, atď.) najčastejšie páchajú aké druhy obťažovania?**
 
-Celkovo je takmer 2x pravdepodobnejsie, ze pachatel nejakej formy SO je muz. Silny pattern.
-2x pravdepodobnejsie pri GMH, o 60% pravdepodobnejsie pri USA. Pri SAB je to 50:50.
+Celkovo je o 85% pravdepodobnejsie, ze pachatel nejakej formy SO je muz. Silny pattern.
+2x pravdepodobnejsie pri GMH, o 57% pravdepodobnejsie pri USA. Pri SAB nie je signifikantný rozdiel.
 
 Udaje v percentach
 ```{r}
@@ -277,7 +324,7 @@ kable(rq5_impacts_n, "html", digits = 3) %>%   kable_styling(bootstrap_options =
 
 **Je rozsah uvádzaných dôsledkov podmienený zažitou formou SO (často opakujúci poznatok - osoby, ktoré majú viac skúseností so SO majú aj častejšie následky na mentálnom zdraví)? Je rozsah uvádzaných dôsledkov podmienený frekvenciou (častosťou) SO?**
 
-Efekt je skôr slabý (r = .18), no značne robustný. So zvyšujúcou sa závažnosťou a frekvenciou SO rastie aj rozsah dôsledkov.
+Efekt je skôr slabý (r = .15), no velmi robustný. So zvyšujúcou sa závažnosťou a frekvenciou SO rastie aj rozsah dôsledkov.
 
 **Je rozsah uvádzaných dôsledkov podmienený tým, kto je páchateľom?**
 
@@ -294,15 +341,15 @@ Nie
 
 **Je rozsah uvádzaných dôsledkov podmienený tým, či sa obete zdôverili (či hľadali podporu)?** 
 
-Áno, čím závažnejšie dôsledky, tým vyššia pravdepodobnosť zdôverenia sa. Jednoznačneý, pomerne silný efekt.
+Áno, čím závažnejšie dôsledky, tým vyššia pravdepodobnosť zdôverenia sa. Jednoznačný, pomerne silný efekt.
 
 **Je rozsah úvádzaných dôsledkov podmienený tým, či osoba zažila negatívne reakcie zo strany školy? (v otázke 68 odpovedali - Zažili ste iné negatívne dôsledky (napr. odmietnutie ďalšieho vzdelávania), Zhoršilo sa vaše hodnotenie v rámci kurzov/predmetov/skúšok, Boli/a ste vylúčený/á z kolektívu, Boli ste ohováraný/á, Boli ste označený za problémového/problémovú, Boli ste preradený/á do iného študijného programu/odboru/skupiny, Odišli ste zo školy, Dostali ste napomenutie)**
 
-Ešte zanalyzujem
+Ešte zanalyzujem do finálneho reportu.
 
 **Je rozsah uvádzaných dôsledkov podmienený mierou spokojnosti obetí s tým, ako reagovali osoby, u ktorých hľadali pomoc/radu?**
 
-Skôr nie
+Mierne áno. Vzťah je ale mierne pozitívny (väččší rozsah dôsledkov asociovaný s vyššou mierou spokojnosti).
 
 **Je rozsah uvádzaných dôsledkov podmienený príslušnosťou k niektorej menšine?**
 
@@ -316,11 +363,13 @@ Nie
 
 **Koľko percent obetí vôbec hľadalo pomoc/radu?**
 
-31,8%, z toho 8,8% chlapcov a 22,4% dievcat
+31%, z toho 9% chlapcov a 22% dievcat
 
 **U koho hľadali obete najčastejšie pomoc?**
 
+```{r}
 kable(rq6_disclosureWhoFreq, "html", digits = 3) %>%   kable_styling(bootstrap_options = "striped", full_width = F, font_size = 12, position = "left")
+```
 
 **Existuje súvis medzi zažitou formou SO a tendenciou obetí hľadať pomoc? Existuje súvis medzi častosťou (frekvenciou) SO a tendenciou obetí hľadať pomoc?**
 
@@ -328,7 +377,7 @@ Zodpovedane uz v predchadzajucej sekcii otazok. Plati aj v opacnom poradi, pri u
 
 **Existuje rozdiel medzi pohlaviami v tendencii hľadať pomoc? **
 
-U dievcat je o 50% vyssia pravdepodobnost, ze budu hladat pomoc.
+U dievcat je o 62% vyssia pravdepodobnost, ze budu hladat pomoc.
 
 **Súvisí hľadanie pomoci s vierovyznaním obete? **
 
@@ -336,11 +385,11 @@ Nie
 
 **Súvisí hľadanie pomoci s odborom štúdia? **
 
-V skratke ano - tendencia hladat pomoc nie je vo vsetkych odboroch rovnaka. No tym padom, ze odborov je pomerne dost, je blizsia odpoved komplikovanejsia. Ide o to ako sa odbory porovnavaju, resp. ktory je ten baseline obor. Mozme rozviest v sprave.
+V skratke ano - tendencia hladat pomoc nie je vo vsetkych odboroch rovnaka. Rozdiely sú ale skôr menšie. No tym padom, ze odborov je pomerne dost, je blizsia odpoved komplikovanejsia. Ide o to ako sa odbory porovnavaju, resp. ktory je ten baseline obor. Mozme rozviest v sprave, ak budete chcieť
 
 **Súvisí hľadanie pomoci s regiónom, z ktorého obete pochádzajú? **
 
-Na strednom slovensku bola nizsia pravdepodobnost, ze obete budu hladat pomoc.
+Na východnom slovensku bola nižšia pravdepodobnosť, že obete budú hľadať pomoc
 
 **Súvisí hľadanie pomoci s povedomím o tom čo je SO? (hypotéza - osoby, ktoré vyhodnocujú viac situácií ako SO - otázka 69 - majú tendenciu vyhľadávať pomoc/zdôverovať sa so SO častejšie). **
 
@@ -366,7 +415,7 @@ Dievcata su mierne spokojnejsie.
 
 **Existuje rozdiel medzi pohlavím páchateľa a mierou spokojnosti s reakciou ľudí, u ktorých obete hľadali pomoc? **
 
-Toto este dorobim
+Toto este dorobim do finálneho reportu
 
 **Súvisí miera spokojnosti s reakciou ľudí, u ktorých obete hľadali pomoc s príslušnosťou obete k nejakej menšine (vrátane sexuálnej orientácie a transrodových osôb)? **
 
@@ -425,7 +474,7 @@ kable(rq8_attitudes_n, "html", digits = 3) %>%   kable_styling(bootstrap_options
 ```
 
 **Existujú rozdiely s ohľadom na klastre foriem SO (1. rodové obťažovanie, 2. nechcená sexuálna pozornosť, 3. sexuálne donútenie/násilie) ?**
-Tazko zodpovedatelne. Alternativa: vztah zavaznosti SO a senzitivity na obtazovanie. Tu je odpoved jednoznacne nie.
+Tazko zodpovedatelne. Alternativa: vztah zavaznosti SO a senzitivity na obtazovanie. Tu je odpoved nie.
 
 **Existujú rozdiely medzi pohlaviami? **
 Ano, dievcata su na SO citlivejsie.
@@ -436,7 +485,7 @@ Nie
 
 **Existujú rozdiely v závislosti od odboru štúdia respondentov/tiek? **
 
-Ano, napr. spolocenske vedy > prirodne
+Ano, napr. spolocenske vedy > prirodne, umelecke, technicke, ci zdravotnicke
 
 ```{r}
 kable(rq8_fieldSensitivity_means, "html", digits = 3) %>%   kable_styling(bootstrap_options = "striped", full_width = F, font_size = 12, position = "left")
@@ -444,7 +493,7 @@ kable(rq8_fieldSensitivity_means, "html", digits = 3) %>%   kable_styling(bootst
 
 **Existujú rozdiely v závislosti od regiónov, z ktorých respondenti/tky pochádzajú? **
 
-Ano, cim viac vychod, tym mensia senzitivita.
+Nie
 
 ```{r}
 kable(rq8_regionSensitivity_means, "html", digits = 3) %>%   kable_styling(bootstrap_options = "striped", full_width = F, font_size = 12, position = "left")
@@ -469,11 +518,11 @@ Priemerne povedomie je 5.7 :) Nie je to velmi informativne. Ale pri skale 0-8 (s
 
 **Existujú rozdiely medzi pohlaviami?**
 
-Chlapci reportuju vyssie povedomie (o pol boda z 8).
+Chlapci reportuju vyssie povedomie (o 0.4 boda z 8).
 
 **Existujú rozdiely v závislosti od regiónov, z ktorých respondenti/tky pochádzajú? **
 
-Skor nie
+Nie
 
 **Existuje vzťah medzi právnym povedomím a tým, či sa osoby častejšie na niekoho obracajú so skúsenosťou so SO? **
 
@@ -498,13 +547,13 @@ Ano, signifikantne viac info na Strednom Slovensku
 
 **Existujú rozdiely medzi odbormi?**
 
-Skor nie
+Nie
 
 # Stereotypy o sexuálnom obťažovaní
 
 **V akej miere súhlasia respondenti/tky s jednotlivými tvrdeniami? **
 
-Tazko interpretovatelne ale priemerna miera suhlasu s miskoncepciami je 23 z 55 (vyssie cislo = vacsia miera miskoncepcii). Not good, not bad.
+Tazko interpretovatelne ale priemerna miera suhlasu s miskoncepciami je 12 z 55 (vyssie cislo = vacsia miera miskoncepcii).
 
 **Existujú rozdiely medzi pohlaviami? **
 
@@ -516,7 +565,7 @@ Vobec nie
 
 **Existujú rozdiely v závislosti od odboru štúdia respondentov/tiek? **
 
-Vyssia miera miskoncepcii najma v technickych odboroch, ciastocne aj v prirodovedeckych. Najmenej v zdravotnickych.
+Vyssia miera miskoncepcii najma v technickych odboroch a prirodovedeckych. Relativne najmenej v zdravotnickych.
 
 **Existujú rozdiely v závislosti od regiónov, z ktorých respondenti/tky pochádzajú? **
 

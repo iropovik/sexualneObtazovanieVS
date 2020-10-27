@@ -23,8 +23,8 @@ data <- read_delim("data/data.csv", delim = ",", skip_empty_rows = T)
 # View(data)
 
 # some initial data recoding
-data <- data %>% filter(!is.na(sexualOrientation)) %>% mutate(
-  nonheterosexual = ifelse(sexualOrientation == "Heterosexuál/ka (osoba, ktorá je citovo a sexuálne priťahovaná opačným pohlavím)", 0, 1)) # 0 = "Heterosexuál/ka", 1 = "Non-heterosexuál/ka"
+data <- data %>% mutate(
+  nonheterosexual = ifelse(is.na(sexualOrientation), NA, ifelse(sexualOrientation == "Heterosexuál/ka (osoba, ktorá je citovo a sexuálne priťahovaná opačným pohlavím)", 0, 1))) # 0 = "Heterosexuál/ka", 1 = "Non-heterosexuál/ka"
 
 data <- data %>% mutate(ageOver23 = as.factor(case_when(age < 23 ~ 0, # 0 = '17-22', 1 = '23+'
                                              age >= 23  ~ 1)),
@@ -69,50 +69,6 @@ data <- data %>% mutate(satisfaction = rowSums(data %>% select(contains("disclos
 
 data$facultyRegion <- factor(data$facultyRegion)
 data$fieldStudy <- factor(data$fieldStudy)
-
-# participant exclusions
-
-
-
-# careless responders
-
-data <- data %>% filter(is.na(exclude))
-
-data$longstringAtt <- data %>% select(att1:att19) %>% longstring()
-data$longstringMisconcept <- data %>% select(misconcept1:misconcept11) %>% longstring()
-
-data$irv <- data %>% select(att1:att19) %>% irv()
-data$mahadRaw <- data %>% select(att1:att19, misconcept1:misconcept11) %>% mahad(plot = F, flag = T, confidence = 1) %>% .$raw
-data$mahadFlagged <- data %>% select(att1:att19, misconcept1:misconcept11) %>% mahad(plot = F, flag = T, confidence = 1) %>% .$flagged
-
-randResp <- NA
-classification <- NA
-nsim <-  100
-for(j in 1:nsim){
-items <- length(data[!is.na(data$irv),]$irv)
-for(i in 1:items){
-  randResp[i] <- sd(sample(1:5, 19, replace = TRUE))
-}
-
-df <- data.frame(cbind(sds = c(data[!is.na(data$irv),]$irv, randResp),
-                       genuineResp = c(ifelse(data[!is.na(data$irv),]$irv < 1.3, 1, 0), rep(0, length(randResp)))))
-
-model <- glm(genuineResp ~sds,family=binomial(link='logit'),data=df)
-fittedProbs <- model %>% fitted.values()
-predicted.classes <- ifelse(fittedProbs > 0.5, 1, 0)
-classification[j] <- mean(predicted.classes == df$genuineResp)
-}
-
-table(data$irv > 1.3)/length(data$irv)
-mean(classification)
-
-hist(randResp, breaks = 50)
-quantile(randResp, probs = .5)
-
-data %>% filter(longstringAtt == 19 | longstringMisconcept == 11 |
-                  mahadFlagged == TRUE)
-
-
 
 # Sample description ------------------------------------------------------
 
@@ -204,6 +160,47 @@ ss_fieldStudyRegion_n <- data %>%
   summarise(n = n(),
             percent = round(100*n()/nrow(.), 2))
 
+
+# Careless responders exclusion -------------------------------------------
+
+# participant exclusions
+data <- data %>% filter(is.na(exclude))
+
+# careless responders
+data$longstringAtt <- data %>% select(att1:att19) %>% longstring()
+data$longstringMisconcept <- data %>% select(misconcept1:misconcept11) %>% longstring()
+
+data$irv <- data %>% select(att1:att19) %>% irv()
+data$mahadRaw <- data %>% select(att1:att19, misconcept1:misconcept11) %>% mahad(plot = F, flag = T, confidence = 1) %>% .$raw
+data$mahadFlagged <- data %>% select(att1:att19, misconcept1:misconcept11) %>% mahad(plot = F, flag = T, confidence = 1) %>% .$flagged
+
+randResp <- NA
+classification <- NA
+nsim <-  100
+for(j in 1:nsim){
+  items <- length(data[!is.na(data$irv),]$irv)
+  for(i in 1:items){
+    randResp[i] <- sd(sample(1:5, 19, replace = TRUE))
+  }
+
+  df <- data.frame(cbind(sds = c(data[!is.na(data$irv),]$irv, randResp),
+                         genuineResp = c(ifelse(data[!is.na(data$irv),]$irv < 1.3, 1, 0), rep(0, length(randResp)))))
+
+  model <- glm(genuineResp ~sds,family=binomial(link='logit'),data=df)
+  fittedProbs <- model %>% fitted.values()
+  predicted.classes <- ifelse(fittedProbs > 0.5, 1, 0)
+  classification[j] <- mean(predicted.classes == df$genuineResp)
+}
+
+table(data$irv > 1.3)/length(data$irv)
+mean(classification)
+
+hist(randResp, breaks = 50)
+quantile(randResp, probs = .5)
+
+data <- data %>% filter(longstringAtt < 19 & longstringMisconcept < 11 & mahadFlagged == FALSE)
+nrow(data)
+
 # Sampling weights --------------------------------------------------------
 
 # population data
@@ -233,8 +230,6 @@ data <- data %>% left_join(popProp, by = c("fieldStudy", "facultyRegion")) %>%
                          w = ifelse(popProp/sampleProp > 3,  3, popProp/sampleProp)) %>%
                   select(-c(popProp, percent))
 
-table(data$w)
-
 design <- svydesign(ids = ~1, data = data, weights = ~w)
 
 # RQ1 Prevalence rates---------------------------------------------------------------------
@@ -245,8 +240,8 @@ data <- data %>% mutate_at(vars(starts_with("q") & !contains("_")), funs(recode(
 # frequency table (n's and %) for all individual types of abuse across the board
 rq1.1_items_n <- data %>%
   summarise_at(vars(starts_with("q") & !contains("_")),
-               funs(n = sum(weight(., w), na.rm = TRUE),
-                    perc = sum(weight(., w), na.rm = TRUE)*100/sum(w)))
+               funs(n = round(svytotal(as.logical(.), design, na.rm = T), 0),
+                    perc = round(svytotal(as.logical(.), design, na.rm = T), 3)*100/sum(w)))
 
 rq1.1_items_plotData <- as_tibble(cbind(item = names(rq1.1_items_n), t(rq1.1_items_n))) %>% filter(!grepl("_n", item, fixed = TRUE)) %>%
   mutate(perc = as.numeric(V2), item = str_remove(item, "_perc"), cluster = c(rep("GMH", 8), rep("USA", 8), rep("SAB", 4)), V2 = NULL) %>% arrange(perc)
@@ -261,8 +256,8 @@ rq1.1_items_plot <- ggplotly(rq1.1_items_plotData %>% ggplot(aes(x = item, y = p
 rq1.1_itemsGender_n <- data %>%
   group_by(factor(genderBinary)) %>%
   summarise_at(vars(starts_with("q") & !contains("_")),
-               funs(n = sum(weight(., w), na.rm = TRUE),
-                    perc = sum(weight(., w), na.rm = TRUE)*100/sum(w))) %>% na.omit()
+               funs(n = round(weighted.mean(as.logical(.), w, na.rm = T)*sum(w), 0),
+                    perc = weighted.mean(as.logical(.), w, na.rm = T)*100)) %>% na.omit()
 
 rq1.1_itemsGender_plotData <- as_tibble(cbind(item = names(rq1.1_itemsGender_n), t(rq1.1_itemsGender_n)))[-1,] %>% filter(!grepl("_n", item, fixed = TRUE)) %>%
   mutate(male = as.numeric(V2), female = as.numeric(V3), item = str_remove(item, "_perc"), V2 = NULL, V3 = NULL) %>% pivot_longer(cols = c(male, female), names_to = "gender", values_to = "perc")
@@ -292,16 +287,20 @@ data <- data %>% mutate(
 # frequency table (n's and %) for aggregate categories of abuse across the board
 rq1.2_cluster_n <- data %>%
   summarise_at(vars(genderMotivHarr, unwantedSexAtt, sexAbuse),
-               funs(n = sum(as.logical(weight(., w)), na.rm = TRUE),
-                    perc = sum(as.logical(weight(., w)), na.rm = TRUE)*100/sum(w)))
+               funs(n = round(svytotal(as.logical(.), design, na.rm = T), 0),
+                    perc = round(svytotal(as.logical(.), design, na.rm = T), 3)*100/sum(w)))
+
+# frequency tables (n's and %) for aggregate categories of abuse, showing percentages for one-time and repeated abuses
+rq1.2_cluster_exposure <- data %>% select(genderMotivHarr, unwantedSexAtt, sexAbuse) %>% map(., ~round(prop.table(wtd.table(., weights = data$w)), 2))
+
 
 # frequency tables (n's and %) for aggregate categories of abuse by gender.
 # dropping other than female, male
 rq1.2_clusterGender_n <- data %>%
   group_by(factor(genderBinary)) %>%
   summarise_at(vars(genderMotivHarr, unwantedSexAtt, sexAbuse),
-               funs(n = sum(as.logical(weight(., w)), na.rm = TRUE),
-                    perc = sum(as.logical(weight(., w)), na.rm = TRUE)*100/sum(w))) %>%
+               funs(n = round(weighted.mean(as.logical(.), w, na.rm = T)*sum(w), 0),
+                    perc = weighted.mean(as.logical(.), w, na.rm = T)*100)) %>%
   na.omit()
 
 rq1.2_clusterGender_plotData <- as_tibble(cbind(item = names(rq1.2_clusterGender_n), t(rq1.2_clusterGender_n)))[-1,] %>% filter(!grepl("_n", item, fixed = TRUE)) %>%
@@ -323,12 +322,12 @@ rq1.2_male_ci <- data %>% filter(gender == "Muž") %>%  select(starts_with("q") 
 # Computes odds ratios ($measure) for: type of abuse by gender contingency tables.
 rq1.2_clusterGender_or <- data %>% mutate(genderMotivHarr = as.logical(genderMotivHarr), unwantedSexAtt = as.logical(unwantedSexAtt), sexAbuse = as.logical(sexAbuse)) %>%
   select(starts_with("q") & !contains("_"), genderMotivHarr, unwantedSexAtt, sexAbuse) %>%
-  map(~riskratio.boot(round(wtd.table(data$genderBinary, ., weights = data$w, normwt = T), 0), replicates = 1e5))
+  map(~riskratio.boot(round(wtd.table(data$genderBinary, as.logical(.), weights = data$w, normwt = T), 0), replicates = 1e5))
 
 # Computes Bayes factors (Poisson BF)  for: type of abuse by gender contingency tables.
 rq1.2_clusterGender_bf <- data %>% mutate(genderMotivHarr = as.logical(genderMotivHarr), unwantedSexAtt = as.logical(unwantedSexAtt), sexAbuse = as.logical(sexAbuse)) %>%
   select(starts_with("q") & !contains("_"), genderMotivHarr, unwantedSexAtt, sexAbuse) %>%
-  map(~contingencyTableBF(round(wtd.table(data$genderBinary, ., weights = data$w, normwt = T), 0), sampleType = "poisson", priorConcentration = 1))
+  map(~contingencyTableBF(round(wtd.table(data$genderBinary, as.logical(.), weights = data$w, normwt = T), 0), sampleType = "poisson", priorConcentration = 1))
 
 # RQ2 Risk factors ------------------------------------------------------------
 # Existuje rozdiel vo výskyte SO vzhľadom na ... podľa klastrov?
@@ -426,8 +425,6 @@ rq2_belief_summary <- summary(rq2_belief_mod)
 # Computes odds ratios ($measure) for: type of abuse by minority status
 rq2_minority_or <- data %>% mutate(genderMotivHarr = as.logical(genderMotivHarr), unwantedSexAtt = as.logical(unwantedSexAtt), sexAbuse = as.logical(sexAbuse)) %>% select(genderMotivHarr, unwantedSexAtt, sexAbuse, harrassed) %>%
   map(~riskratio.boot(round(wtd.table(data$minority, ., weights = data$w, normwt = T), 0), replicates = 1e5))
-
-rq2_minority_table <- round(wtd.table(data$genderMotivHarr, weights = data$w, normwt = T), 0)
 
 # Computes Bayes factors (Poisson BF)  for: type of abuse by minority status
 rq2_minority_bf <- data %>% mutate(genderMotivHarr = as.logical(genderMotivHarr), unwantedSexAtt = as.logical(unwantedSexAtt), sexAbuse = as.logical(sexAbuse)) %>% select(genderMotivHarr, unwantedSexAtt, sexAbuse, harrassed) %>%
@@ -546,15 +543,15 @@ abusesByPerpetratorGenderSAB <- matrix(c(
 rq3_abusesByPerpetratorGenderOverall_or <- riskratio.boot(abusesByPerpetratorGenderOverall, rev = "both", replicates = 1e5)
 rq3_abusesByPerpetratorGenderOverall_bf <- contingencyTableBF(abusesByPerpetratorGenderOverall, sampleType = "poisson", priorConcentration = 1)
 
-# Computes odds ratios ($measure) and Bayes factors (Poisson BF) for: type of abuse by gender of the perpetrator overall
+# Computes odds ratios ($measure) and Bayes factors (Poisson BF) for: type of abuse by gender of the perpetrator for GMH
 rq3_abusesByPerpetratorGenderGMH_or <- riskratio.boot(abusesByPerpetratorGenderGMH, rev = "both", replicates = 1e5)
 rq3_abusesByPerpetratorGenderGMH_bf <- contingencyTableBF(abusesByPerpetratorGenderGMH, sampleType = "poisson", priorConcentration = 1)
 
-# Computes odds ratios ($measure) and Bayes factors (Poisson BF) for: type of abuse by gender of the perpetrator overall
+# Computes odds ratios ($measure) and Bayes factors (Poisson BF) for: type of abuse by gender of the perpetrator for USA
 rq3_abusesByPerpetratorGenderUSA_or <- riskratio.boot(abusesByPerpetratorGenderUSA, rev = "both", replicates = 1e5, correction = TRUE)
 rq3_abusesByPerpetratorGenderUSA_bf <- contingencyTableBF(abusesByPerpetratorGenderUSA, sampleType = "poisson", priorConcentration = 1)
 
-# Computes odds ratios ($measure) and Bayes factors (Poisson BF) for: type of abuse by gender of the perpetrator overall
+# Computes odds ratios ($measure) and Bayes factors (Poisson BF) for: type of abuse by gender of the perpetrator for SAB
 rq3_abusesByPerpetratorGenderSAB_or <- riskratio.boot(abusesByPerpetratorGenderSAB, rev = "both", replicates = 1e5, correction = TRUE)
 rq3_abusesByPerpetratorGenderSAB_bf <- contingencyTableBF(abusesByPerpetratorGenderSAB, sampleType = "poisson", priorConcentration = 1)
 
@@ -625,7 +622,7 @@ rq5_impacts_n <- do.call(rbind.data.frame, data %>% filter(harrassed == 1) %>% s
                                  perc = round(perc, 2)*100)
 
 # Je rozsah uvádzaných dôsledkov podmienený zažitou formou SO?
-rq5_harrassedByImpactSeverity_cor <- data %>% filter(anyYes == 1) %>% wed_correlation(harrassedSeverity, impactSeverity, weights = w)
+rq5_harrassedByImpactSeverity_cor <- data %>% filter(anyYes == 1) %>% weighted_correlation(harrassedSeverity, impactSeverity, weights = w)
 rq5_harrassedByImpactSeverity_bf <- data %>% filter(anyYes == 1) %$% correlationBF(y = harrassedSeverity, x = impactSeverity, rscale = rScale)
 
 # Je rozsah uvádzaných dôsledkov podmienený tým, kto je páchateľom?
@@ -721,9 +718,8 @@ rq6_disclosureN <- data %>%
             percent = round(100*n()/nrow(.), 2))
 
 # U koho hľadali obete najčastejšie pomoc?
-rq6_disclosureWhoFreq <- do.call(rbind.data.frame, data %>% select(contains("disclosure_") & !contains("whyNo")) %>% map(~cbind("freq" = round(wtd.table(., weights = data$w, normwt = T), 0), "perc" = prop.table(round(wtd.table(., weights = data$w, normwt = T), 0))))) %>% #Turning disclosure_ vars to logical; T = disclosed, F = not disclosed
+rq6_disclosureWhoFreq <- do.call(rbind.data.frame, data %>% select(contains("disclosure_") & !contains("whyNo")) %>% map(~cbind("freq" = round(wtd.table(as.logical(.), weights = data$w, normwt = T), 0), "perc" = prop.table(round(wtd.table(as.logical(.), weights = data$w, normwt = T), 0))*100))) %>% #Turning disclosure_ vars to logical; T = disclosed, F = not disclosed
   rownames_to_column("disclosureWho") %>% filter(grepl(".TRUE", disclosureWho, fixed = TRUE)) %>% arrange(desc(freq))
-
 rq6_disclosureWhoFreq[,"disclosureWho"] <- rq6_disclosureWhoFreq[,"disclosureWho"] %>% str_remove("disclosure_") %>% str_remove(".TRUE")
 
 # Existuje súvis medzi zažitou formou SO a tendenciou obetí hľadať pomoc? & Existuje súvis medzi častosťou (frekvenciou) SO a tendenciou obetí hľadať pomoc?
@@ -787,8 +783,7 @@ rq6_disclosureSatisfaction <- do.call(rbind.data.frame, data %>% select(contains
   rownames_to_column("disclosureWho") %>% filter(!grepl(".0", disclosureWho, fixed = TRUE)) %>% arrange(desc(freq))
 
 # Existuje rozdiel medzi pohlavím obete a mierou spokojnosti s reakciou ľudí, u ktorých obete hľadali pomoc?
-
-rq6_satisfactionGender <- t.test(satisfaction ~ genderBinary, data)
+rq6_satisfactionGender <- svyttest(satisfaction ~ genderBinary, design)
 
 # V koľkých percentách prípadov bolo spustené oficiálne konanie voči osobe, ktorá sa dopustila SO?
 rq6_investigationN <- data %>%
@@ -807,11 +802,11 @@ rq6_investigationBF10 <- 1/exp((BIC(rq6_investigationMod) - BIC(rq6_investigatio
 rq6_investigationPosterior <- rq6_investigationBF10/(1+rq6_investigationBF10)
 rq6_investigationBayesOut <- data.frame(BF10 = round(rq6_investigationBF10, 3), Posterior = round(rq6_investigationPosterior, 3))
 
-rq6_investigationHarrassed_cor <- data %$% cor(investigation, harrassedSeverity, use = "complete.obs")
+rq6_investigationHarrassed_cor <- data %>% weighted_correlation(investigation, harrassedSeverity, weights = w)
 
 # Aké sú dôvody, pre ktoré obete nehľadali pomoc
 
-rq6_disclosureWhyNoFreq <- do.call(rbind.data.frame, data %>% select(contains("whyNo") & !contains("_other")) %>% map(~cbind("freq" = round(wtd.table(as.logical(.), weights = data$w, normwt = T), 0), "perc" = prop.table(round(wtd.table(as.logical(.), weights = data$w, normwt = T), 0))))) %>% #Turning disclosure_ vars to logical; T = disclosed, F = not disclosed
+rq6_disclosureWhyNoFreq <- do.call(rbind.data.frame, data %>% select(contains("whyNo") & !contains("_other")) %>% map(~cbind("freq" = round(wtd.table(as.logical(.), weights = data$w, normwt = T), 0), "perc" = prop.table(round(wtd.table(as.logical(.), weights = data$w, normwt = T), 0))*100))) %>% #Turning disclosure_ vars to logical; T = disclosed, F = not disclosed
   rownames_to_column("disclosureWhyNo") %>% filter(grepl(".TRUE", disclosureWhyNo, fixed = TRUE)) %>% arrange(desc(freq))
 
 rq6_disclosureWhyNoFreq[,"disclosureWhyNo"] <- rq6_disclosureWhyNoFreq[,"disclosureWhyNo"] %>% str_remove("whyNoDisclosure_") %>% str_remove(".TRUE")
@@ -861,12 +856,20 @@ rq7_investigation_n <- do.call(rbind.data.frame, data %>% select(contains("inves
 # Vnímanie sexuálneho obťažovania (operacionalizovane ako senzitivita)
 # Ktoré prejavy správania považujú respondenti/tky za SO?
 rq8_attitudes_n <- data %>% select(starts_with("att") & !contains(c("unwanted"))) %>%
-  map(~mean(.,na.rm = TRUE)) %>% as.tibble() %>% gather(key = "perception", value = "mean") %>% arrange(desc(mean))
+  map(~weighted.mean(., data$w, na.rm = T)) %>% as.tibble() %>% gather(key = "perception", value = "mean") %>% arrange(desc(mean))
+
+rq8_attitudes_item_freqs <- data %>% select(starts_with("att") & !contains(c("unwanted"))) %>%
+map(~round(prop.table(wtd.table(., weights = data$w, normwt = T, na.rm = T))*100, 2))
+rq8_attitudes_item_freqs
+
+rq8_attitudes_item_freqs_wNA <- data %>% select(starts_with("att") & !contains(c("unwanted"))) %>%
+  map(~round(prop.table(wtd.table(., weights = data$w, normwt = T, na.rm = F, na.show = T))*100, 2))
+rq8_attitudes_item_freqs_wNA
 
 # Existujú rozdiely s ohľadom na klastre foriem SO (1. rodové obťažovanie, 2. nechcená sexuálna pozornosť, 3. sexuálne donútenie/násilie) ?
 # Tazko zodpovedatelne. Alternativa: vztah zavaznosti SO a senzitivity na obtazovanie
 
-rq8_harrassedSensitivity_cor <-  data %$% cor.test(harrassedSeverity, sensitivityToHarrasment)
+rq8_harrassedSensitivity_cor <-  data %>% weighted_correlation(harrassedSeverity, sensitivityToHarrasment, weights = w)
 rq8_harrassedSensitivity_bf <- data %$% correlationBF(harrassedSeverity, sensitivityToHarrasment, rscale = rScale)
 
 # Existujú rozdiely medzi pohlaviami?
@@ -887,8 +890,8 @@ rq8_fieldSensitivityBF <- lmBF(sensitivityToHarrasment ~ fieldStudy, data[!is.na
 rq8_fieldSensitivitySummary <- summary(rq8_fieldSensitivityMod)
 rq8_fieldSensitivityAnova <- anova(rq8_fieldSensitivityMod)
 
-rq8_fieldSensitivity_means <- data %>% group_by(fieldStudy) %>% summarise(meanSensitivity = mean(sensitivityToHarrasment, na.rm = T),
-                                            sdSensitivity = sd(sensitivityToHarrasment, na.rm = T))
+rq8_fieldSensitivity_means <- data %>% group_by(fieldStudy) %>% summarise(meanSensitivity = weighted_mean(sensitivityToHarrasment, w),
+                                                                          sdSensitivity = weighted_sd(sensitivityToHarrasment, w))
 
 # Existujú rozdiely v závislosti od regiónov, z ktorých respondenti/tky pochádzajú?
 data$facultyRegion <- factor(data$facultyRegion)
@@ -897,8 +900,8 @@ rq8_regionSensitivityBF <- anovaBF(sensitivityToHarrasment ~ facultyRegion, data
 rq8_regionSensitivitySummary <- summary(rq8_regionSensitivityMod)
 rq8_regionSensitivityAnova <- anova(rq8_regionSensitivityMod)
 
-rq8_regionSensitivity_means <- data %>% group_by(facultyRegion) %>% summarise(meanSensitivity = mean(sensitivityToHarrasment, na.rm = T),
-                                            sdSensitivity = sd(sensitivityToHarrasment, na.rm = T))
+rq8_regionSensitivity_means <- data %>% group_by(facultyRegion) %>% summarise(meanSensitivity = weighted_mean(sensitivityToHarrasment, w),
+                                                                              sdSensitivity = weighted_sd(sensitivityToHarrasment, w))
 
 # Existujú rozdiely v závislosti od vierovyznania respondentov/tiek?
 rq8_believerSensitivityMod <- lm(sensitivityToHarrasment ~ believer, weights = w, data)
@@ -906,8 +909,8 @@ rq8_believerSensitivityBF <- anovaBF(sensitivityToHarrasment ~ believer, data[!i
 rq8_believerSensitivitySummary <- summary(rq8_believerSensitivityMod)
 rq8_believerSensitivityAnova <- anova(rq8_believerSensitivityMod)
 
-rq8_believerSensitivity_means <- data %>% group_by(believer) %>% summarise(meanSensitivity = mean(sensitivityToHarrasment, na.rm = T),
-                                               sdSensitivity = sd(sensitivityToHarrasment, na.rm = T))
+rq8_believerSensitivity_means <- data %>% group_by(believer) %>% summarise(meanSensitivity = weighted_mean(sensitivityToHarrasment, w),
+                                                                           sdSensitivity = weighted_sd(sensitivityToHarrasment, w))
 
 # Existujú rozdiely medzi obeťami SO a osobami, ktoré nemajú osobnú skúsenosť s SO? (častý poznatok - osoby, ktoré majú viac skúseností so SO zvyknú aj viac situácií vyhodnocovať ako SO).
 rq8_harrassedSensitivityMod <- lm(sensitivityToHarrasment ~ harrassed, weights = w, data)
@@ -915,8 +918,8 @@ rq8_harrassedSensitivityBF <- anovaBF(sensitivityToHarrasment ~ harrassed, data[
 rq8_harrassedSensitivitySummary <- summary(rq8_harrassedSensitivityMod)
 rq8_harrassedSensitivityAnova <- anova(rq8_harrassedSensitivityMod)
 
-rq8_harrassedSensitivity_means <- data %>% group_by(harrassed) %>% summarise(meanSensitivity = mean(sensitivityToHarrasment, na.rm = T),
-                                          sdSensitivity = sd(sensitivityToHarrasment, na.rm = T))
+rq8_harrassedSensitivity_means <- data %>% group_by(harrassed) %>% summarise(meanSensitivity = weighted_mean(sensitivityToHarrasment, w),
+                                                                             sdSensitivity = weighted_sd(sensitivityToHarrasment, w))
 
 # Existuje súvis medzi tým, čo respondenti/tky považujú za SO a tým, či majú tendenciou hľadať pomoc, ak sa s niektorou z foriem SO osobne stretli?
 # controlling for harrassedSeverity
@@ -931,8 +934,15 @@ rq8_disclosureSensitivity_means <- data %>% group_by(disclosureBinary) %>% summa
 data <- data %>% mutate(legalAwareness = rowSums(cbind(know1, know2), na.rm = T))
 
 rq8_legalAwareness_mean <- data %>%
-  summarise(meanLegalAwareness = mean(legalAwareness, na.rm = TRUE),
-            sdLegalAwareness = sd(legalAwareness, na.rm = TRUE))
+  summarise(meanLegalAwareness = weighted_mean(legalAwareness, w),
+            sdLegalAwareness = weighted_sd(legalAwareness, w))
+
+# Koľko percent participantov vie o tom, že SO je súčasťou zákona
+rq8_legalAwareness_q70_table <- round(prop.table(wtd.table(data$know1, weights = data$w))*100, 2)
+# Koľko percent participantov vie o tom, že sa môžu obrátiť na súd
+rq8_legalAwareness_q71_table <- round(prop.table(wtd.table(data$know2, weights = data$w))*100, 2)
+# Koľko percent participantov cíti, že či ich škola dostatočne v téme SO vyvzdelala/informovala
+rq8_legalAwareness_q72_table <- round(prop.table(wtd.table(data$know3, weights = data$w))*100, 2)
 
 # Existujú rozdiely medzi pohlaviami?
 rq8_genderLegalAwarenessMod <- lm(legalAwareness ~ genderBinary, weights = w, data)
@@ -940,8 +950,8 @@ rq8_genderLegalAwarenessBF <- lmBF(legalAwareness ~ genderBinary, data[!is.na(da
 rq8_genderLegalAwarenessSummary <- summary(rq8_genderLegalAwarenessMod)
 rq8_genderLegalAwarenessAnova <- anova(rq8_genderLegalAwarenessMod)
 
-rq8_genderLegalAwareness_means <- data %>% group_by(genderBinary) %>% summarise(meanLegalAwareness = mean(legalAwareness, na.rm = T),
-                                                  sdLegalAwareness = sd(legalAwareness, na.rm = T))
+rq8_genderLegalAwareness_means <- data %>% group_by(genderBinary) %>% summarise(meanLegalAwareness = weighted_mean(legalAwareness, w),
+                                                                                sdLegalAwareness = weighted_sd(legalAwareness, w))
 
 # Existujú rozdiely v závislosti od regiónov, z ktorých respondenti/tky pochádzajú?
 rq8_regionLegalAwarenessMod <- lm(legalAwareness ~ facultyRegion, weights = w, data)
@@ -956,15 +966,16 @@ rq8_disclosureLegalAwarenessBF <- lmBF(legalAwareness ~ disclosureBinary + harra
 rq8_disclosureLegalAwarenessSummary <- summary(rq8_disclosureLegalAwarenessMod)
 rq8_disclosureLegalAwarenessAnova <- anova(rq8_disclosureLegalAwarenessMod)
 
-rq8_disclosureLegalAwareness_means <- data %>% group_by(disclosureBinary) %>% summarise(meanLegalAwareness = mean(legalAwareness, na.rm = T),
-                                                  sdLegalAwareness = sd(legalAwareness, na.rm = T))
+rq8_disclosureLegalAwareness_means <- data %>% group_by(disclosureBinary) %>% summarise(meanLegalAwareness = weighted_mean(legalAwareness, w),
+                                                                                        sdLegalAwareness = weighted_sd(legalAwareness, w))
+
 
 # RQ9 --------------------------------------------------------------------
 # Poskytla im ich vysoká škola dostatok informácií o SO?
 # dostatok informacii = odpoved skor ano alebo urcite ano
 rq9_dostatokInformacii_n <- data %>%
-  summarise(dostatokInformaciiN = sum(know3 > 2, na.rm = TRUE),
-            dostatokInformaciiPerc = sum(know3 > 2, na.rm = TRUE)*100/n())
+  summarise(dostatokInformaciiN = svytotal(know3 > 2, design, na.rm = TRUE),
+            dostatokInformaciiPerc = svytotal(know3 > 2, design, na.rm = TRUE)*100/sum(w))
 
 # Existujú rozdiely medzi pohlaviami?
 rq9_genderInformationMod <- lm(know3 ~ genderBinary, weights = w, data)
@@ -989,6 +1000,14 @@ rq9_fieldInformationAnova <- anova(rq9_fieldInformationMod)
 
 # Tvrdenia / stereotypy /  predsudky o sexuálnom obťažovaní
 data <- data %>% mutate(misconceptScore = rowSums(data %>% select(starts_with("misconcept")), na.rm = T))
+
+rq10_misconcept_item_freqs <- data %>% select(starts_with("misconcept")) %>%
+  map(~round(prop.table(wtd.table(., weights = data$w, normwt = T, na.rm = T))*100, 2))
+rq10_misconcept_item_freqs
+
+rq10_misconcept_item_freqs_wNA <- data %>% select(starts_with("misconcept")) %>%
+  map(~round(prop.table(wtd.table(., weights = data$w, normwt = T, na.rm = F, na.show = T))*100, 2))
+rq10_misconcept_item_freqs_wNA
 
 # V akej miere súhlasia respondenti/tky s jednotlivými tvrdeniami?
 # min score = 0, max score 55. The higher the score the higher the agreement with misconceptions

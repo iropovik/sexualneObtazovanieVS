@@ -11,7 +11,7 @@
 
 <meta name="author" content="ivanropovik" />
 
-<meta name="date" content="2020-07-20" />
+<meta name="date" content="2020-10-20" />
 
 <title>analysis.R</title>
 
@@ -365,7 +365,7 @@ summary {
 
 <h1 class="title toc-ignore">analysis.R</h1>
 <h4 class="author">ivanropovik</h4>
-<h4 class="date">2020-07-20</h4>
+<h4 class="date">2020-10-20</h4>
 
 </div>
 
@@ -377,40 +377,38 @@ summary {
 rm(list = ls())
 
 # install required R libraries if not installed already
-list.of.packages &lt;- c(&quot;car&quot;, &quot;tidyverse&quot;, &quot;psych&quot;, &quot;epitools&quot;, &quot;plotly&quot;, &quot;survey&quot;, &quot;BayesFactor&quot;, &quot;magrittr&quot;)
+list.of.packages &lt;- c(&quot;car&quot;, &quot;tidyverse&quot;, &quot;psych&quot;, &quot;epitools&quot;, &quot;plotly&quot;, &quot;survey&quot;, &quot;sjstats&quot;, &quot;questionr&quot;, &quot;BayesFactor&quot;, &quot;magrittr&quot;, &quot;careless&quot;)
 new.packages &lt;- list.of.packages[!(list.of.packages %in% installed.packages()[,&quot;Package&quot;])]
 if(length(new.packages)) install.packages(new.packages)
 
 # load required libraries
 lapply(list.of.packages, require, quietly = TRUE, warn.conflicts = FALSE, character.only = TRUE)</code></pre>
-<pre><code>## Warning: package 'car' was built under R version 3.6.2</code></pre>
-<pre><code>## Warning: package 'carData' was built under R version 3.6.2</code></pre>
-<pre><code>## ── Attaching packages ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── tidyverse 1.3.0 ──</code></pre>
+<pre><code>## ── Attaching packages ─────────────────────────────────────────────────────────────────────────────────────────────────────────────── tidyverse 1.3.0 ──</code></pre>
 <pre><code>## ✓ ggplot2 3.3.2     ✓ purrr   0.3.4
-## ✓ tibble  3.0.3     ✓ dplyr   1.0.0
-## ✓ tidyr   1.1.0     ✓ stringr 1.4.0
+## ✓ tibble  3.0.3     ✓ dplyr   1.0.1
+## ✓ tidyr   1.1.1     ✓ stringr 1.4.0
 ## ✓ readr   1.3.1     ✓ forcats 0.5.0</code></pre>
-<pre><code>## Warning: package 'ggplot2' was built under R version 3.6.2</code></pre>
-<pre><code>## Warning: package 'tibble' was built under R version 3.6.2</code></pre>
-<pre><code>## Warning: package 'tidyr' was built under R version 3.6.2</code></pre>
-<pre><code>## Warning: package 'purrr' was built under R version 3.6.2</code></pre>
-<pre><code>## Warning: package 'dplyr' was built under R version 3.6.2</code></pre>
-<pre><code>## ── Conflicts ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+<pre><code>## ── Conflicts ────────────────────────────────────────────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
 ## x dplyr::filter() masks stats::filter()
 ## x dplyr::lag()    masks stats::lag()
 ## x dplyr::recode() masks car::recode()
 ## x purrr::some()   masks car::some()</code></pre>
-<pre><code>## Warning: package 'plotly' was built under R version 3.6.2</code></pre>
 <pre><code>## 
-## Attaching package: 'Matrix'</code></pre>
-<pre><code>## The following objects are masked from 'package:tidyr':
+## Attaching package: &#39;Matrix&#39;</code></pre>
+<pre><code>## The following objects are masked from &#39;package:tidyr&#39;:
 ## 
 ##     expand, pack, unpack</code></pre>
 <pre><code>## 
-## Attaching package: 'survival'</code></pre>
-<pre><code>## The following object is masked from 'package:epitools':
+## Attaching package: &#39;survival&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:epitools&#39;:
 ## 
 ##     ratetable</code></pre>
+<pre><code>## Registered S3 methods overwritten by &#39;lme4&#39;:
+##   method                          from
+##   cooks.distance.influence.merMod car 
+##   influence.merMod                car 
+##   dfbeta.influence.merMod         car 
+##   dfbetas.influence.merMod        car</code></pre>
 <pre><code>## ************
 ## Welcome to BayesFactor 0.9.12-4.2. If you have questions, please contact Richard Morey (richarddmorey@gmail.com).
 ## 
@@ -438,6 +436,15 @@ lapply(list.of.packages, require, quietly = TRUE, warn.conflicts = FALSE, charac
 ## [1] TRUE
 ## 
 ## [[8]]
+## [1] TRUE
+## 
+## [[9]]
+## [1] TRUE
+## 
+## [[10]]
+## [1] TRUE
+## 
+## [[11]]
 ## [1] TRUE</code></pre>
 <pre class="r"><code># define a color-blind-friendly palette for plotting
 cbPalette &lt;- c(&quot;#E69F00&quot;, &quot;#999999&quot;, &quot;#56B4E9&quot;, &quot;#009E73&quot;, &quot;#F0E442&quot;, &quot;#0072B2&quot;, &quot;#D55E00&quot;, &quot;#CC79A7&quot;)</code></pre>
@@ -445,8 +452,8 @@ cbPalette &lt;- c(&quot;#E69F00&quot;, &quot;#999999&quot;, &quot;#56B4E9&quot;,
 <pre class="r"><code>rScale &lt;- sqrt(2)/4
 
 # read in the data
-data &lt;- read_delim(&quot;data/data.csv&quot;, delim = &quot;;&quot;, skip_empty_rows = TRUE)</code></pre>
-<pre><code>## Warning: Duplicated column names deduplicated: 'email' =&gt; 'email_1' [452]</code></pre>
+data &lt;- read_delim(&quot;data/data.csv&quot;, delim = &quot;,&quot;, skip_empty_rows = T)</code></pre>
+<pre><code>## Warning: Duplicated column names deduplicated: &#39;email&#39; =&gt; &#39;email_1&#39; [453]</code></pre>
 <pre><code>## Parsed with column specification:
 ## cols(
 ##   .default = col_double(),
@@ -475,23 +482,20 @@ data &lt;- read_delim(&quot;data/data.csv&quot;, delim = &quot;;&quot;, skip_emp
 <pre><code>## See spec(...) for full column specifications.</code></pre>
 <pre><code>## Warning: 14 parsing failures.
 ##  row            col           expected                                                    actual            file
-## 1089 q17_whoOther   1/0/T/F/TRUE/FALSE Nikto                                                     'data/data.csv'
-## 1094 q17_whoOther   1/0/T/F/TRUE/FALSE dekan ekonomickej fakulty                                 'data/data.csv'
-## 1094 q19_whoOther   1/0/T/F/TRUE/FALSE dekan ekonomickej                                         'data/data.csv'
-## 1094 q19_whereOther 1/0/T/F/TRUE/FALSE pri riesenie bakalarskej prace (povedala mi to priatelka) 'data/data.csv'
-## 1134 q6_whereOther  1/0/T/F/TRUE/FALSE na skuske                                                 'data/data.csv'
+## 1089 q17_whoOther   1/0/T/F/TRUE/FALSE Nikto                                                     &#39;data/data.csv&#39;
+## 1094 q17_whoOther   1/0/T/F/TRUE/FALSE dekan ekonomickej fakulty                                 &#39;data/data.csv&#39;
+## 1094 q19_whoOther   1/0/T/F/TRUE/FALSE dekan ekonomickej                                         &#39;data/data.csv&#39;
+## 1094 q19_whereOther 1/0/T/F/TRUE/FALSE pri riesenie bakalarskej prace (povedala mi to priatelka) &#39;data/data.csv&#39;
+## 1134 q6_whereOther  1/0/T/F/TRUE/FALSE na skuske                                                 &#39;data/data.csv&#39;
 ## .... .............. .................. ......................................................... ...............
 ## See problems(...) for more details.</code></pre>
 <pre class="r"><code># View(data)
-
-# participant exclusions
-data &lt;- data[-85,] #89 nema vyplneny odbor
 
 # some initial data recoding
 data &lt;- data %&gt;% filter(!is.na(sexualOrientation)) %&gt;% mutate(
   nonheterosexual = ifelse(sexualOrientation == &quot;Heterosexuál/ka (osoba, ktorá je citovo a sexuálne priťahovaná opačným pohlavím)&quot;, 0, 1)) # 0 = &quot;Heterosexuál/ka&quot;, 1 = &quot;Non-heterosexuál/ka&quot;
 
-data &lt;- data %&gt;% mutate(ageOver23 = as.factor(case_when(age &lt; 23 ~ 0, # 0 = '17-22', 1 = '23+'
+data &lt;- data %&gt;% mutate(ageOver23 = as.factor(case_when(age &lt; 23 ~ 0, # 0 = &#39;17-22&#39;, 1 = &#39;23+&#39;
                                              age &gt;= 23  ~ 1)),
                         genderBinary = as.factor(case_when(gender == &quot;Muž&quot; ~ 0,
                                                  gender == &quot;Žena&quot; ~ 1)),
@@ -502,10 +506,9 @@ data &lt;- data %&gt;% mutate(ageOver23 = as.factor(case_when(age &lt; 23 ~ 0, #
 
                         believer =  as.factor(ifelse(religion %in% c(&quot;Katolícke&quot;, &quot;Kresťanské ne-katolícke (napr. evanjelické)&quot;, &quot;Židovské&quot;, &quot;Pravoslávne&quot;), 1, 0)), #Doplniť do kategórie veriaci 1 = &quot;Veriaci&quot;, 0 = &quot;Neveriaci&quot;
                         anyYes = recode(anyYes, &quot;Áno&quot; = 1, &quot;Nie&quot; = 0),
-                        investigation = recode(investigation, &quot;Áno&quot; = 1, &quot;Nie&quot; = 0))</code></pre>
-<pre><code>## Warning: Unreplaced values treated as NA as .x is not compatible. Please specify
-## replacements exhaustively or supply .default</code></pre>
-<pre class="r"><code>data &lt;- data %&gt;% map_at(., .at = vars(contains(&quot;disclosure_&quot;)), .f =~recode(., &quot;Neoslovil/a som ich&quot; = 0,
+                        investigation = recode(as.factor(investigation), &quot;Áno&quot; = 1, &quot;Nie&quot; = 0, &quot;Neviem&quot; = NA_real_))
+
+data &lt;- data %&gt;% map_at(., .at = vars(contains(&quot;disclosure_&quot;)), .f =~recode(., &quot;Neoslovil/a som ich&quot; = 0,
                                                                           &quot;Veľmi nespokojný/á s reakciou&quot; = -2,
                                                                           &quot;Skôr nespokojný/á s reakciou&quot; = -1,
                                                                           &quot;Skôr spokojný/á s reakciou&quot; = 1,
@@ -569,10 +572,103 @@ data &lt;- data %&gt;% map_at(., .at = vars(c(misconcept2, misconcept3, misconce
 
 data &lt;- data %&gt;% mutate(satisfaction = rowSums(data %&gt;% select(contains(&quot;disclosure_&quot;) &amp; !contains(c(&quot;whyNo&quot;))), na.rm = T))
 
-data$facultyRegion &lt;- as.factor(data$facultyRegion)
-data$fieldStudy &lt;- as.factor(data$fieldStudy)
+data$facultyRegion &lt;- factor(data$facultyRegion)
+data$fieldStudy &lt;- factor(data$fieldStudy)
 
-# Sample description ------------------------------------------------------
+# participant exclusions
+
+
+
+# careless responders
+
+data &lt;- data %&gt;% filter(is.na(exclude))
+
+data$longstringAtt &lt;- data %&gt;% select(att1:att19) %&gt;% longstring()
+data$longstringMisconcept &lt;- data %&gt;% select(misconcept1:misconcept11) %&gt;% longstring()
+
+data$irv &lt;- data %&gt;% select(att1:att19) %&gt;% irv()
+data$mahadRaw &lt;- data %&gt;% select(att1:att19, misconcept1:misconcept11) %&gt;% mahad(plot = F, flag = T, confidence = 1) %&gt;% .$raw
+data$mahadFlagged &lt;- data %&gt;% select(att1:att19, misconcept1:misconcept11) %&gt;% mahad(plot = F, flag = T, confidence = 1) %&gt;% .$flagged
+
+randResp &lt;- NA
+classification &lt;- NA
+nsim &lt;-  100
+for(j in 1:nsim){
+items &lt;- length(data[!is.na(data$irv),]$irv)
+for(i in 1:items){
+  randResp[i] &lt;- sd(sample(1:5, 19, replace = TRUE))
+}
+
+df &lt;- data.frame(cbind(sds = c(data[!is.na(data$irv),]$irv, randResp),
+                       genuineResp = c(ifelse(data[!is.na(data$irv),]$irv &lt; 1.3, 1, 0), rep(0, length(randResp)))))
+
+model &lt;- glm(genuineResp ~sds,family=binomial(link=&#39;logit&#39;),data=df)
+fittedProbs &lt;- model %&gt;% fitted.values()
+predicted.classes &lt;- ifelse(fittedProbs &gt; 0.5, 1, 0)
+classification[j] &lt;- mean(predicted.classes == df$genuineResp)
+}
+
+table(data$irv &gt; 1.3)/length(data$irv)</code></pre>
+<pre><code>## 
+##      FALSE       TRUE 
+## 0.69406393 0.05153294</code></pre>
+<pre class="r"><code>mean(classification)</code></pre>
+<pre><code>## [1] 0.9470866</code></pre>
+<pre class="r"><code>hist(randResp, breaks = 50)</code></pre>
+<p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABUAAAAPACAYAAAD0ZtPZAAAEGWlDQ1BrQ0dDb2xvclNwYWNlR2VuZXJpY1JHQgAAOI2NVV1oHFUUPrtzZyMkzlNsNIV0qD8NJQ2TVjShtLp/3d02bpZJNtoi6GT27s6Yyc44M7v9oU9FUHwx6psUxL+3gCAo9Q/bPrQvlQol2tQgKD60+INQ6Ium65k7M5lpurHeZe58853vnnvuuWfvBei5qliWkRQBFpquLRcy4nOHj4g9K5CEh6AXBqFXUR0rXalMAjZPC3e1W99Dwntf2dXd/p+tt0YdFSBxH2Kz5qgLiI8B8KdVy3YBevqRHz/qWh72Yui3MUDEL3q44WPXw3M+fo1pZuQs4tOIBVVTaoiXEI/MxfhGDPsxsNZfoE1q66ro5aJim3XdoLFw72H+n23BaIXzbcOnz5mfPoTvYVz7KzUl5+FRxEuqkp9G/Ajia219thzg25abkRE/BpDc3pqvphHvRFys2weqvp+krbWKIX7nhDbzLOItiM8358pTwdirqpPFnMF2xLc1WvLyOwTAibpbmvHHcvttU57y5+XqNZrLe3lE/Pq8eUj2fXKfOe3pfOjzhJYtB/yll5SDFcSDiH+hRkH25+L+sdxKEAMZahrlSX8ukqMOWy/jXW2m6M9LDBc31B9LFuv6gVKg/0Szi3KAr1kGq1GMjU/aLbnq6/lRxc4XfJ98hTargX++DbMJBSiYMIe9Ck1YAxFkKEAG3xbYaKmDDgYyFK0UGYpfoWYXG+fAPPI6tJnNwb7ClP7IyF+D+bjOtCpkhz6CFrIa/I6sFtNl8auFXGMTP34sNwI/JhkgEtmDz14ySfaRcTIBInmKPE32kxyyE2Tv+thKbEVePDfW/byMM1Kmm0XdObS7oGD/MypMXFPXrCwOtoYjyyn7BV29/MZfsVzpLDdRtuIZnbpXzvlf+ev8MvYr/Gqk4H/kV/G3csdazLuyTMPsbFhzd1UabQbjFvDRmcWJxR3zcfHkVw9GfpbJmeev9F08WW8uDkaslwX6avlWGU6NRKz0g/SHtCy9J30o/ca9zX3Kfc19zn3BXQKRO8ud477hLnAfc1/G9mrzGlrfexZ5GLdn6ZZrrEohI2wVHhZywjbhUWEy8icMCGNCUdiBlq3r+xafL549HQ5jH+an+1y+LlYBifuxAvRN/lVVVOlwlCkdVm9NOL5BE4wkQ2SMlDZU97hX86EilU/lUmkQUztTE6mx1EEPh7OmdqBtAvv8HdWpbrJS6tJj3n0CWdM6busNzRV3S9KTYhqvNiqWmuroiKgYhshMjmhTh9ptWhsF7970j/SbMrsPE1suR5z7DMC+P/Hs+y7ijrQAlhyAgccjbhjPygfeBTjzhNqy28EdkUh8C+DU9+z2v/oyeH791OncxHOs5y2AtTc7nb/f73TWPkD/qwBnjX8BoJ98VQNcC+8AAAA4ZVhJZk1NACoAAAAIAAGHaQAEAAAAAQAAABoAAAAAAAKgAgAEAAAAAQAABUCgAwAEAAAAAQAAA8AAAAAAthHDUQAAQABJREFUeAHs3Qe4XFW5MOBFSKGE3kIVpPcaqhIggHSkCVKUJiBFaSpwUeRS1EsTuFKkVwWkg4CUS29KR9BQQkhEo9QESAIk559v/85xzsw+LZnZ55zJu55nnF3WXmvvd80ZyTerzNBSSkkiQIAAAQIECBAgQIAAAQIECBAgQIBAEwr0a8Jn8kgECBAgQIAAAQIECBAgQIAAAQIECBDIBARAfRAIECBAgAABAgQIECBAgAABAgQIEGhaAQHQpm1aD0aAAAECBAgQIECAAAECBAgQIECAgACozwABAgQIECBAgAABAgQIECBAgAABAk0rIADatE3rwQgQIECAAAECBAgQIECAAAECBAgQEAD1GSBAgAABAgQIECBAgAABAgQIECBAoGkFBECbtmk9GAECBAgQIECAAAECBAgQIECAAAECAqA+AwQIECBAgAABAgQIECBAgAABAgQINK2AAGjTNq0HI0CAAAECBAgQIECAAAECBAgQIEBAANRngAABAgQIECBAgAABAgQIECBAgACBphUQAG3apvVgBAgQIECAAAECBAgQIECAAAECBAgIgPoMECBAgAABAgQIECBAgAABAgQIECDQtAICoE3btB6MAAECBAgQIECAAAECBAgQIECAAAEBUJ8BAgQIECBAgAABAgQIECBAgAABAgSaVkAAtGmb1oMRIECAAAECBAgQIECAAAECBAgQICAA6jNAgAABAgQIECBAgAABAgQIECBAgEDTCgiANm3TejACBAgQIECAAAECBAgQIECAAAECBARAfQYIECBAgAABAgQIECBAgAABAgQIEGhaAQHQpm1aD0aAAAECBAgQIECAAAECBAgQIECAgACozwABAgQIECBAgAABAgQIECBAgAABAk0rIADatE3rwQgQIECAAAECBAgQIECAAAECBAgQEAD1GSBAgAABAgQIECBAgAABAgQIECBAoGkFBECbtmk9GAECBAgQIECAAAECBAgQIECAAAECAqA+AwQIECBAgAABAgQIECBAgAABAgQINK2AAGjTNq0HI0CAAAECBAgQIECAAAECBAgQIEBAANRngAABAgQIECBAgAABAgQIECBAgACBphUQAG3apvVgBAgQIECAAAECBAgQIECAAAECBAgIgPoMECBAgAABAgQIECBAgAABAgQIECDQtAICoE3btB6MAAECBAgQIECAAAECBAgQIECAAAEBUJ8BAgQIECBAgAABAgQIECBAgAABAgSaVkAAtGmb1oMRIECAAAECBAgQIECAAAECBAgQICAA6jNAgAABAgQIECBAgAABAgQIECBAgEDTCgiANm3TejACBAgQIECAAAECBAgQIECAAAECBARAfQYIECBAgAABAgQIECBAgAABAgQIEGhaAQHQpm1aD0aAAAECBAgQIECAAAECBAgQIECAgACozwABAgQIECBAgAABAgQIECBAgAABAk0rIADatE3rwQgQIECAAAECBAgQIECAAAECBAgQEAD1GSBAgAABAgQIECBAgAABAgQIECBAoGkFBECbtmk9GAECBAgQIECAAAECBAgQIECAAAECAqA+AwQIECBAgAABAgQIECBAgAABAgQINK2AAGjTNq0HI0CAAAECBAgQIECAAAECBAgQIEBAANRngAABAgQIECBAgAABAgQIECBAgACBphUQAG3apvVgBAgQIECAAAECBAgQIECAAAECBAgIgPoMECBAgAABAgQIECBAgAABAgQIECDQtAICoE3btB6MAAECBAgQIECAAAECBAgQIECAAAEBUJ8BAgQIECBAgAABAgQIECBAgAABAgSaVkAAtGmb1oMRIECAAAECBAgQIECAAAECBAgQICAA6jNAgAABAgQIECBAgAABAgQIECBAgEDTCgiANm3TejACBAgQIECAAAECBAgQIECAAAECBARAfQYIECBAgAABAgQIECBAgAABAgQIEGhaAQHQpm1aD0aAAAECBAgQIECAAAECBAgQIECAgACozwABAgQIECBAgAABAgQIECBAgAABAk0rIADatE3rwQgQIECAAAECBAgQIECAAAECBAgQEAD1GSBAgAABAgQIECBAgAABAgQIECBAoGkFBECbtmk9GAECBAgQIECAAAECBAgQIECAAAECAqA+AwQIECBAgAABAgQIECBAgAABAgQINK2AAGjTNq0HI0CAAAECBAgQIECAAAECBAgQIEBAANRngAABAgQIECBAgAABAgQIECBAgACBphUQAG3apvVgBAgQIECAAAECBAgQIECAAAECBAgIgPoMECBAgAABAgQIECBAgAABAgQIECDQtAICoE3btB6MAAECBAgQIECAAAECBAgQIECAAAEBUJ8BAgQIECBAgAABAgQIECBAgAABAgSaVkAAtGmb1oMRIECAAAECBAgQIECAAAECBAgQICAA6jNAgAABAgQIECBAgAABAgQIECBAgEDTCvRv2ifzYAQIECBAYDoSGDt2bLroootqnnj77bdPK6+8cs3xvANXXHFFGj16dJtTCy20UNp3333bHHv77bfTlVde2eZY7Bx77LFpxhlnrDnuAIHpSeCTTz5J9913X3rqqaey15///Oe08MILp2WXXTZ7rbrqqunrX//69ETS8GcdNWpUuuqqq2rqOe6441K/fv/p79He92TNhf8+MMMMM6RZZ501zTbbbGnw4MFpgQUWSGuuuWa23941jhMgQIAAAQK9U2CGllLqnbfmrggQIECAAIGuCrzwwgtptdVWq8keQYE999yz5njega9+9avp0UcfbXNq7bXXzoI4lQcffvjhNGzYsMpD2fakSZPSwIEDa443+sDEiRPT6aefnuL+8+6r0fUrn0BZ4NVXX82CmyNGjCgfqnmPz2n8DUn1E3jooYfSRhttVFPg559/nvr3/09/j/a+J2su7OBABFSXX3759L3vfS/tv//+bQKsHVzmFAECBAgQINDDAv/5SbSHb0T1BAgQIECAAIHuCtx0001ZMOLHP/5x+vTTT7t7ufwE6ibw2WefpZ133jl1FPyMylZfffW61amg4gWmTJmSolfvgQcemNZdd9300UcfFX8TaiRAgAABAgS6LSAA2m0yFxAgQIAAAQI9LfDyyy+n4cOHp5122im99dZbPX076ieQ9Z5+5ZVXOpVYY401Os0jQ98Q+OMf/5h9B33xxRd944bdJQECBAgQmI4F/jMmZDpG8OgECBAgQIBA3xKI4f6TJ0/uWzftbpta4Iknnsh9vmOOOSbtsssu2VDsCNavs846ufkc7JsC999/f/rNb36T9tprr775AO6aAAECBAhMJwICoNNJQ3tMAgQIECBQL4FlllkmXXzxxTXFVc61V3OyzgcEP+sMqrhpFnj33Xdryhg6dGj62c9+1np8lVVWad220XsEfv7zn6ftttuuzQ3FUPd4Re/ODz74IF1yySXpt7/9bXasTcbSzllnnSUAWo1inwABAgQI9DIBAdBe1iBuhwABAgQI9HaBIUOGpP3226+336b7I1CowLhx42rqW3zxxWuOOdD7BBZeeOFsLuGO7myTTTZJRxxxRIqF4arXkH3uueeyIOlcc83VURHOESBAgAABAj0oIADag/iqJkCAAAEC06PAhx9+mN5+++00atSobBj7AgsskCKouuCCC6aZZpqpcJJ//OMf2f2MGTMmzT///GnllVdOc8wxR13uI3qOPfPMM2nChAkpgmErrbRSmmGGGepSdrmQ6A375JNPpgjALbvssunLX/5y+VTu+/jx49M777yTvf75z3+mWWedNc0999xpvvnmS0svvXTuNVNz8PXXX0+xKnrMeRkBpo5S9LKLIFK0QeRdYYUV0uDBgzu6pG7n6tX+0VuwOg0cOLD6UN33e2v7x3yo8TceLvEZiL/vaUnvv/9+evbZZ1OYrrXWWmmWWWaZluKm6tqoN6YwiL+36vTmm2+mNddcs/pw7n4smBXzGI8ePToLvC611FLTtJp8Ud+pn3zySbYAVPydxvdZfFcOGDAg9xkdJECAAAECvU6g9AumRIAAAQIECPRxgeeff76l9B8ZNa+rrrqqy0/2la98peb6Um+nmutLcx22lAKFNa/SP+pr8pYPvPfeey3HHntsS6mHVE0d5fsuBTZavvGNb7Tcd999LaWgSfnS1vdLL720tc7yNZXvpaBl6/nSHKGt1+VtjB07tuW0005rWW655XLvZ7HFFmvZZpttWh5++OG8yzs8NmnSpJYf/vCHLaVAZE3Zcezcc89tfb7SdAKt91w2rS78nHPOqclTmoIgKyNM47krHdZbb72Wl156qU0xpQBjy4033tiy8cYbt8lbeV1sL7TQQi3f+c53WkqBqzbXV+4ccsghNffzpz/9Kcvyl7/8paW0EnpLKajdpp4llliiZd99920pBRsri2q5+eabWzbffPOWUrCzTf7YP+CAA1pKQa82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ddZp2O1dccUV6bzzzmtY+QomQIAAAQIECBCoj4BFkOrjqBQCBAgQIECAAAECBAgQIECAAAECBHqhgABoL2wUt0SAAAECBAgQIECAAAECBAgQIECAQH0EDIGvj+NUl/LOO++k999/P3366afZa6aZZkpzzDFHmn322dM888yTYl8iQIAAAQIECBAgQIAAAQIECBAgQGDqBARAp85tqq8aP358ipVCr7nmmvTyyy+n2G8v9e/fP6288srZ3FXbbLNN2mqrrdIMM8zQXnbHCRAgQIAAAQIECBAgQIAAAQIECBCoEjAEvgqkUbtjx45NhxxySFp44YXToYcemp544okOg59xH1988UV67rnn0gUXXJAiALrKKqukO++8s1G3qFwCBAgQIECAAAECBAgQIECAAAECTSegB2gBTfrBBx+kzTbbLL300kuttUVPzgUXXDAttthiab755kszzzxzGjRoUBb0nDhxYho3blwaPXp0GjVqVJo0aVJ2XfQY3W677dIZZ5yRDj/88NaybBAgQIAAAQIECBAgQIAAAQIECBAgkC8gAJrvUrejn3zySdp6661bg59Dhw5NRx55ZBo+fHgW+Oysos8//zw9/fTT2bD5yy67LMX+EUcckZZZZplsSHxn1ztPgAABAgQIECBAgAABAgQIECBAYHoWMAS+wa1//fXXZ8Pdo5rddtstPfnkk9l79PrsShowYEDaYIMN0oUXXphuueWWFPuRjjnmmDRlypSuFCEPAQIECBAgQIAAAQIECBAgQIAAgelWQAC0wU3/+OOPZzXE/J2x+FG/flNPHosgnX766Vl5MZx+5MiRDb57xRMgQIAAAQIECBAgQIAAAQIECBDo2wJTH43r289d2N0/9thjWV3bbrtta+/Naal8p512ar18xIgRrds2CBAgQIAAAQIECBAgQIAAAQIECBCoFRAArTWp65ExY8Zk5S266KJ1KXeeeeZpDaROmDChLmUqhAABAgQIECBAgAABAgQIECBAgECzCgiANrhll1xyyayGJ554oi41xZD6WAgp0uqrr16XMhVCgAABAgQIECBAgAABAgQIECBAoFkFBEAb3LJrrrlmVsN1112XHnrooWmq7cMPP0xHHXVUVsbcc8+dllhiiWkqz8UECBAgQIAAAQIECBAgQIAAAQIEml1AALTBLXzsscdmQ9YnTpyYtt9++2w1988++6zbtT7//PNp8803T/Ee6aCDDup2GS4gQIAAAQIECBAgQIAAAQIECBAgML0J9J/eHrjo540h8Keeemr6wQ9+kD766KMscBnbw4YNS6uttlrWi3OBBRZIM888c5ppppnSF198kSJYOm7cuDR69Oj0+uuvp4cffji9/PLLrbcegdCTTjqpdd8GAQIECBAgQIAAAQIECBAgQIAAAQL5AgKg+S51PXr00UenWLzokEMOSbFw0fjx49Mdd9yRvbpb0RZbbJGuueaa1K+fzrvdtZOfAAECBAgQIECAAAECBAgQIEBg+hMQRSuozffZZ580atSodNxxx6UhQ4Z0q9ZBgwZlw+dvv/32dNddd6WY/1MiQIAAAQIECBAgQIAAAQIECBAgQKBzAT1AOzeqW4755psvnXLKKdnrrbfeSk8++WR67bXXsuHuMTw+eoYOGDAgDR48OM0+++wphs+vsMIKadVVV82O1e1GulnQFVdckS644ILU0tLSzStrs8cz/v3vf896sW655Za1GRwhQIAAAQIECBAgQIAAAQIECBAgUEcBAdA6YnanqMUXXzzFqy+ku+++OwvW1vNer7/++iQAWk9RZREgQIAAAQIECBAgQIAAAQIECOQJCIDmqTjWRuDSSy9NRx55ZJoyZUqb41Ozc9ZZZ6Xrrrsu69U6Nde7hgABAgQIECBAgAABAgQIECBAgEB3BARAu6NVYN6xY8emV155JcX7csstl1ZcccVseHyBt9BaVaxQP3To0Nb9adlYcMEFp+Vy1xIgQIAAAQIECBAgQIAAAQIECBDoloAAaLe4pi1z9KAcMWJEeuaZZ9Jnn32WVltttbT66qu3KXTMmDHZQknXXnttmjx5cuu5gQMHpm9+85vpnHPOyeYHbT1hgwABAgQIECBAgAABAgQIECBAgACBdgUEQNulqe+J559/Pu2+++7p1VdfbVPwZpttlg0Jn2uuudLf/va3NGzYsPTmm2+2yRM7ETCNxYgefPDB9Lvf/S6ttdZaNXkcIECAAAECBAgQIECAAAECBAgQIECgrYAAaFuPhuzddtttaZdddsmCmNUV3HvvvdliQI8//njae++9W4OfCy20UPrKV76SvvzlL6c33ngjPfzww9lw+FGjRqXddtstvfTSSymGpksECBAgQIAAAQIECBAgQIAAAQIECLQvIADavk1dzowfPz5997vfbQ1+rrPOOmmTTTbJhrfH6uovvvhieuqpp9Lhhx+e7rvvvqzOyH/aaaelWWedtfUexo0bl77//e+nyy+/PAuInnzyyemUU05pPW+DAAECBAgQIECAAAECBAgQIECAAIFagX61hxypp0AEMt95552syJ/97GfpiSeeSKeeemr6xS9+kc0FevDBB2fnzj333Ox9++23T+edd16b4GecmH322VOsxh5D5CPFXKAtLS3Ztv8hQIAAAQIECBAgQIAAAQIECBAgQCBfQAA036VuR6N3Z6RNN900HXPMMWmGGWZoLbt///7prLPOSksuuWTrsTPPPLN1u3ojro3gaaSPP/44jR49ujqLfQIECBAgQIAAAQIECBAgQIAAAQIEKgQEQCswGrH5yiuvZMVus802ucXH6u4bbbRRdm6eeebJ5vzMzfjvg7FyfL9+/7/ZymV3lN85AgQIECBAgAABAgQIECBAgAABAtOzgABog1v/o48+ymqYY4452q1p8ODB2blYCb4racYZZ8yyRS9QiQABAgQIECBAgAABAgQIECBAgACB9gUEQNu3qcuZZZddNivnmWeeabe8Z599Njv35ptvpk8//bTdfHHiscceS59//nmWZ/nll+8wr5MECBAgQIAAAQIECBAgQIAAAQIEpncBAdAGfwLKQcqLLroovfrqqzW13XrrremRRx7Jjk+ZMiVFvo7S9ddfn52O+UOXXnrpjrI6R4AAAQIECBAgQIAAAQIECBAgQGC6FxAAbfBH4LDDDsvm7Jw0aVJaf/310/nnn58FQmNxpOOPPz7tsssu2R2sueaa2ftxxx2XHn744dy7ivwXX3xxdm6LLbZIMX+oRIAAAQIECBAgQIAAAQIECBAgQIBA+wL92z/lTD0Ehg4dmg444IB0wQUXpA8//DAdfPDBNcXOPffc6a677korr7xyGjt2bLYo0r777puGDx+eFlpoofT000+nP/zhD+m+++7Lrp1lllnSueeeW1OOAwQIECBAgAABAgQIECBAgAABAgQItBUQAG3r0ZC9s88+O80666zpzDPPTC0tLW3qmG222dLtt9+e5ptvvnTWWWelPfbYI8tzySWXpHhVp1gB/vTTT0+LL7549Sn7BAgQIECAAAECBAgQIECAAAECBAhUCQiAVoE0YjeGqkfQcqeddkp33313Ki96tPrqq2c9QocMGZJV+81vfjN98skn6eijj07l1eMr7yeCnldccUXacMMNKw/bJkCAAAECBAgQIECAAAECBAgQIECgHQEB0HZgGnF4vfXWS/HqKO2///5p5513TldffXU2V+h7772XVlxxxbTaaquljTfeOA0ePLijy50jQIAAAQIECBAgQIAAAQIECBAgQKBCQAC0AqO3bM4555zp0EMP7S234z4IECBAgAABAgQIECBAgAABAgQI9FkBq8D32aZz4wQIECBAgAABAgQIECBAgAABAgQIdCYgANqZkPMECBAgQIAAAQIECBAgQIAAAQIECPRZAQHQPtt0bpwAAQIECBAgQIAAAQIECBAgQIAAgc4EBEA7E3KeAAECBAgQIECAAAECBAgQIECAAIE+KyAA2mebzo0TIECAAAECBAgQIECAAAECBAgQINCZgABoZ0LOEyBAgAABAgQIECBAgAABAgQIECDQZwUEQPts07lxAgQIECBAgAABAgQIECBAgAABAgQ6ExAA7UzIeQIECBAgQIAAAQIECBAgQIAAAQIE+qyAAGifbTo3ToAAAQIECBAgQIAAAQIECBAgQIBAZwICoJ0JOU+AAAECBAgQIECAAAECBAgQIECAQJ8VEADts03nxgkQIECAAAECBAgQIECAAAECBAgQ6ExAALQzIecJECBAgAABAgQIECBAgAABAgQIEOizAgKgfbbp3DgBAgQIECBAgAABAgQIECBAgAABAp0JCIB2JuQ8AQIECBAgQIAAAQIECBAgQIAAAQJ9VqB/n71zN06AAAECBAgQIECAQJ8UOPvss9OJJ56YJk+e3PD7HzhwYLrkkkvSdttt1/C6VECAAAECBAj0TgEB0N7ZLu6KAAECBAgQIECAQNMK3HfffemDDz4o7PkeeughAdDCtFVEgAABAgR6n4AAaO9rE3dEgAABAgQIECBAYLoQOOWUU9K6667bsGe94YYb0gUXXNCw8hVMgAABAgQI9A0BAdC+0U7ukgABAgQIECBAgEDTCcw000xp8ODBDXuuQYMGNaxsBRMgQIAAAQJ9R8AiSH2nrdwpAQIECBAgQIAAAQIECBAgQIAAAQLdFBAA7SaY7AQIECBAgAABAgQIECBAgAABAgQI9B0BAdC+01bulAABAgQIECBAgAABAgQIECBAgACBbgoIgHYTTHYCBAgQIECAAAECBAgQIECAAAECBPqOgABo32krd0qAAAECBAgQIECAAAECBAgQIECAQDcFBEC7CSY7AQIECBAgQIAAAQIECBAgQIAAAQJ9R0AAtO+0lTslQIAAAQIECBAgQIAAAQIECBAgQKCbAgKg3QSTnQABAgQIECBAgAABAgQIECBAgACBviMgANp32sqdEiBAgAABAgQIECBAgAABAgQIECDQTQEB0G6CyU6AAAECBAgQIECAAAECBAgQIECAQN8READtO23lTgkQIECAAAECBAgQIECAAAECBAgQ6KaAAGg3wWQnQIAAAQIECBAgQIAAAQIECBAgQKDvCAiA9p22cqcECBAgQIAAAQIECBAgQIAAAQIECHRTQAC0m2CyEyBAgAABAgQIECBAgAABAgQIECDQdwQEQPtOW7lTAgQIECBAgAABAgQIECBAgAABAgS6KSAA2k0w2QkQIECAAAECBAgQIECAAAECBAgQ6DsCAqB9p63cKQECBAgQIECAAAECBAgQIECAAAEC3RQQAO0mmOwECBAgQIAAAQIECBAgQIAAAQIECPQdAQHQvtNW7pQAAQIECBAgQIAAAQIECBAgQIAAgW4KCIB2E0x2AgQIECBAgAABAgQIEFQarT4AAEAASURBVCBAgAABAgT6joAAaN9pK3dKgAABAgQIECBAgAABAgQIECBAgEA3BQRAuwkmOwECBAgQIECAAAECBAgQIECAAAECfUdAALTvtJU7JUCAAAECBAgQIECAAAECBAgQIECgmwL9u5lfdgIECBAgQIDAdC1w7rnnprPPPjtNmTKl4Q6DBg1KF198cdpggw0aXpcKCBAgQIAAAQIECDSrgABos7as5yJAgAABAgQaInDjjTemN954oyFl5xV67733CoDmwThGgAABAgQIECBAoIsCAqBdhJKNAAECBAgQIBACLS0tGcRJJ52UVlxxxYahXHfddSleEgECBAgQIECAAAEC0yYgADptfq4mQIAAAQIEplOBeeedNy288MINe/rZZputYWUrmAABAgQIECBAgMD0JGARpOmptT0rAQIECBAgQIAAAQIECBAgQIAAgelMQAB0Omtwj0uAAAECBAgQIECAAAECBAgQIEBgehIwBH56am3PSoAAAQIECBDIEfj444/T+PHjc87U/9A888yTBg4cWP+ClUiAAAECBAgQIECgHQEB0HZgHCZAgAABAgQITA8Co0aNSssvv3yaMGFCIY+79NJLpxEjRhRSl0oIECBAgAABAgQIhIAAqM8BAQIECBAgQGA6Fnj77bez4Gf//v3THHPM0VCJ9957L7322mtp8uTJacYZZ2xoXQonQIAAAQIECBAgUBYQAC1LeCdAgAABAgQITMcCK620UrrwwgsbKrDeeuulKVOmNLQOhRMgQIAAAQIECBCoFrAIUrWIfQIECBAgQIAAAQIECBAgQIAAAQIEmkZAALRpmtKDECBAgAABAgQIECBAgAABAgQIECBQLSAAWi1inwABAgQIECBAgAABAgQIECBAgACBphEQAG2apvQgBAgQIECAAAECBAgQIECAAAECBAhUCwiAVovYJ0CAAAECBAgQIECAAAECBAgQIECgaQQEQJumKT0IAQIECBAgQIAAAQIECBAgQIAAAQLVAgKg1SL2CRAgQIAAAQIECBAgQIAAAQIECBBoGgEB0KZpSg9CgAABAgQIECBAgAABAgQIECBAgEC1gABotYh9AgQIECBAgAABAgQIECBAgAABAgSaRkAAtGma0oMQIECAAAECBAgQIECAAAECBAgQIFAtIABaLWKfAAECBAgQIECAAAECBAgQIECAAIGmERAAbZqm9CAECBAgQIAAAQIECBAgQIAAAQIECFQLCIBWi9gnQIAAAQIECBAgQIAAAQIECBAgQKBpBARAm6YpPQgBAgQIECBAgAABAgQIECBAgAABAtUCAqDVIvYJECBAgAABAgQIECBAgAABAgQIEGgaAQHQpmlKD0KAAAECBAgQIECAAAECBAgQIECAQLWAAGi1iH0CBAgQIECAAAECBAgQIECAAAECBJpGQAC0aZrSgxAgQIAAAQIECBAgQIAAAQIECBAgUC0gAFotYp8AAQIECBAgQIAAAQIECBAgQIAAgaYREABtmqb0IAQIECBAgAABAgQIECBAgAABAgQIVAsIgFaL2CdAgAABAgQIECBAgAABAgQIECBAoGkEBECbpik9CAECBAgQIECAAAECBAgQIECAAAEC1QICoNUi9gkQIECAAAECBAgQIECAAAECBAgQaBoBAdCmaUoPQoAAAQIECBAgQIAAAQIECBAgQIBAtYAAaLWIfQIECBAgQIAAAQIECBAgQIAAAQIEmkZAALRpmtKDECBAgAABAgQIECBAgAABAgQIECBQLSAAWi1inwABAgQIECBAgAABAgQIECBAgACBphEQAG2apvQgBAgQIECAAAECBAgQIECAAAECBAhUCwiAVovYJ0CAAAECBAgQIECAAAECBAgQIECgaQQEQJumKT0IAQIECBAgQIAAAQIECBAgQIAAAQLVAgKg1SL2CRAgQIAAAQIECBAgQIAAAQIECBBoGgEB0KZpSg9CgAABAgQIECBAgAABAgQIECBAgEC1gABotYh9AgQIECBAgAABAgQIECBAgAABAgSaRkAAtGma0oMQIECAAAECBAgQIECAAAECBAgQIFAtIABaLWKfAAECBAgQIECAAAECBAgQIECAAIGmERAAbZqm9CAECBAgQIAAAQIECBAgQIAAAQIECFQLCIBWi9gnQIAAAQIECBAgQIAAAQIECBAgQKBpBPo3zZN4EAIECBAgQIAAAQJNKnDJJZekd955p5CnW2211dK2225bSF0qIUCAAAECBAgUISAAWoSyOggQIECAAAECBAhMpcALL7yQ9t9//6m8uvuX9evXL02YMCENHDiw+xe7ggABAgQIECDQCwUEQHtho7glAgQIECBAgAABAmWBiRMnZpvzzjtv2m677cqHG/J+xRVXpMmTJ6cvvvhCALQhwgolQIAAAQIEekJAALQn1NVJgAABAgQIECBAoJsCCyywQDrwwAO7eVX3sl9zzTVZALR7V8lNgAABAgQIEOjdAhZB6t3t4+4IECBAgAABAgQIECBAgAABAgQIEJgGAQHQacBzKQECBAgQIECAAAECBAgQIECAAAECvVtAALR3t4+7I0CAAAECBAgQIECAAAECBAgQIEBgGgQEQKcBz6UECBAgQIAAAQIECBAgQIAAAQIECPRuAQHQ3t0+7o4AAQIECBAgQIAAAQIECBAgQIAAgWkQEACdBjyXEiBAgAABAgQIECBAgAABAgQIECDQuwUEQHt3+7g7AgQIECBAgAABAgQIECBAgAABAgSmQUAAdBrwXEqAAAECBAgQIECAAAECBAgQIECAQO8W6N+7b6/57+6dd95J77//fvr000+z10wzzZTmmGOONPvss6d55pknxb5EgAABAgQIECBAgAABAgQIECBAgMDUCQiATp3bVF81fvz4dOWVV6Zrrrkmvfzyyyn220v9+/dPK6+8clpnnXXSNttsk7baaqs0wwwztJfdcQIECBAgQIAAAQIECBAgQIAAAQIEqgQMga8CadTu2LFj0yGHHJIWXnjhdOihh6Ynnniiw+Bn3McXX3yRnnvuuXTBBRdkAdBVVlkl3XnnnY26ReUSIECAAAECBAgQIECAAAECBAgQaDoBPUALaNIPPvggbbbZZumll15qrS16ci644IJpscUWS/PNN1+aeeaZ06BBg7Kg58SJE9O4cePS6NGj06hRo9KkSZOy66LH6HbbbZfOOOOMdPjhh7eWZYMAAQIECBAgQIAAAQIECBAgQIAAgXwBAdB8l7od/eSTT9LWW2/dGvwcOnRoOvLII9Pw4cOzwGdnFX3++efp6aefzobNX3bZZSn2jzjiiLTMMstkQ+I7u955AgQIECBAgAABAgQIECBAgAABAtOzgCHwDW7966+/PhvuHtXstttu6cknn8zeo9dnV9KAAQPSBhtskC688MJ0yy23pNiPdMwxx6QpU6Z0pQh5CBAgQIAAAQIECBAgQIAAAQIECEy3AgKgDW76xx9/PKsh5u+MxY/69Zt68lgE6fTTT8/Ki+H0I0eObPDdK54AAQIECBAgQIAAAQIECBAgQIBA3xaY+mhc337uwu7+sccey+radtttW3tvTkvlO+20U+vlI0aMaN22QYAAAQIECBAgQIAAAQIECBAgQIBArYA5QGtN6npkzJgxWXmLLrpoXcqdZ555skBqzAU6YcKEupSpEAIECBAgQIAAgakXGDt2bHrhhRemvoBOrnzttdc6yeE0AQIECBAgQIBARwICoB3p1OHckksumZ5//vlsHtADDzxwmkuMIfUR/Iy0+uqrT3N5CiBAgAABAgQIEJg6gfJonFioMl4SAQIECBAgQIBA7xQQAG1wu6y55ppZAPS6665L++yzTxo2bNhU1/jhhx+mo446Krt+7rnnTkssscRUl+VCAgQIECBAgACBaRP4+OOPswLmmmuuNO+8805bYR1cHf8N+K9//auDHE4RIECAAAECBAh0JCAA2pFOHc4de+yx2eJHEydOTNtvv336xS9+kQVCBw4c2K3SoxfpAQcckAVT48KDDjqoW9fLTIAAAQIECBAg0BiBmOv9kEMOaUzhpVJvu+22dMoppzSsfAUTIECAAAECBJpdQAC0wS0cQ+BPPfXU9IMf/CB99NFHWeAytqMn6GqrrZb14lxggQXSzDPPnGaaaab0xRdfpAiWjhs3Lo0ePTq9/vrr6eGHH04vv/xy651uvvnm6aSTTmrdt0GAAAECBAgQIECAAAECBAgQIECAQL6AAGi+S12PHn300SkWL4qeAbFw0fjx49Mdd9yRvbpb0RZbbJGuueaa1K9fv+5eKj8BAgQIECBAgAABAgQIECBAgACB6U5AFK2gJo/5P0eNGpWOO+64NGTIkG7VOmjQoGz4/O23357uuuuuFPN/SgQIECBAgAABAgQIECBAgAABAgQIdC6gB2jnRnXLMd9882XzN8UcTm+99VZ68skn02uvvZYNd4/h8dEzdMCAAWnw4MFp9tlnTzF8foUVVkirrrpqdqxuN9LNgkaOHJnuueeeNGXKlG5eWZv9hRdeyA7GUH+JAAECBAgQIECAAAECBAgQIECAQKMFBEAbLdxO+YsvvniKV19I3/ve96ZquH5Hz/bss892dNo5AgQIECBAgAABAgQIECBAgAABAnUREACtC2NzF3LMMcekL33pS6mlpWWaH/TRRx9NL774YtazdZoLUwABAgQIECBAgAABAgQIECBAgACBTgQEQDsB6onTkydPTm+88Ua2Avxcc82VrRTf3XlD63nfG2ywQYpXPdIRRxyRBUBjmL9EgAABAgQIECBAgAABAgQIECBAoNECAqCNFq4o/4EHHki33HJL+vTTT9PFF19cceb/b7700kvp8MMPT4899liaNGlSm/Nrr7122n///dN+++1nBfg2MnYIECBAgAABAgQIECBAgAABAgQItC9gFfj2bep2ZuLEiemAAw5Iw4cPT+eee27605/+VFP2j3/847TGGmukCJJWBz8j89NPP52VMWzYsDRmzJia6x0gQIAAAQIECBAgQIAAAQIECBAgQKBWQA/QWpO6H9ljjz3STTfd1FruuHHjWrdjI3qDnnzyya3H5p133rTaaqulpZZaKn3wwQfZSvHPP/98tgp7zKG59dZbp8cffzzNOuusrdfYIECAAAECBAgQIECAAAECBAgQIECgVkAP0FqTuh65//77W4OfCy20ULrqqqtSDHUvp9dffz0b9h77M844Yzr++OPTqFGj0r333pvOP//89Nvf/jY988wz2esrX/lKdlksInTCCSeUi/BOgAABAgQIECBAgAABAgQIECBAgEA7AgKg7cDU6/B5552XFTXLLLOkCIbuueeebXpu3nDDDemTTz7J8sQw+JNOOilF3uoUPUIjKBrvkS655JJsLtHqfPYJECBAgAABAgQIECBAgAABAgQIEPiPgADofywasvWXv/wlKzcWMFpuueVq6ojenZFi2Hv0/uwozTTTTOmcc87Jsnz44YfZauod5XeOAAECBAgQIECAAAECBAgQIECAwPQuIADa4E9ADGePtPrqq+fWNHLkyOz4mmuumQ2Bz81UcTBWgx8wYEB2pFx2xWmbBAgQIECAAAECBAgQIECAAAECBAhUCAiAVmA0YjMWMopUOe9nZT1rrbVW5W6n2++++276/PPPs3zzzz9/p/llIECAAAECBAgQIECAAAECBAgQIDA9CwiANrj1ywHOm2++ObemDTfcMDv+7LPPpsmTJ+fmqTx4xx13ZLszzDBDWmONNSpP2SZAgAABAgQIECBAgAABAgQIECBAoEpAALQKpN67MWQ9Ugx1P+2002qKHz58eJpjjjnSv/71r/Tzn/+85nzlgbfffjudddZZ2aHoWRrXSQQIECBAgAABAgQIECBAgAABAgQItC8gANq+TV3OfPvb305Dhw7NyvrhD3+YDj300PTee++1lj1kyJAUvTpnnnnmdOKJJ6YzzzwztyfoU089lSKY+te//jW79kc/+lFrGTYIECBAgAABAgQIECBAgAABAgQIEMgXEADNd6nb0UGDBqUbb7wxW+U9Cv3Vr36VllxyybTXXnulyy67LD333HNpscUWy7ZbWlrSUUcdlVZcccW03377pZNPPjntueeeWf511103jR07NruvCKrGeYkAAQIECBAgQIAAAQIECBAgQIAAgY4F+nd82tl6CCy66KJZL88Ier722mvpo48+SldffXX2yis/enmWe3pWn485Q88777zqw/YJECBAgAABAgQIECBAgAABAgQIEMgR0AM0B6URh9ZZZ51sJfgzzjgjrbrqqt2uYvnll0/nn39+evDBB9Mss8zS7etdQIAAAQIECBAgQIAAAQIECBAgQGB6FNADtMBWj+HwRx55ZPYaMWJEeuaZZ9LLL7+c3nzzzTRu3Lj08ccfp88++yzNOuusabbZZkuLLLJIWnnllVMET6cmaFrgo6mKAAECBAgQIECAAAECBAgQIECAQK8UEADtoWZZZpllUrwkAgQIECBAgAABAgQIECBAgAABAgQaJ2AIfONslUyAAAECBAgQIECAAAECBAgQIECAQA8LCID2cAOongABAgQIECBAgAABAgQIECBAgACBxgkIgDbOVskECBAgQIAAAQIECBAgQIAAAQIECPSwgABoDzeA6gkQIECAAAECBAgQIECAAAECBAgQaJyAAGjjbJVMgAABAgQIECBAgAABAgQIECBAgEAPCwiA9nADqJ4AAQIECBAgQIAAAQIECBAgQIAAgcYJCIA2zlbJBAgQIECAAAECBAgQIECAAAECBAj0sIAAaA83gOoJECBAgAABAgQIECBAgAABAgQIEGicgABo42yVTIAAAQIECBAgQIAAAQIECBAgQIBADwsIgPZwA6ieAAECBAgQIECAAAECBAgQIECAAIHGCQiANs5WyQQIECBAgAABAgQIECBAgAABAgQI9LCAAGgPN4DqCRAgQIAAAQIECBAgQIAAAQIECBBonIAAaONslUyAAAECBAgQIECAAAECBAgQIECAQA8LCID2cAOongABAgQIECBAgAABAgQIECBAgACBxgkIgDbOVskECBAgQIAAAQIECBAgQIAAAQIECPSwgABoDzeA6gkQIECAAAECBAgQIECAAAECBAgQaJyAAGjjbJVMgAABAgQIECBAgAABAgQIECBAgEAPCwiA9nADqJ4AAQIECBAgQIAAAQIECBAgQIAAgcYJCIA2zlbJBAgQIECAAAECBAgQIECAAAECBAj0sIAAaA83gOoJECBAgAABAgQIECBAgAABAgQIEGicgABo42yVTIAAAQIECBAgQIAAAQIECBAgQIBADwsIgPZwA6ieAAECBAgQIECAAAECBAgQIECAAIHGCQiANs5WyQQIECBAgAABAgQIECBAgAABAgQI9LCAAGgPN4DqCRAgQIAAAQIECBAgQIAAAQIECBBonIAAaONslUyAAAECBAgQIECAAAECBAgQIECAQA8LCID2cAOongABAgQIECBAgAABAgQIECBAgACBxgkIgDbOVskECBAgQIAAAQIECBAgQIAAAQIECPSwgABoDzeA6gkQIECAAAECBAgQIECAAAECBAgQaJyAAGjjbJVMgAABAgQIECBAgAABAgQIECBAgEAPCwiA9nADqJ4AAQIECBAgQIAAAQIECBAgQIAAgcYJCIA2zlbJBAgQIECAAAECBAgQIECAAAECBAj0sIAAaA83gOoJECBAgAABAgQIECBAgAABAgQIEGicQF0CoB9++GE68cQT01tvvdW4O1UyAQIECBAgQIAAAQIECBAgQIAAAQIEuilQlwDopEmT0k9/+tP05S9/OW288cbpiiuuSJ988kk3b0V2AgQIECBAgAABAgQIECBAgAABAgQI1FegLgHQ8i21tLSkBx98MO29995pgQUWyN5jP45LBAgQIECAAAECBAgQIECAAAECBAgQKFqgLgHQ+eabL91yyy1pxx13TAMHDsyeIXqARk/Q6BEaPUOjh+ibb75Z9POpjwABAgQIECBAgAABAgQIECBAgACB6VigLgHQfv36pe233z7deOON6e9//3s677zz0rrrrtvKGnODxhyhSy21VBo2bFi67LLL0scff9x63gYBAgQIECBAgAABAgQIECBAgAABAgQaIVCXAGjljc0999zpu9/9bnriiSfSiBEj0vHHH58WX3zxLEsMhX/44YfTvvvum4YMGZK+9a1vpQceeMAQ+UpA2wQIECBAgAABAgQIECBAgAABAgQI1E2g7gHQyjtbeuml00knnZQNfX/ooYfS/vvvn+aff/4sSwyRv+qqq9Lw4cPTEksskX7yk5+kkSNHVl5umwABAgQIECBAgAABAgQIECBAgAABAtMk0NAAaPnOZphhhrThhhumiy66KBsi/9hjj6Wjjz46zTLLLFmWUaNGZYHSJZdcMm266abZfKIWTirreSdAgAABAgQIECBAgAABAgQIECBAYGoFCgmAlm9uwoQJ6Y477kgXX3xxuvzyy9Onn35aPpW9R9Dz/vvvTzvssENaa6210ttvv93mvB0CBAgQIECAAAECBAgQIECAAAECBAh0R6B/dzJPTd7JkydnQc2rr7463XzzzTWLH8WcobvvvnvaZptt0n333Zci3z/+8Y/07LPPprXXXjvdfvvtaejQoVNTtWsIECBAgAABAgQIECBAgAABAgQIEJjOBRrWAzQCmEceeWRaZJFF0te+9rVsvs/yyu8zzjhj2nLLLdP111+f3nnnnXTuuedmeU477bSs1+dxxx2XNcvYsWOzofLTeRt5fAIECBAgQIAAAQIECBAgQIAAAQIEplKgrj1AYy7Pa665JuvF+eqrr9bc0jLLLJP22WeftNdee6WFF1645nwcGDBgQDrllFPSgw8+mB5//PHsNW7cuDT77LPn5neQAAECBAgQIECAAAECBAgQIECAAAEC7QnUJQA6fvz4tPXWW6dHH300VS9eNNtss6Vdd901C3yuv/767d1HzfEY/h4B0C+++CKNHj06rbjiijV5HCBAgAABAgQIECBAgAABAgQIECBAgEBHAnUJgMZiRo888khrPbHq+0YbbZQFPXfaaafW1d5bM3Rh48MPP8xyDRo0KC277LJduEIWAgQIECBAgAABAgQIECBAgAABAgQItBWoSwC0XOTiiy+evv3tb2evJZZYonx4qt4POeSQdMQRR6QvfelLqX//ut7mVN2PiwgQIECAAAECBAgQIECAAAECBAgQ6HsCdYksDh48OFvpfeONN07R+7Meaa211qpHMcogQIAAAQIECBAgQIAAAQIECBAgQGA6FqhLAHTWWWdNm2yySSvjhAkT0tNPP52GDRvWeqy88dJLL6U77rgj7bDDDmm55ZYrH/ZOgAABAgQIECDQ5ALlueK/9rWv1e1H8zyyZ599Nu+wYwQIECBAgAABAtOpQF0CoGW7WLDomGOOSb/+9a+z1dzfe++98qnW92eeeSYdd9xx2Wv48OHp2muvTfPPP3/reRsECBAgQIAAAQLNKVAOgN5///3N+YCeigABAgQIECBAoFcK1C0AGgshff3rX0/33ntv64O+++67ad55523dj42RI0e27sd//K655prpnnvuSSussELrcRsECBAgQIAAAQLNK3D22Wenfv36NewBf/SjH6X4b1OJAAECBAgQIECAQAjULQB65plntgY/55577mwhpAEDBtQoH3bYYWmZZZZJl156aXrggQfSmDFj0gEHHJAeffTRmrwOECBAgAABAgQINJ/A0KFD04wzztiwB7OAZsNoFUyAAAECBAgQ6JMCdfnpffz48en000/PAFZcccX0/PPPpwiIzjHHHDUo0SN0jz32SPfdd1/6r//6r+z8Y489lq6//vqavA4QIECAAAECBAgQIECAAAECBAgQIEBgWgTqEgB98cUX00cffZTdx0UXXZQWXXTRTu8pVos/8cQT00orrZTlNRdUp2QyECBAgAABAgQIECBAgAABAgQIECDQTYG6BEBff/31rNo555wzrbfeel2+hRj6tOmmm2b5X3311S5fJyMBAgQIECBAgAABAgQIECBAgAABAv+PvTuB07KqFwf+G3YQQUUEVFQkSUgENbV77aZlJoJpWTftlqYt5kKlkP3dyjSzLG27ldp1V+5NzcqupLaYC65oYK6ACooi4mXf93/nuXcmBgdm3uF5Zt553+/z+bzMs5znLN/zMjPvb85zDoGmCOQyB2h6BD5tzZnMvvYx+UWLFjWlvtIQIECAAAECBAgQIECgSQKzZs3K0v3kJz+JK664okn3NDdResLt1FNPrZsarLn5uI8AAQIECBDIXyCXAOguu+yS1WzevHkxY8aM2G233Zpc00mTJmVphw4d2uR7JCRAgAABAgQIECBAgEBjArNnz86SrFmzJtKr6M20XkULy58AAQIECDRPIJcA6D777JON/ly3bl1897vfjSuvvLJJtXnuueeyxZBS4r333rtJ90hEgAABAgQIECBAgACBUgT+9V//NUaPHl3KLSWlnTZtWnz+858v6R6JCRAgQIAAgZYTyCUAmhY9Ouyww+Kee+6Jq666KgYOHBhnnHFGdOzYcZMtSXN+fuxjH4tly5ZFp06dYtSoUZtM6wIBAgQIECBAgAABAgSaK9ChQ4fo0qVLc29v9L7OnTs3mkYCAgQIECBAoPUEcgmApupffPHFcd9998XKlSvja1/7Wvz85z+Pk08+OQuGpkfku3XrFq+//nq89tpr8Yc//CFuv/32WL9+fdbyiy66KIYMGdJ6CkomQIAAAQIECBAgQIAAAQIECBAgQKAiBXILgL773e/OHn1Pj36sXbs2mwv03HPPbRRt5MiRcdZZZzWaTgICBAgQIECAAAECBAgQIECAAAECBAiUKtCu1Bs2l/7EE0+Mxx9/PA444IDNJcuu7brrrnHLLbfE+PHjm7V6fKMFSECAAAECBAgQIECAAAECBAgQIECAQNUL5DYCtFZy3333jcceeyzSROB33nlnTJ06Nd58883s0fjdd9893vGOd2SvQw89tNB5eGrr4ysBAgQIECBAgAABAgQIECBAgAABAtUrkHsAtJZyjz32iDPPPLP20FcCBAgQIECAAAECBAgQIECAAAECBAi0uECuj8C3eO0VSIAAAQIECBAgQIAAAQIECBAgQIAAgc0ICIBuBsclAgQIECBAgAABAgQIECBAgAABAgTatkDuj8AvWbIkbrvttpgyZUosXbo01qxZE+vXr29U6cgjj4z0shEgQIAAAQIECBAgQIAAAQIECBAgQCAvgVwDoN/73vfi29/+dixatKjk+vXt21cAtGQ1NxAgQIAAAQIECBAgQIAAAQIECBAgsDmB3AKgv/3tb+P//b//t7myXCNAgAABAgQIECBAgAABAgQIECBAgECLCuQSAF23bl187nOfq6v4vvvuG6ecckoMGDAgttpqq6ipqam7tqmdnXfeeVOXnCdAgAABAgQIECBAgAABAgQIECBAgECzBHIJgKb5PufNm5dV4PDDD49f//rX0a1bt2ZVyE0ECBAgQIAAAQIECBAgQIAAAQIECBDISyCXVeD/+te/1tVn7Nixgp91GnYIECBAgAABAgQIECBAgAABAgQIEGhNgVwCoGml97SlR90POuig1myPsgkQIECAAAECBAgQIECAAAECBAgQIFAnkEsA9J/+6Z+yDNevX1/3KHxdCXYIECBAgAABAgQIECBAgAABAgQIECDQSgK5BEAHDRoUvXr1yprw5z//uZWaolgCBAgQIECAAAECBAgQIECAAAECBAjUF8hlEaSU5de//vU444wz4txzz41Ro0bF9ttvX78kRwQIECBAgAABAgQIECCwRQJXX311/OlPf9qiPJp687bbbhuXXnpp9OjRo6m3SEeAAAECBMpSILcA6Fe+8pWYM2dOXHLJJbHnnnvGRRddFB/4wAdi1113ja5du5Zl41WKAAECBAgQIECAAAECbUng7LPPjrlz57ZYlUeMGBFHH310i5WnIAIECBAgUIRALgHQhQsXxumnn57VLwU70w/k2uN0cpttton27dtvtv5f+9rXIr1sBAgQIECAAAECBAgQINCwwNq1a7ML5513XqEDTf7zP/8znnvuuagtr+HaOEuAAAECBNqGQC4B0BUrVsS4ceM22eIFCxZs8lrtheXLl9fu+kqAAAECBAgQIECAAAECDQjU1NRkZw855JBCH01Pj9mnAKiNAAECBAhUgkAuAdB27drFzjvvvEUe5pXZIj43EyBAgAABAgQIECBAgAABAgQIECDQgEAuAdDevXvHzJkzG8jeKQIECBAgQIAAAQIECBAgQIAAAQIECLSeQLvWK1rJBAgQIECAAAECBAgQIECAAAECBAgQKFYglxGgm6riW2+9FdOmTcteixcvjtGjR2dJX3rppdhpp52iS5cum7rVeQIECBAgQIBAVQvMnj07a/8PfvCDuOaaawqzWLlyZWF5y5gAAQIECBAgQIBAOQgUEgD95S9/GWeffXa88sordW3s1atXXQD0sssui9tvvz1OO+20SKsXduzYsS6dHQIECBAgQIAAgYhZs2ZlDOmPyOllI0CAAAECBAgQIECgeQK5BkCnT58eJ5xwQkyYMGGztZkxY0ak0aEXXnhhPPHEE3HbbbdF165dN3uPiwQIECBAgACBahT45Cc/GelV1HbnnXfGL37xi6Kyly8BAgQIECBAgACBVhfILQC6Zs2aOPbYY2PixIlZo7beeus46KCDIp3/05/+VK+h/fv3rzseP358NhL0uuuuqztnhwABAgQIECBA4H8Fttpqq+jTp09hHOl3NhsBAgQIECBAgACBShbIbRGkNJqzNvj52c9+NtIoz7vuuiuOO+64t/mlUQaPPfZY9OvXL7t20003ZfOEvi2hEwQIECBAgAABAgQIECBAgAABAgQIENgCgVwCoGmUZ5rXM22HH354/Md//Edst912m63WAQcckI0Mbd++faxduzauvvrqzaZ3kQABAgQIECBAgAABAgQIECBAgAABAqUK5PII/AsvvBArVqzIyr788sujXbumxVWHDBkSRx99dPz617+OqVOnllp36QkQIECAAIEtEEirjLfECuDp94Kddtqpyb8fbEGT3EqAAAECBAgQIECAAIG3CeQSAJ08eXKWcZpDavDgwW8rZHMn9t577ywA+vLLL28umWsECBAgQIBAjgLXX399nHTSSTnmuPmsTj311Pj5z3+++USuEiBAgAABAgQIECBAoACBXAKgtaNHOnXqVPLojsWLF2fNShP82wgQIECAAIGWEZg2bVpWUPfu3aPIn8GrVq2K+fPnm+u7ZbpVKQQIECBAgAABAgQINCCQSwB02LBhWdZz586NmTNnxoarvDdQZr1TTz75ZHa811571TvvgAABAgQIEChe4NOf/nShI0Eff/zx+NKXvlR8Q5RAgAABAgQIECBAgACBTQg0bbLOTdxcezoFL9NiRmlLq8E3dbv77rvjvvvuy5ILgDZVTToCBAgQIECAAAECBAgQIECAAAECBJoqkEsAtEuXLnHMMcdkZV5zzTXx/e9/P9atW7fZOvzlL3+pG3HSrVu3OPLIIzeb3kUCBAgQIECAAAECBAgQIECAAAECBAiUKpDLI/Cp0CuuuCImTJgQb7zxRnzta1+L2267LVvhPa0wm7b169dHWixp0qRJcdddd2XXswt//+eSSy6J3XffvfbQVwIECBAgQIAAAQIECBAgQIAAAQIECOQikFsAtFevXnHDDTdkI0GXLFkSEydOzF61tZw3b17ss88+tYd1X0eOHBlf/vKX647tECBAgAABAgQIECDQOgK1T3Hdcsst0blz58Iq8frrrxeWt4wJECBAgAABAhsL5BYATRkfdthhMWXKlDj77LPj5ptvzkZ9blxg7XHfvn3j0ksvjeOPPz5qampqT/tKgAABAgQIECBAgEArCaxevTor+bOf/Wwr1UCxBAgQIECAAIH8BXINgKbq7bjjjnHjjTfGmDFj4uGHH45p06Zlr7feeisGDBgQgwYNyl5HHXVU9OjRI/8WyZEAAQIECBAgQIAAgS0SOPTQQ+sWOd2ijDZxc1oPoDbYuokkThMgQIAAAQIEchPIPQBaW7Phw4dHetkIECBAgAABAgQIEGhbAt/4xjciLXRa1DZixIiYP39+UdnLlwABAgQIECBQTyCXVeDr5eiAAAECBAgQIECAAAECBAgQIECAAAECZSJQ2AjQMmlf2Vdj1qxZkRaIWrZsWfZKf2nv2bNnNj1AWliqyL+8lz2OChIgQIAAAQIECBAgQIAAAQIECBDYQoFcAqBLly6N73//+1tUlUMOOSTSq9K3xYsXZ3Okjhs3Lp555plIx5vaOnToEEOHDo0DDzwwjjzyyBg5cqQFozaF5TwBAgQIECBAgAABAgQIECBAgACBBgRyCYAuWbIkLrzwwgayb/qptBJ8JQdA33zzzbjooovipptu2mzQc0OxNWvWxKRJk7LXlVdeGXvttVd897vfjVGjRm2YzD4BAgQIECBAgAABAgQIECBAgAABApsQyCUAuom8nf4/gTTB+2GHHRZPP/10nUkK+Pbr1y922WWX6N27d3Tt2jU6d+4cKei5YsWKWLRoUcycOTNeeeWVWLlyZXZfGjF61FFHxeWXXx5nnHFGXV52CBAgQIAAAQIECBAgQIAAAQIECBBoWCCXAOg222wTv/3tbxsu4f/Orl+/Ppvjcu7cufH444/H7bffHsuXL49zzjknvvWtb0W7dpW5HlOaHiCN2KwNfu6///4xZsyYOPTQQ7PA52bR/n5x9erVmdeNN94Y1113XXZ85plnxqBBg7JH4hu733UCBAgQIECAAAECBAgQIECAAAEC1SyQSwA0jVw8+uijS3I8/fTTs3ktv/Od70Tfvn3jy1/+ckn3t5XEt956azzyyCNZdY877rhIc3+WEuzt2LFjHHTQQdkrGX/kIx/JgqBnn312jBgxoqS82oqZehIgQIAAAQIECBAgQIAAAQIECBDIS6DVhl2+5z3viXvuuSdrR3qcO811WYnbww8/nDVr7733zhY/KiX4ubFHWgTpsssuy06nEaXTp0/fOIljAgQIECBAgAABAgQIECBAgAABAgQ2EGi1AGiqw3777ZfNgZkej//zn/+8QbUqZ/ehhx7KGvPhD3840mjOLd0+9rGP1WUxderUun07BAgQIECAAAECBAgQIECAAAECBAi8XaBVA6CpOrUrv0+YMOHttauAM6+99lrWiv79++fSml69etUFUtMcqjYCBAgQIECAAAECBAgQIECAAAECBDYtkMscoJvOvvErtaMY02rnlbgNHDgwJk+enM0D+sUvfnGLm5geqU8LI6Vtn3322eL8ZECAAAECBAgQIECAwJYJrFq1KsvghRdeiOHDh29ZZo3cvWjRokZSuEyAAAECBAhsLNCqAdA33ngjW+E8VaroXxQ2bnhLHafH/FMA9JZbbomTTjopDj744GYXvWDBghg7dmx2/3bbbRcDBgxodl5uJECAAAECBAgQIEAgH4H0uSZtK1asiKeeeiqfTOVCgAABAgQI5CbQagHQ3/3ud3HaaafFunXrssa8+93vzq1R5ZTROeecky1+lH4ZSqu4X3rppVkgtFOnTiVVMwVRTz755CyYmm485ZRTSrpfYgIECBAgQIAAAQIEihXYZZdd4tvf/nahhRx//PGF5i9zAgQIECBQiQK5BED/53/+J9Kq7o1tKdiZHg+ZN29ebDh/ZZof85Of/GRjt7fJ6+kR+EsuuSTOOuusWLhwYRa4TPtpJGga9ZpGcfbp0ye6du0aXbp0iTVr1mR/OU6PtsycOTNefPHFeOCBB+KZZ56pa/+HPvSh+Na3vlV3bIcAAQIECBAgQIAAgdYX6Ny5cwwaNKj1K6IGBAgQIECAQD2BXAKga9eujZdeeqlexk09SCMhf/nLX0Z6pLtSt69+9auRFi86/fTTs8Dv4sWL484778xepbZ5xIgRMW7cuGjXrtXXryq16tITIECAAAECBAgQIECAAAECBAgQaHGBXAKgNTU10b179yZVPgXu0kjHfv36xTHHHBNf+MIXsv0m3dyGE6X5P4888sj40Y9+FNdee23Mnj27ya1Jf0lOgc/Pf/7zWR5NvlFCAgQIECBAgAABAgQIECBAgAABAlUukEsAdIcddog0qtG2eYHevXtncwKleYFmzJgRjz76aEybNi3S4+7p8fhk2LFjxyyY3KNHj0iPzw8ZMiSGDRvW5ADz5mvQ/KvLli2rm6+1+blENgXCltzvXgIECBAgQIAAAQIECBAgQIAAAQKlCOQSAC2lQGn/V2C33XaL9GoL21e+8pX4yU9+kmtVp06dmmt+MiNAgAABAgQIECBAgAABAgQIECDQkIAAaEMqztUTSPOzbr311rF+/fp655tzsHLlyli9enWkuV9tBAgQIECAAAECBAgQIECAAAECBIoWEAAtWriZ+aeFpR588MHs7l133TVbLb6ZWW3xbRdccEGkVx7bmWeemc2D2lZGv+bRZnkQIECAAAECBAgQIECAAAECBAi0nkAuAdClS5fG97///UJakUYffvnLXy4k73LOdMmSJfH+978/q+J5550XF198cTlXV90IECBAgAABAgQIECBAgAABAgQIlKVALgHQFKy78MILC2ngO97xjqoMgBaCKVMCBAgQIECAAAECBAgQIECAAAECVSaQSwC0ysxKau6LL74Ya9asKemelDitCF+7zZ07N1544YXaw7qve+65Z92+HQIECBAgQIAAAQIECBAgQIAAAQIE3i6QSwC0T58+sWLFirj99tvj+OOPj3Xr1sUee+wRafXwIUOGxC677BLbb799zJo1K1599dX44x//GD//+c9j+fLl0a1bt7jiiiuiZ8+eb6/d389stdVWDZ5vKyf/5V/+JWbPnr1F1b3yyisjvTbe8liUaOM8HRMgQIAAAQIECBAgQIAAAQIECBCoJIFcAqAJJC3Yc9JJJ2Urhf/7v/97nHrqqdG+fft6VinIOXjw4Dj88MPjrLPOig9/+MMxceLE+OUvfxn//d///bb09W52QIAAAQIECBAgQIAAAQIECBAgQIAAgRIFcguAnnDCCbFq1ar45je/GaNHj260GmnU6K9//esYNmxY3HXXXXHbbbfFcccd1+h9bS3B17/+9Rg7dmw2QjbVfeutt46RI0dGTU3NZpuSLJNP2tIo2r333nuz6V0kQIAAAQIECBAgQIAAAQIECBAgQODtArkEQNM8l2+88UZ07NgxG9n59mIaPrPzzjvHiBEj4j//8z/jvvvuq8gA6GmnnRaHHHJIfOpTn4rJkydnc3suWLAgrr322thxxx0bhvn72YULF9YFQD/60Y9aBX6TUi4QIECAAAECBAgQIECAAAECBAgQ2LRAu01favqVCRMmZInTSMU0p2cp2zvf+c4s+WOPPVbKbW0qbXJJ7UuP/bdr1y7uueeeGDp0aNx6661tqh0qS4AAAQIECBAgQIAAAQIECBAgQKCtCeQSAE2LHqVt+vTp2QJIpSBMmjQpS54WSqrkrVOnTvG9730v/vznP0f//v1j3rx5ceyxx8anP/3pbLRnJbdd2wgQIECAAAECBAgQIECAAAECBAi0lkAuAdC04nvaFi1aVPfYdlMa9Nxzz2Urwqe0Bx54YFNuafNp0uPwf/vb3+KTn/xk1pZx48Zlo0HvvffeNt82DSBAgAABAgQIECBAgAABAgQIECBQbgK5BED/+Z//OXbbbbesbWkl+IceeqjRdqZ5Q48++uhYunRpdOjQIUaNGtXoPZWSYJtttsnmPb355pujZ8+eMXPmzPjgBz8YY8aMqVssqVLaqh0ECBAgQIAAAQIECBAgQIAAAQIEWlMglwBo+/bt4/zzz8/asWTJknjve98bRxxxRNx+++3x5JNPxpw5c7LHvJ9++ukYP358pCDpnnvuGSkImrbvfOc72Wrw2UEV/ZMWRkqjQd/3vvfF+vXr44c//GG8+93vjtppAaqIQlMJECBAgAABAgQIECBAgAABAgQIFCKQyyrwqWaf+9znsmDeT37yk6yid999d6RXY9snPvGJGDt2bGPJKvZ6mvv0L3/5SzY/6De+8Y149tlns+kAqtmkYjtbwwgQIECAAAECBAgQIECAAAECBFpcIJcRoLW1/vGPfxw33XRT9OnTp/bUJr/uvvvu2QjRW265JWpqajaZrhoupJXhzz777Hj00UezkbGrV6+O7373u9XQdG0kQIAAAQIECBAgQIAAAQIECBAgUKhAbiNAa2uZVjX/+Mc/nq12fuedd2aPuc+ePTub5zMtljRo0KAYPHhwlqZz5861t/n6d4F99903/vrXv8ZZZ50VP/vZz5gQIECAAAECBAgQIECAAAECBAgQILCFArkHQFN9unTpki1qVE0LG21hP9Td3rVr1/jpT3+a+d1xxx3Z+QMOOKDuuh0CBAgQIECAAAECBAgQIECAAAECBJouUEgAtOnFS7kpgbSIVHrZCBAgQIAAAQIECBAgQIAAAQIECBBovkChAdC33norpk2blr0WL14co0ePzmr60ksvxU477ZSNFG1+1d1JgAABAgQIECBAgAABAgQaF1izZk2cfPLJMWPGjMYT55BiyJAh2ZN9OWQlCwIECBDIQaCQAOgvf/nLbFGfV155pa6KvXr1qguAXnbZZdkCSKeddlqcd9550bFjx7p0dggQIECAAAECBAgQIECAQJ4CL774Ylx33XV5ZrnZvP7yl7/EBRdcEL17995sOhcJECBAoGUEcg2ATp8+PU444YSYMGHCZmuf/uqWRodeeOGF8cQTT8Rtt90Wae5LGwECBAgQIECAAAECBAgQyFtg3bp1WZZ9+/aN888/P+/s6+V3zjnnRHoCsrbMehcdECBAgECrCOQWAE2PFBx77LExceLErCFbb711HHTQQZHO/+lPf6rXuP79+9cdjx8/PtJI0Jb8a1xd4XYIECBAgAABAgQIECBAoGoE0oK9+++/f6Ht9YRjobwyJ0CAQLME2jXrrgZuSqM5a4Ofn/3sZ7O5Ve6666447rjj3pb6F7/4RTz22GPRr1+/7NpNN92UzRP6toROECBAgAABAgQIECBAgAABAgQIECBAYAsEcgmAplGeaV7PtB1++OHxH//xH7HddttttloHHHBANjK0ffv2sXbt2rj66qs3m95FAgQIECBAgAABAgQIECBAgAABAgQIlCqQSwD0hRdeiBUrVmRlX3755dGuXdOyTSvjHX300dl9U6dOLbXu0hMgQIAAAQIECBAgQIAAAQIECBAgQGCzAk2LVG42i4jJkydnKdK8n4MHD24kdf3Le++9d3bi5Zdfrn/BEQECBAgQIECAAAECBAi0isBrr72WlZvWeejcuXOhr+7du8d//dd/tUo7FUqAAAEC1SGQyyJIK1euzLQ6derU5NGftbxpdby0bbXVVrWnfCVAgAABAgQIECBAgACBVhRYsGBBVnqa7qzobdWqVfHQQw/FJz/5yaKLkj8BAgQIVKlALgHQYcOGZXxz586NmTNnxoarvDfm+uSTT2ZJ9tprr8aSuk6AAAECBAgQIECAAAECLShw8cUXxyGHHFJYibfffnv88Ic/LCx/GRMgQIAAgSSQSwA0BS9rFzNKq8E3dUGju+++O+67776sJwRAMwb/ECBAgAABAgQIECBAoGwEOnToEB07diysPulzpI0AAQIECBQtkMscoF26dIljjjkmq+s111wT3//+92PdunWbrftf/vKXOOmkk7I03bp1iyOPPHKz6V0kQIAAAQIECBAgQIAAAQIECBAgQIBAqQK5jABNhV5xxRUxYcKEeOONN+JrX/ta3HbbbdkK77Nnz87qtH79+myxpEmTJsVdd92VXa+t7CWXXBK777577aGvBAgQIECAAAECBAgQIECAAAECBAgQyEUgtwBor1694oYbbshGgi5ZsiQmTpyYvWprOW/evNhnn31qD+u+jhw5Mr785S/XHdshQIAAAQIECBAgQIAAAQIECBAgQIBAXgK5PAJfW5nDDjsspkyZEscff3zU1NTUnm7wa9++fbOA6Z133tlo2gYzcJIAAQIECBAgQIAAAQIECBAgQIAAAQKNCOQ2AnTt2rXZQkg77rhj3HjjjTFmzJh4+OGHY9q0adnrrbfeigEDBsSgQYOy11FHHRU9evRopHouEyBAgAABAgQIECBAgAABAgQIECBAoPkCuQRA0/ye++23X/Tv3z8+85nPxMc+9rEYPnx49mp+1dxJgAABAgQIECBAgAABAgQIECBAgACBLRPIJQD64IMPxlNPPZW9nn/++fj4xz++ZbVyNwECBAgQIECAAAECBAgQIECAAAECBHIQyGUO0GeffbauKqNGjarbt0OAAAECBAgQIECAAAECBAgQIECAAIHWFMglADpkyJC6NixcuLBu3w4BAgQIECBAgAABAgQIECBAgAABAgRaUyCXR+Df+973ZgscTZ8+Pe6444549dVXY5dddmnNdimbAAECBAgQqDKB+++/PyZPnlx4q19//fXCy1AAAQIEqkVgzZo1WVPTlGo//vGPC2v27NmzC8tbxgQIECBQ/gK5BEDbt28f9957b3ziE5+IiRMnxtChQ+PCCy+M97znPbHHHntEr169yl9CDQkQIECAAIE2K5AWZBwxYkSsWLGizbZBxQkQIFCNAmkNibRNmDAhe1WjgTYTIECAQPECuQRAFy1aFBdffHG8613viilTpkQ6PvPMM+tq37Nnz+jevXvdcUM7Y8aMifSyESBAgAABAgRKFUgB0Nrg57HHHlvq7SWl//Wvfx2rV68u6R6JCRAgQKBhgdoRoGngzL777ttwohzOptH7KchqI0CAAIHqFMglALp8+fK45pprNimY5gVtbG7QxYsXb/J+FwgQIECAAAECTRGoqakp/A+qd955pwBoUzpDGgIECJQgMGzYsEK/fz/wwAMCoCX0h6QECBCoNIFcAqDpw8b222+/RTbdunXbovvdTIAAAQIECBAgQIAAAQIECBAgQIAAgY0FcgmA7rDDDvHWW29tnLdjAgQIECBAgAABAgQIECBAgAABAgQItKpAu1YtXeEECBAgQIAAAQIECBAgQIAAAQIECBAoUEAAtEBcWRMgQIAAAQIECBAgQIAAAQIECBAg0LoCJT0Cn1ZXXbJkSVbjtLJ7x44dW7f2SidAgAABAgQIECBAgAABAgQIECBAgMBmBEoaAXrDDTdE7969s9c999yzmWxdIkCAAAECBAgQIECAAAECBAgQIECAQOsLlDQCtKnVvf/+++P555/Pkn/mM5+Jrl27NvVW6QgQIECAAAECBAgQIECAAAECBAgQIJCbQCEB0JtvvjmuvvrqrJIf+chHBEBz6y4ZESBAgAABAgQIECBAgAABAgQIECBQikBJj8CXkrG0BAgQIECAAAECBAgQIECAAAECBAgQaG0BAdDW7gHlEyBAgAABAgQIECBAgAABAgQIECBQmIAAaGG0MiZAgAABAgQIECBAgAABAgQIECBAoLUFBEBbuweUT4AAAQIECBAgQIAAAQIECBAgQIBAYQICoIXRypgAAQIECBAgQIAAAQIECBAgQIAAgdYWEABt7R5QPgECBAgQIECAAAECBAgQIECAAAEChQkIgBZGK2MCBAgQIECAAAECBAgQIECAAAECBFpbQAC0tXtA+QQIECBAgAABAgQIECBAgAABAgQIFCbQobCcZUyAAAECBCpIYOnSpTFnzpwWadE222wT2267bYuUpRACBAgQIECAAAECBAhUukCzA6Df+9734uabb27QZ+LEiXXnTzlssCNVAABAAElEQVTllOjSpUvd8aZ2Pv7xj0d62QgQIECAQLkJrFu3Lt75znfG66+/3iJV69y5c0ybNi369+/fIuUphAABAgQIECBAgAABApUs0OwA6IMPPtgklzvuuKNJ6QYPHiwA2iQpiQgQIECgpQVWrlxZF/zccccdCy3+rbfeitryBEALpZY5AQIECBAgQIAAAQJVItDsAGiV+GgmAQIECBCoE0gjM3/zm9/UHRex87nPfS6eeeaZIrKWJwECBAgQIECAAAECBKpSoKQA6Pvf//64/vrrC4EaPnx4IfnKlAABAgQIECBAgAABAgQIECBAgACB6hUoKQA6aNCgSC8bAQIECBAgQIAAAQIECBAgQIAAAQIE2oJAu7ZQSXUkQIAAAQIECBAgQIAAAQIECBAgQIBAcwQEQJuj5h4CBAgQIECAAAECBAgQIECAAAECBNqEgABom+gmlSRAgAABAgQIECBAgAABAgQIECBAoDkCAqDNUXMPAQIECBAgQIAAAQIECBAgQIAAAQJtQkAAtE10k0oSIECAAAECBAgQIECAAAECBAgQINAcAQHQ5qi5hwABAgQIECBAgAABAgQIECBAgACBNiEgANomukklCRAgQIAAAQIECBAgQIAAAQIECBBojoAAaHPU3EOAAAECBAgQIECAAAECBAgQIECAQJsQ6NAmaqmSBAgQIECAAAECBAgQIECgDQisWrUqq+VZZ50V3bp1K7TGPXv2jK9//evRvXv3QsuROQECBNq6gABoW+9B9SdAgAABAgQIECBAgACBshFYunRpVpebbrqpReq0//77x8c//vEWKUshBAgQaKsCAqBttefUmwABAgQIECBAgAABAgTKVmD06NGx1VZbFVa/3/3ud/H888/H6tWrCytDxgQIEKgUAQHQSulJ7SBAgAABAgQIECBAgACBshEYOXJk9OrVq7D6TJo0KQuAFlaAjAkQIFBBAhZBqqDO1BQCBAgQIECAAAECBAgQIECAAAECBOoLCIDW93BEgAABAgQIECBAgAABAgQIECBAgEAFCQiAVlBnagoBAgQIECBAgAABAgQIECBAgAABAvUFBEDrezgiQIAAAQIECBAgQIAAAQIECBAgQKCCBARAK6gzNYUAAQIECBAgQIAAAQIECBAgQIAAgfoCAqD1PRwRIECAAAECBAgQIECAAAECBAgQIFBBAgKgFdSZmkKAAAECBAgQIECAAAECBAgQIECAQH0BAdD6Ho4IECBAgAABAgQIECBAgAABAgQIEKggAQHQCupMTSFAgAABAgQIECBAgAABAgQIECBAoL6AAGh9D0cECBAgQIAAAQIECBAgQIAAAQIECFSQgABoBXWmphAgQIAAAQIECBAgQIAAAQIECBAgUF9AALS+hyMCBAgQIECAAAECBAgQIECAAAECBCpIQAC0gjpTUwgQIECAAAECBAgQIECAAAECBAgQqC8gAFrfwxEBAgQIECBAgAABAgQIECBAgAABAhUkIABaQZ2pKQQIECBAgAABAgQIECBAgAABAgQI1BcQAK3v4YgAAQIECBAgQIAAAQIECBAgQIAAgQoSEACtoM7UFAIECBAgQIAAAQIECBAgQIAAAQIE6gsIgNb3cESAAAECBAgQIECAAAECBAgQIECAQAUJCIBWUGdqCgECBAgQIECAAAECBAgQIECAAAEC9QUEQOt7OCJAgAABAgQIECBAgAABAgQIECBAoIIEBEArqDM1hQABAgQIECBAgAABAgQIECBAgACB+gICoPU9HBEgQIAAAQIECBAgQIAAAQIECBAgUEECAqAV1JmaQoAAAQIECBAgQIAAAQIECBAgQIBAfQEB0PoejggQIECAAAECBAgQIECAAAECBAgQqCABAdAK6kxNIUCAAAECBAgQIECAAAECBAgQIECgvoAAaH0PRwQIECBAgAABAgQIECBAgAABAgQIVJCAAGgFdaamECBAgAABAgQIECBAgAABAgQIECBQX0AAtL6HIwIECBAgQIAAAQIECBAgQIAAAQIEKkhAALSCOlNTCBAgQIAAAQIECBAgQIAAAQIECBCoLyAAWt/DEQECBAgQIECAAAECBAgQIECAAAECFSTQoYLaoikECBAgQIBAmQksX748q9ETTzwRhxxySGG1W79+fWF5y5gAAQIECBAgQIAAgbYtIADatvtP7QkQIECAQFkLvPrqq1n9FixYEPfff39Z11XlCBAgQIAAAQIECBCoTAEB0MrsV60iQIAAAQJlIVA7MnPPPfeMr3zlK4XVac2aNfGlL32psPxlTIAAAQIECBAgQIBA2xUQAG27fafmBAgQIECgzQhsvfXWse+++xZW3xQAtREgQIAAAQIECBAgQKAhAYsgNaTiHAECBAgQIECAAAECBAgQIECAAAECFSEgAFoR3agRBAgQIECAAAECBAgQIECAAAECBAg0JCAA2pCKcwQIECBAgAABAgQIECBAgAABAgQIVISAAGhFdKNGECBAgAABAgQIECBAgAABAgQIECDQkIAAaEMqzhEgQIAAAQIECBAgQIAAAQIECBAgUBECAqAV0Y0aQYAAAQIECBAgQIAAAQIECBAgQIBAQwICoA2pOEeAAAECBAgQIECAAAECBAgQIECAQEUICIBWRDdqBAECBAgQIECAAAECBAgQIECAAAECDQl0aOikcy0nMGvWrJg3b14sW7Yse3Xp0iV69uwZPXr0iF69ekU6thEgQIAAAQIECBAgQIAAAQIECBAg0DwBAdDmuTX7rsWLF8eNN94Y48aNi2eeeSbS8aa2Dh06xNChQ+PAAw+MI488MkaOHBk1NTWbSu48AQIECBAgQIAAAQIECBAgQIAAAQIbCXgEfiOQog7ffPPNOP3002OnnXaK0aNHxyOPPLLZ4Geqx5o1a2LSpElx5ZVXZgHQvffeO8aPH19UFeVLgAABAgQIECBAgAABAgQIECBAoOIEjABtgS6dP39+HHbYYfH000/XlZZGcvbr1y922WWX6N27d3Tt2jU6d+6cBT1XrFgRixYtipkzZ8Yrr7wSK1euzO5LI0aPOuqouPzyy+OMM86oy8sOAQIECBAgQIAAAQIECBAgQIAAAQINCwiANuyS29mlS5fGqFGj6oKf+++/f4wZMyYOPfTQLPDZWEGrV6+Oxx9/PHts/rrrrot0fOaZZ8agQYOyR+Ibu991AgQIECBAgAABAgQIECBAgAABAtUs4BH4gnv/1ltvzR53T8Ucd9xx8eijj2Zf06jPpmwdO3aMgw46KK666qr47W9/G+k4bWeffXasW7euKVlIQ4AAAQIECBAgQIAAAQIECBAgQKBqBQRAC+76hx9+OCshzd+ZFj9q16755GkRpMsuuyzLLz1OP3369IJrL3sCBAgQIECAAAECBAgQIECAAAECbVug+dG4tt3uFqv9Qw89lJX14Q9/uG705pYU/rGPfazu9qlTp9bt2yFAgAABAgQIECBAgAABAgQIECBA4O0C5gB9u0muZ1577bUsv/79++eSb69evbJAapoLdPny5bnkKRMCBAjkLZAWf7v55puzeYvzznvj/NLI+o985COx2267bXzJMQECBAgQIECAAAECBAgQCAHQgt8EAwcOjMmTJ2fzgH7xi1/c4tLSI/Up+Jm2ffbZZ4vzkwEBAgSKEPjBD34QF198cRFZN5hnGm1/2223NXjNSQIECBAgQIAAAQIECBCobgEB0IL7f7/99ssCoLfcckucdNJJcfDBBze7xAULFsTYsWOz+7fbbrsYMGBAs/NyIwECBIoUqB2hPnz48Bg8eHBhRc2aNSvuv//+WLZsWWFlyJgAAQIECBAgQIAAAQIE2raAAGjB/XfOOedkix+tWLEijj766Lj00kuzQGinTp1KKjmNIj355JOzYGq68ZRTTinpfokJECDQGgLve9/74lOf+lRhRaeRnykAaiNAgAABAgQIECBAgAABApsSEADdlExO59Mj8JdcckmcddZZsXDhwixwmfbTSNA0MiqN4uzTp0907do1unTpEmvWrIkULF20aFHMnDkzXnzxxXjggQfimWeeqavRhz70ofjWt75Vd2yHAAECBAgQIECAAAECBAgQIECAAIGGBQRAG3bJ9exXv/rVSIsXnX766dnCRYsXL44777wze5Va0IgRI2LcuHGRFv2wESBAgAABAgQIECBAgAABAgQIECCweQFRtM375HY1zf/5yiuvxLnnnht9+/YtKd/OnTtnj8//93//d9x1112R5v+0ESBAgAABAgQIECBAgAABAgQIECDQuIARoI0b5Zaid+/e8e1vfzt7zZgxIx599NGYNm1a9rh7ejw+jQzt2LFjdO/ePXr06BHp8fkhQ4bEsGHDsnO5VaTEjNJo1euvvz7Wr19f4p1vT/63v/0tOzl//vy3X3SGAAECBAgQIECAAAECBAgQIECAQM4CAqA5gzY1u9122y3Sqy1s1157bfzmN7/JtaovvfRSrvnJjAABAgQIECBAgAABAgQIECBAgEBDAgKgDak4V0/gqquuihNOOCHWrVtX73xzDlIwdfz48bHvvvs253b3ECBAgAABAgQIECBAgAABAgQIEChJQAC0JK78Eq9cuTLS3J6lbnPnzs0WUkr37bzzzqXe3qz06dH9j3zkI826d+ObHnzwweyURZw2lnFMgAABAgQIECBAgAABAgQIECBQhIBFkIpQ3USev/rVr+KII46IPn36RNeuXWPw4MHZyMqHHnpoE3e8/fSJJ54Y/fv3z15vv+oMAQIECBAgQIAAAQIECBAgQIAAAQIbCgiAbqhR0P7SpUvjM5/5TPzrv/5r3H333TFnzpxsQaEXXnghbrrppnjf+94XY8aMqRvZWVA1ZEuAAAECBAgQIECAAAECBAgQIECg6gQEQFugy88999y48cYb60raaqutYsCAAVFTU5OdS3Nr/vCHP4zhw4fH9OnT69LZIUCAAAECBAgQIECAAAECBAgQIEBgywQEQLfMr9G7J0+eHD/72c+ydOnR9zvuuCMWLVoUL7/8csyfPz++973vRc+ePbPrU6dOjUMOOUQQtFFVCQgQIECAAAECBAgQIECAAAECBAg0TUAAtGlOzU51xRVXxNq1a6NDhw5xzz33xFFHHRW1CwClwOdZZ50Vzz//fAwbNiwr49VXX41DDz003nzzzWaX6UYCBAgQIECAAAECBAgQIECAAAECBP5XQAC04HdCCm6m7d/+7d/qgpwbF9mvX7944IEH4uCDD84upcfgR40aFWnuUBsBAgQIECBAgAABAgQIECBAgAABAs0XEABtvl2T7pwyZUqWbr/99tts+h49esRdd90V//RP/5Sle/LJJ+MTn/hENnp0sze6SIAAAQIECBAgQIAAAQIECBAgQIDAJgUEQDdJk8+FVatWZRl169at0Qy7du0av/vd7+Id73hHlvb3v/99fOlLX2r0PgkIECBAgAABAgQIECBAgAABAgQIEGhYQAC0YZfczu6xxx5ZXs8991yT8tx+++3j7rvvjt69e2fp0xyiP/jBD5p0r0QECBAgQIAAAQIECBAgQIAAAQIECNQXEACt75H7UW0AdNy4cTFv3rwm5T9w4MBsJGgaEZq2r371q3HjjTc26V6JCBAgQIAAAQIECBAgQIAAAQIECBD4h4AA6D8sCtlLix+lbc6cOdlCSE1d3f0973lPpKBpWjF+/fr1cdJJJ8WFF14Y69atK6SeMiVAgAABAgQIECBAgAABAgQIECBQiQICoAX3alrN/YMf/GBWyj333BODBw/Ogpk//elPGy35ox/9aPz85z+PmpqaLPD5zW9+M3s8vtEbJSBAgAABAgQIECBAgAABAgQIECBAIBMQAG2BN8JVV10VQ4cOzUqaP39+XH/99XHllVc2qeQvfvGLce2110aHDh2y9EaANolNIgIECBAgQIAAAQIECBAgQIAAAQKZgABoC7wRdt9993j88cfj9NNPj6222iorcccdd2xyySeeeGJMmjQp/uVf/qXJ90hIgAABAgQIECBAgAABAgQIECBAgECEAGgLvQu6dOkS6bH3BQsWxCOPPJItbFRK0XvttVc88MADccMNN0SaH7RHjx6l3C4tAQIECBAgQIAAAQIECBAgQIAAgaoU+N/nqquy6a3T6PQoewpgNnc74YQTIr1sBAgQIECAAAECBAgQIECAAAECBAg0LiAA2riRFAQIECBAgAABAgQIECBAoKwEVq1aldUnPSlYu19EBdM6FJMnT44999wzunXrVkQRdXlOmTIlttlmm+jTp0/duaJ2Bg4cGO9973uLyl6+BAiUmYAAaJl1iOoQIECAAAECBAgQIECAAIHGBF588cUsSVpgt6mL7DaWZzVdr6mpibfeeit69epVTc3WVgJVKyAAWrVdr+EECBAgQIAAAQIECBAg0FYF1qxZk1V9+PDhUcoiu6W2N43+nDVrVvTv3z+GDh1a6u1NTj937tx47LHHslGmhxxySJPva07Ce++9N1asWBFLly4VAG0OoHsItEEBAdA22GmqTIAAAQIECBAgQIAAAQIEksAxxxwThx9+eGEY3/zmN7MA6L777hvnnntuYeU88cQTWQB02223jQsuuKCwclLGTz75ZBYALbQQmRMgUFYCVoEvq+5QGQIECBAgQIAAAQIECBAgQIAAAQIE8hQQAM1TU14ECBAgQIAAAQIECBAgQIAAAQIECJSVgABoWXWHyhAgQIAAAQIECBAgQIAAAQIECBAgkKeAOUDz1JQXAQIEminw05/+NJ566qlm3l3abWkC+/PPPz/atWv7fwNbvXp11vinn346vvCFL5QGUULq2kUGSrhFUgIECBAgQIAAAQIECBAoEwEB0DLpCNUgQKB6BdLqk1/60pdaFOCjH/1ooat4tlRjXn755ayomTNnxtVXX91SxSqHAAECBAgQIECAAAECBNqQgABoG+osVSVAoDIFakcXdu7cOcaOHVtoI6+55pp48803o7bMQgtrgczXrl2blTJw4MA49thjCytx2bJl8aMf/aiw/GVMgAABAgQIECBAgAABAsUJCIAWZytnAgQIlCTQoUOHOProo0u6p9TEv/rVr7IAaKn3lXv6Pn36FGq3cOFCAdByfxOoHwECBAgQIECAAAECBDYh0PYngNtEw5wmQIAAAQIECBAgQIAAAQIECBAgQICAAKj3AAECBAgQIECAAAECBAgQIECAAAECFSsgAFqxXathBAgQIECAAAECBAgQIECAAAECBAiYA9R7gAABAgQIlJHA3Llzs9ocd9xx0a1bt8JqNmfOnMLyljEBAgQIECBAgAABAgTKSUAAtJx6Q10IECBAoOoFFixYkBm88sorVW8BgAABAgQIECBAgAABAnkICIDmoSgPAgQIECCQs8C3vvWt2GOPPXLO9R/ZfeMb34ipU6f+44Q9AgQIECBAgAABAgQIVKiAAGiFdqxmESBAgEDbFujXr18MGDCgsEZ07ty5sLxlTIAAAQIECBAgQIAAgXISsAhSOfWGuhAgQIAAAQIECBAgQIAAAQIECBAgkKuAAGiunDIjQIAAAQIECBAgQIAAAQIECBAgQKCcBARAy6k31IUAAQIECBAgQIAAAQIECBAgQIAAgVwFBEBz5ZQZAQIECBAgQIAAAQIECBAgQIAAAQLlJCAAWk69oS4ECBAgQIAAAQIECBAgQIAAAQIECOQqIACaK6fMCBAgQIAAAQIECBAgQIAAAQIECBAoJwEB0HLqDXUhQIAAAQIECBAgQIAAAQIECBAgQCBXAQHQXDllRoAAAQIECBAgQIAAAQIECBAgQIBAOQkIgJZTb6gLAQIECBAgQIAAAQIECBAgQIAAAQK5CgiA5sopMwIECBAgQIAAAQIECBAgQIAAAQIEyklAALScekNdCBAgQIAAAQIECBAgQIAAAQIECBDIVUAANFdOmREgQIAAAQIECBAgQIAAAQIECBAgUE4CAqDl1BvqQoAAAQIECBAgQIAAAQIECBAgQIBArgICoLlyyowAAQIECBAgQIAAAQIECBAgQIAAgXISEAAtp95QFwIECBAgQIAAAQIECBAgQIAAAQIEchUQAM2VU2YECBAgQIAAAQIECBAgQIAAAQIECJSTgABoOfWGuhAgQIAAAQIECBAgQIAAAQIECBAgkKuAAGiunDIjQIAAAQIECBAgQIAAAQIECBAgQKCcBARAy6k31IUAAQIECBAgQIAAAQIECBAgQIAAgVwFBEBz5ZQZAQIECBAgQIAAAQIECBAgQIAAAQLlJCAAWk69oS4ECBAgQIAAAQIECBAgQIAAAQIECOQqIACaK6fMCBAgQIAAAQIECBAgQIAAAQIECBAoJwEB0HLqDXUhQIAAAQIECBAgQIAAAQIECBAgQCBXAQHQXDllRoAAAQIECBAgQIAAAQIECBAgQIBAOQkIgJZTb6gLAQIECBAgQIAAAQIECBAgQIAAAQK5CgiA5sopMwIECBAgQIAAAQIECBAgQIAAAQIEyklAALScekNdCBAgQIAAAQIECBAgQIAAAQIECBDIVUAANFdOmREgQIAAAQIECBAgQIAAAQIECBAgUE4CAqDl1BvqQoAAAQIECBAgQIAAAQIECBAgQIBArgICoLlyyowAAQIECBAgQIAAAQIECBAgQIAAgXIS6FBOlVEXAgQIEChWYM6cOVkB++67b9TU1BRW2Pr16wvLW8YECBAgQIAAAQIECBAgQKAUAQHQUrSkJUCAQBsXWL58eV0LBCnrKOwQIECAAAECBAgQIECAQAULCIBWcOdqGgECBDYlcMMNN8Q73/nOTV3e4vMnnnhivPDCC1ucjwwIECBAgAABAgQIECBAgMCWCgiAbqmg+wkQINAGBdLj70U+At8GSVSZAAECBAgQIECAAAECBCpUwCJIFdqxmkWAAAECBAgQIECAAAECBAgQIECAQIQAqHcBAQIECBAgQIAAAQIECBAgQIAAAQIVKyAAWrFdq2EECBAgQIAAAQIECBAgQIAAAQIECAiAeg8QIECAAAECBAgQIECAAAECBAgQIFCxAgKgFdu1GkaAAAECBAgQIECAAAECBAgQIECAgACo9wABAgQIECBAgAABAgQIECBAgAABAhUrIABasV2rYQQIECBAgAABAgQIECBAgAABAgQICIB6DxAgQIAAAQIECBAgQIAAAQIECBAgULECAqAV27UaRoAAAQIECBAgQIAAAQIECBAgQICAAKj3AAECBAgQIECAAAECBAgQIECAAAECFSsgAFqxXathBAgQIECAAAECBAgQIECAAAECBAgIgHoPECBAgAABAgQIECBAgAABAgQIECBQsQICoBXbtRpGgAABAgQIECBAgAABAgQIECBAgIAAqPcAAQIECBAgQIAAAQIECBAgQIAAAQIVKyAAWrFdq2EECBAgQIAAAQIECBAgQIAAAQIECAiAeg8QIECAAAECBAgQIECAAAECBAgQIFCxAh0qtmUaRoAAAQIECBAgQIAAAQIECBDYSGD58uXZmc9//vPRrVu3ja7me7j11lvH5ZdfHjvssEO+GcuNAIGSBARAS+KSmAABAgQIECBAgAABAgQIEGjLAkuWLMmq/8c//rFFmvGhD30ojj/++BYpSyEECDQsIADasIuzBAgQIECAAAECBAgQIECAQAULnHvuubHNNtsU1sJbb701nnjiiVi3bl1hZciYAIGmCQiANs1JKgIECBAgQIAAAQIECBAgQKCCBA488MDo27dvYS267777CstbxgQIlCZgEaTSvKQmQIAAAQIECBAgQIAAAQIECBAgQKANCQiAtqHOUlUCBAgQIECAAAECBAgQIECAAAECBEoTEAAtzUtqAgQIECBAgAABAgQIECBAgAABAgTakIA5QNtQZ6kqAQItKzBjxoxIKzbOnz+/0IJNil4or8wJECBAgAABAgQIECBAoMoFBECr/A2g+QQIbFpg0qRJMW3atE0ncIUAAQIECBAgQIAAAQIECBAoewEB0LLvIhUkQKC1Bf75n/85LrjggsKqMWfOnDj++OMLy1/GBAgQIECAAAECBAgQIECgmgUEQKu597WdAIEmCXTs2DG22WabJqVtTqIVK1Y05zb3ECBAgAABAgQIECBAgAABAk0QsAhSE5AkIUCAAAECBAgQIECAAAECBAgQIECgbQoIgLbNflNrAgQIECBAgAABAgQIECBAgAABAgSaIOAR+CYgSVJ9Ai+99FKsWbOm8Ia3b98+Bg4cGDU1NYWWtXDhwpg9e3ahZdRmvv3220evXr1qD30lQIAAAQIECBAgQIBAVQqsX78+a/cbb7wRU6ZMKdSgQ4cOsfvuuxf+2bLQRsicQIECAqAF4sq6bQp897vfjXPOOafFKp/KuuSSSworL80vmX4Qzps3r7AyNsy4W7duMWPGjOjdu/eGp+0TIECAAAECBAgQIECgqgRefPHFrL3pM19LfMZMC7d+85vfrCpjjSXQVAEB0KZKSVc1AtOnT8/aut1220X37t0La/fSpUtj7ty58fLLLxdWRsp40aJFWfCzXbt2sfPOOxda1qxZs2LZsmWRVjUXAC2UWuYECBAgQIAAAQIECJS5QPpslLaiP1suWbIk+8xX+1m2zFlUj0CrCAiAtgq7QtuCwMknnxwf/ehHC6vqH//4xzj//PMLy3/jjHv27Bm33XbbxqdzPT7uuOPCD91cSWVGgAABAgQIECBAgEAbFxg9enSMGjWqsFaMHz8+LrroosLylzGBShCwCFIl9KI2ECBAgAABAgQIECBAgAABAgQIECDQoIAAaIMsThIgQIAAAQIECBAgQIAAAQIECBAgUAkCAqCV0IvaQIAAAQIECBAgQIAAAQIECBAgQIBAgwLmAG2QxUkCxQusW7cuKyQtgnTttdcWVmBaBMlGgAABAgQIECBAgAABApUpUPvZctq0aYV+tkx6U6ZMiR49ekS/fv0KxxwwYEC8//3vL7wcBVSHgABodfSzVpahQPrhlLaJEydmrzKsoioRIECAAAECBAgQIECAQJkLpKBk2h555JHsVebVLal6s2bNapFga0mVkrhNCgiAtsluU+lKEFi5cmXWjB133DH222+/wpqURoDef//9heUvYwIECBAgQIAAAQIECBBoPYFVq1Zlhe+8886xzz77FFaR+fPnx4QJE6JLly5x2GGHFVZOyvjee++NpUuXZq9CC5J51QgIgFZNV2touQoMGTIkzj///MKqlx6xFwAtjFfGBAgQIECAAAECBAgQKAuBvffeu9DPls8++2wWAE2PwBf5GTZhTpo0SfCzLN5VlVMJiyBVTl9qCQECBAgQIECAAAECBAgQIECAAAECGwkIgG4E4pAAAQIECBAgQIAAAQIECBAgQIAAgcoREACtnL7UEgIECBAgQIAAAQIECBAgQIAAAQIENhIwB+hGIA4JECBAgAABAgQIECBAgAABAgRaT2D58uVZ4eecc06kOUeL3Lp37x4XXHBBbLfddkUWI+9WFhAAbeUOUDwBAgQIECBAgAABAgQIECBAgMA/BBYuXJgd/OpXv/rHyQL3hg0bFp/97GcLLEHWrS0gANraPaB8AgQIECBAgAABAgQIECBAgACBOoH169dn+6eddlpsu+22defz3vn973+frTi/Zs2avLOWX5kJCICWWYeoDgECBAgQIECAAAECBAgQIECAQMQHPvCB6N+/f2EUzz77bBYALawAGZeNgEWQyqYrVIQAAQIECBAgQIAAAQIECBAgQIAAgbwFBEDzFpUfAQIECBAgQIAAAQIECBAgQIAAAQJlIyAAWjZdoSIECBAgQIAAAQIECBAgQIAAAQIECOQtYA7QvEXlR6CKBRYsWJC1ftSoUdG5c+fCJJYuXRpz586NPn36FFrO4sWLC2uDjAkQIECAAAECBAgQIECAAIGWERAAbRlnpRCoCoElS5Zk7XzllVdapL0tVU6LNEYhBAgQIECAAAECBAgQIECAQCECAqCFsMqUQHULXH755bHLLrsUhjB27Nh49dVX46STToqRI0cWVs7NN98cd9xxR2H5y5gAAQIECBAgQIAAAQIECBAoXkAAtHhjJRCoOoEdd9yx0ABop06dMtPtttuu0HJ69OhRdX2nwQQIECBAgAABAgQIECBAoNIELIJUaT2qPQQIECBAgAABAgQIECBAgAABAgQI1AkIgNZR2CFAgAABAgQIECBAgAABAgQIECBAoNIEBEArrUe1hwABAgQIECBAgAABAgQIECBAgACBOgFzgNZRtM7OrFmzYt68ebFs2bLs1aVLl+jZs2ekuQd79eoV6dhGgAABAgQIECBAgAABAgQIECBAgEDzBARA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Rx+dreZeO6F4KWWlUaQf+tCHstGk6b5TTjmllNulJUCAAAECBAgQIECAAAECBAgQIFCVAh6Bb4FuTyu3n3XWWXUlpTmiDj744Bg+fHg2ijPNuZVWcEwr96W50lKwNM11kVYUTXNlpZVS03w1tVsKhN51112Fzg1XW5avBAgQIECAAAECBAgQIECAAAECBNqygABoC/XeddddF6effvoWL1w0YsSIGDduXKETG7cQiWIIECBAgAABAgQIECBAgAABAgQIFC4gAFo48T8KSKv6/uhHP4prr7020gqyTd3SanEp8Pn5z38+jjzyyKbeJh0BAgQIECBAgAABAgQIECBAgACBqhcQAG2lt8CMGTPi0UcfjWnTpmWPuy9cuDAWL16czRfavXv36NGjRwwcODCGDBkSw4YNi3TORoAAAQIECBAgQIAAAQIECBAgQIBAaQICoKV5SU2AAAECBAgQIECAAAECBAgQIECAQBsSsAp8G+osVSVAgAABAgQIECBAgAABAgQIECBAoDQBAdDSvKQmQIAAAQIECBAgQIAAAQIECBAgQKANCQiAtqHOUlUCBAgQIECAAAECBAgQIECAAAECBEoTEAAtzUtqAgQIECBAgAABAgQIECBAgAABAgTakIAAaBvqLFUlQIAAAQIECBAgQIAAAQIECBAgQKA0AQHQ0rykJkCAAAECBAgQIECAAAECBAgQIECgDQkIgLahzlJVAgQIECBAgAABAgQIECBAgAABAgRKExAALc1LagIECBAgQIAAAQIECBAgQIAAAQIE2pCAAGgb6ixVJUCAAAECBAgQIECAAAECBAgQIECgNAEB0NK8pCZAgAABAgQIECBAgAABAgQIECBAoA0JCIC2oc5SVQIECBAgQIAAAQIECBAgQIAAAQIEShMQAC3NS2oCBAgQIECAAAECBAgQIECAAAECBNqQQIc2VFdVJdAiAhdddFFceuml0bdv3+jUqVOLlKkQAgTKX2DWrFnRrl277HtD+ddWDQkQaAmBFStWxOzZs2OHHXaIbt26tUSRyiBAoA0IzJkzJ1atWhU77bRT1NTUtIEaqyIBAkULrF69OtLniVNPPTUuv/zyoouTfwMCNev/vjVw3ikCVStw4IEHxuOPP1617ddwAgQIECBAgAABAgQIECBAIH+BwYMHx3PPPZd/xnJsVMAI0EaJJKg2gWHDhmUB0AsvvDA+8YlPVFvztZcAgQYE0iivffbZJzp37hyTJ09uIIVTBAhUo8AvfvGL+OEPfxhf+MIXYsyYMdVIoM0ECDQg8N73vjfmzp0bDz74YGy//fYNpHCKAIFqE/j9738fY8eOjaFDh1Zb08umvQKgZdMVKlIuArWPqaRH4Pfcc89yqZZ6ECDQigLLly/PSk+PwPu+0IodoWgCZSaQHn1PW69evXxvKLO+UR0CrSnQocP/fszeY489ok+fPq1ZFWUTIFAmAk899VRWk9p4Q5lUq6qqYRGkqupujSVAgAABAgQIECBAgAABAgQIECBQXQICoNXV31pLgAABAgQIECBAgAABAgQIECBAoKoEBECrqrs1lgABAgQIECBAgAABAgQIECBAgEB1CQiAVld/ay0BAgQIECBAgAABAgQIECBAgACBqhIQAK2q7tZYAgQIECBAgAABAgQIECBAgAABAtUlIABaXf2ttQQIECBAgAABAgQIECBAgAABAgSqSkAAtKq6W2MJECBAgAABAgQIECBAgAABAgQIVJeAAGh19bfWEiBAgAABAgQIECBAgAABAgQIEKgqAQHQqupujSVAgAABAgQIECBAgAABAgQIECBQXQICoNXV31pLgAABAgQIECBAgAABAgQIECBAoKoEBECrqrs1lgABAgQIECBAgAABAgQIECBAgEB1CQiAVld/ay0BAgQIECBAgAABAgQIECBAgACBqhIQAK2q7tZYAgQIECBAgAABAgQIECBAgAABAtUlIABaXf2ttQQIECBAgAABAgQIECBAgAABAgSqSkAAtKq6W2MJECBAgAABAgQIECBAgAABAgQIVJeAAGh19bfWEiBAgAABAgQIECBAgAABAgQIEKgqAQHQqupujW2KQI8ePbJkPXv2bEpyaQgQqAKBjh07RteuXaP2+0MVNFkTCRBogkDt9wS/MzQBSxICVSSQvjd06NAhunXrVkWt1lQCBDYn4HeGzem0zLWa9X/fWqYopRBoGwKLFy+O+++/P4444oho375926i0WhIgULjApEmTolOnTvGud72r8LIUQIBA2xBYtWpV3HPPPfHBD34w+yNJ26i1WhIgULTA1KlTY8GCBXHAAQcUXZT8CRBoIwIp9Hb33XfHe97znth2223bSK0rq5oCoJXVn1pDgAABAgQIECBAgAABAgQIECBAgMAGAh6B3wDDLgECBAgQIECAAAECBAgQIECAAAEClSUgAFpZ/ak1BAgQIECAAAECBAgQIECAAAECBAhsICAAugGGXQIECBAgQIAAAQIECBAgQIAAAQIEKktAALSy+lNrCBAgQIAAAQIECBAgQIAAAQIECBDYQEAAdAMMuwQIECBAgAABAgQIECBAgAABAgQIVJaAAGhl9afWECBAgAABAgQIECBAgAABAgQIECCwgYAA6AYYdgkQIECAAAECBAgQIECAAAECBAgQqCwBAdDK6k+tIUCAAAECBAgQIECAAAECBAgQIEBgAwEB0A0w7BIgQIAAAQIECBAgQIAAAQIECBAgUFkCAqCV1Z9aQ4AAAQIECBAgQIAAAQIECBAgQIDABgICoBtg2CVAgAABAgQIECBAgAABAgQIECBAoLIEBEArqz+1hgABAgQIECBAgAABAgQIECBAgACBDQQEQDfAsEuAAAECBAgQIECAAAECBAgQIECAQGUJCIBWVn9qDQECBAgQIECAAAECBAgQIECAAAECGwgIgG6AYZcAAQIECBAgQIAAAQIECBAgQIAAgcoSEACtrP7UGgIECBAgQIAAAQIECBAgQIAAAQIENhAQAN0Awy4BAgQIECBAgAABAgQIECBAgAABApUlIABaWf2pNQQIECBAgAABAgQIECBAgAABAgQIbCAgALoBhl0CBAgQIECAAAECBAgQIECAAAECBCpLQAC0svpTawgQIECAAAECBAgQIECAAAECBAgQ2EBAAHQDDLsECBAgQIAAAQIECBAgQIAAAQIECFSWgABoZfWn1hAgQIAAAQIECBAgQIAAAQIECBAgsIGAAOgGGHYJECBAgAABAgQIECBAgAABAgQIEKgsAQHQyupPrSFAgAABAgQIECBAgAABAgQIECBAYAMBAdANMOwSIECAAAECBAgQIECAAAECBAgQIFBZAgKgldWfWtOAwMMPPxzt27eP7bffvoGrzT+1du3auOaaa+KDH/xg7LrrrrHtttvG4YcfHhdddFE88cQTzc/YnQQItIjAEUccETU1NfHTn/401/LGjx8fn/rUp+KAAw7Ivi/06dMn3ve+98UXv/jFmDx5cq5lyYwAgXwFivqdoaFaLlq0KIYPHx59+/aNU045paEkzhEgUCYCRf3OkJr35JNPxje+8Y0YOXJkpN8Z0uvggw+O8847LxYuXFgm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LAItW7a0xx9/3JQxqqLs0IkTJ2Y5gl0IIIAAAggggAAC1SlAALQ69XlvBBBAAAEEEEAAgYIU2HLLLe3ss88Or33JkiXhc54ggAACCCCAAAIIxEuAIfDx6g+uBgEEEEAAAQQQqFKBgQMH2vr1661Tp0521lln2eTJk23KlCn29ttvuwzHiy++2E455RTTKui+aN8TTzxhGgquvxUrVljDhg3dEHANAz/ttNPKnEvzmmuusS+//NLat29v5557rn3++ef24IMP2r/+9S+bN2+e1axZ0w488EA79NBD7ZJLLrHatWv7t834qEWOdL06x3vvvWebb765a8vhhx8erv6e8cAK2KjV4H1Rm7KV119/3R599FHT4+LFi22LLbawAw44wP2df/75bmX5bMd/+OGHbr7RV1991d5//32XddqqVSvTX8eOHa1Xr14ZD3/55Zdt6tSpbt/111/v3ueee+6xF154wZlv3LjRmjVrZj169LCLLrrI6tWrl/E8bEQAAQQQQAABBApaIBiyQ0EAAQQQQAABBBAoUoEddtghFdzMpoIgXCqYy9I912v/t9tuu6WCxX6czo8//pgaOXJkKgjehft9vehjEIRMDRgwIPXDDz+kqTZu3NgdGwRbUx988EEqCJiWea5gQSJXJ+0k/7fh3XffTe2xxx5lHn/88cenpk2bFu7/05/+lHYqbfPXHgSD0/Zn26A2+GP79OmTsWqwWFJq+PDhqVq1aoV1/TH+cccdd0w9+eSTGY/XxnHjxqVk6utnelRbg9Xs084xadKk8LjXXnstdeqpp4avS59H17FgwYK0c7ABAQQQQAABBBAodAEyQIM7PwoCCCCAAAIIIFDsAkEwMcwUlEWNGjXcKuca5u2zP4PgmT322GOOarvttrMzzzzTmjdv7lZBX7lypf3973932Y1aIX306NEuk1N1MhVlaypzcc2aNS5z9LDDDrPtt9/eXnrpJVu4cKEFwVZ75ZVX7PTTT3eZoaXPoffT8cogVdF1KIuxadOmtmjRIpehOn36dHvxxRdLH1ohr9944w3T+X1RRmum0r17d5sxY4bbpWHzao8yP7/99lvXziDw6VaX79mzpzPT4krR8vTTT1u/fv1cXzRo0MANu997773d65kzZ9rs2bNdBq+u5eijj3Ztjx4ffa6+fOutt0znUban/FavXm2PPPKIPf/88+46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" width="672" /></p>
+<pre class="r"><code>quantile(randResp, probs = .5)</code></pre>
+<pre><code>##      50% 
+## 1.410072</code></pre>
+<pre class="r"><code>data %&gt;% filter(longstringAtt == 19 | longstringMisconcept == 11 |
+                  mahadFlagged == TRUE)</code></pre>
+<pre><code>## # A tibble: 94 x 466
+##    exclude    id date  time     timeTaken source email q1    q1_whoTeacher_M
+##      &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt; &lt;time&gt;   &lt;time&gt;    &lt;chr&gt;  &lt;lgl&gt; &lt;chr&gt;           &lt;dbl&gt;
+##  1      NA    19 9/30… 09:34:19 15&#39;32&quot;    Priam… NA    Stal…               1
+##  2      NA    68 10/3… 11:16:21 10&#39;55&quot;    Priam… NA    Nikd…              NA
+##  3      NA    73 10/3… 11:17:49 12&#39;43&quot;    Priam… NA    Nikd…              NA
+##  4      NA   105 10/3… 13:38:52 08&#39;37&quot;    Priam… NA    Stal…               0
+##  5      NA   116 10/3… 13:45:19 07&#39;03&quot;    Priam… NA    Stal…               0
+##  6      NA   128 11/4… 14:18:28 12&#39;47&quot;    Priam… NA    Stal…               1
+##  7      NA   155 11/5… 15:26:23 13&#39;30&quot;    Priam… NA    Nikd…               0
+##  8      NA   179 11/5… 16:09:38 17&#39;27&quot;    Priam… NA    Nikd…               0
+##  9      NA   211 11/6… 13:36:14 10&#39;29&quot;    Priam… NA    Nikd…               0
+## 10      NA   220 11/6… 13:40:35 14&#39;50&quot;    Priam… NA    Nikd…               0
+## # … with 84 more rows, and 457 more variables: q1_whoTeacher_F &lt;dbl&gt;,
+## #   q1_whoStudent_M &lt;dbl&gt;, q1_whoStudent_F &lt;dbl&gt;, q1_whoEmployee_M &lt;dbl&gt;,
+## #   q1_whoEmployee_F &lt;dbl&gt;, q1_whoOther &lt;chr&gt;, q1_whereEduProcess &lt;dbl&gt;,
+## #   q1_whereBreak &lt;dbl&gt;, q1_whereDorm &lt;dbl&gt;, q1_whereLab &lt;dbl&gt;,
+## #   q1_wherePractice &lt;dbl&gt;, q1_whereOnline &lt;dbl&gt;, q1_whereDontKnow &lt;dbl&gt;,
+## #   q1_whereOther &lt;chr&gt;, q2 &lt;chr&gt;, q2_whoTeacher_M &lt;dbl&gt;,
+## #   q2_whoTeacher_F &lt;dbl&gt;, q2_whoStudent_M &lt;dbl&gt;, q2_whoStudent_F &lt;dbl&gt;,
+## #   q2_whoEmployee_M &lt;dbl&gt;, q2_whoEmployee_F &lt;dbl&gt;, q2_whoOther &lt;chr&gt;,
+## #   q2_whereEduProcess &lt;dbl&gt;, q2_whereBreak &lt;dbl&gt;, q2_whereDorm &lt;dbl&gt;,
+## #   q2_whereLab &lt;dbl&gt;, q2_wherePractice &lt;dbl&gt;, q2_whereOnline &lt;dbl&gt;,
+## #   q2_whereDontKnow &lt;dbl&gt;, q2_whereOther &lt;lgl&gt;, q3 &lt;chr&gt;,
+## #   q3_whoTeacher_M &lt;dbl&gt;, q3_whoTeacher_F &lt;dbl&gt;, q3_whoStudent_M &lt;dbl&gt;,
+## #   q3_whoStudent_F &lt;dbl&gt;, q3_whoEmployee_M &lt;dbl&gt;, q3_whoEmployee_F &lt;dbl&gt;,
+## #   q3_whoOther &lt;chr&gt;, q3_whereEduProcess &lt;dbl&gt;, q3_whereBreak &lt;dbl&gt;,
+## #   q3_whereDorm &lt;dbl&gt;, q3_whereLab &lt;dbl&gt;, q3_wherePractice &lt;dbl&gt;,
+## #   q3_whereOnline &lt;dbl&gt;, q3_whereDontKnow &lt;dbl&gt;, q3_whereOther &lt;chr&gt;,
+## #   q4 &lt;chr&gt;, q4_whoTeacher_M &lt;dbl&gt;, q4_whoTeacher_F &lt;dbl&gt;,
+## #   q4_whoStudent_M &lt;dbl&gt;, q4_whoStudent_F &lt;dbl&gt;, q4_whoEmployee_M &lt;dbl&gt;,
+## #   q4_whoEmployee_F &lt;dbl&gt;, q4_whoOther &lt;chr&gt;, q4_whereEduProcess &lt;dbl&gt;,
+## #   q4_whereBreak &lt;dbl&gt;, q4_whereDorm &lt;dbl&gt;, q4_whereLab &lt;dbl&gt;,
+## #   q4_wherePractice &lt;dbl&gt;, q4_whereOnline &lt;dbl&gt;, q4_whereDontKnow &lt;dbl&gt;,
+## #   q4_whereOther &lt;chr&gt;, q5 &lt;chr&gt;, q5_whoTeacher_M &lt;dbl&gt;,
+## #   q5_whoTeacher_F &lt;dbl&gt;, q5_whoStudent_M &lt;dbl&gt;, q5_whoStudent_F &lt;dbl&gt;,
+## #   q5_whoEmployee_M &lt;dbl&gt;, q5_whoEmployee_F &lt;dbl&gt;, q5_whoOther &lt;chr&gt;,
+## #   q5_whereEduProcess &lt;dbl&gt;, q5_whereBreak &lt;dbl&gt;, q5_whereDorm &lt;dbl&gt;,
+## #   q5_whereLab &lt;dbl&gt;, q5_wherePractice &lt;dbl&gt;, q5_whereOnline &lt;dbl&gt;,
+## #   q5_whereDontKnow &lt;dbl&gt;, q5_whereOther &lt;chr&gt;, q6 &lt;chr&gt;,
+## #   q6_whoTeacher_M &lt;dbl&gt;, q6_whoTeacher_F &lt;dbl&gt;, q6_whoStudent_M &lt;dbl&gt;,
+## #   q6_whoStudent_F &lt;dbl&gt;, q6_whoEmployee_M &lt;dbl&gt;, q6_whoEmployee_F &lt;dbl&gt;,
+## #   q6_whoOther &lt;chr&gt;, q6_whereEduProcess &lt;dbl&gt;, q6_whereBreak &lt;dbl&gt;,
+## #   q6_whereDorm &lt;dbl&gt;, q6_whereLab &lt;dbl&gt;, q6_wherePractice &lt;dbl&gt;,
+## #   q6_whereOnline &lt;dbl&gt;, q6_whereDontKnow &lt;dbl&gt;, q6_whereOther &lt;lgl&gt;,
+## #   q7 &lt;chr&gt;, q7_whoTeacher_M &lt;dbl&gt;, q7_whoTeacher_F &lt;dbl&gt;,
+## #   q7_whoStudent_M &lt;dbl&gt;, q7_whoStudent_F &lt;dbl&gt;, q7_whoEmployee_M &lt;dbl&gt;, …</code></pre>
+<pre class="r"><code># Sample description ------------------------------------------------------
 
 # total N
 ss_total_n &lt;- nrow(data)
@@ -601,10 +697,10 @@ ss_fieldStudy_n &lt;- data %&gt;%
             percent = round(100*n()/nrow(.), 2)) %&gt;% arrange(n)</code></pre>
 <pre><code>## `summarise()` ungrouping output (override with `.groups` argument)</code></pre>
 <pre class="r"><code>ss_fieldStudy_plot &lt;- ggplotly(data %&gt;% filter(genderBinary %in% c(0, 1)) %&gt;% mutate(genderBinary = fct_rev(genderBinary)) %&gt;%
-           ggplot(aes(fieldStudy, fill = genderBinary)) + geom_bar(stat = &quot;count&quot;, alpha = .6, binwidth=.5, bins = length(data$fieldStudy)) +
-           labs(title = &quot;Odbor štúdia&quot;, x = &quot;&quot;, y = &quot;Počet participantov&quot;) + coord_flip() + scale_fill_manual(values=c(cbPalette[1], cbPalette[2])) +
+           ggplot(aes(fieldStudy, fill = genderBinary)) + geom_histogram(stat = &quot;count&quot;, alpha = .6, binwidth=.5, bins = length(data$fieldStudy)) +
+           labs(title = &quot;Odbor štúdia&quot;, x = &quot;&quot;, y = &quot;Počet participantov&quot;, fill = &quot;Pohlavie&quot;) + coord_flip() + scale_fill_manual(values=c(cbPalette[1], cbPalette[2])) +
            scale_x_discrete(limits = ss_fieldStudy_n$Odbor))</code></pre>
-<pre><code>## Warning: Ignoring unknown parameters: binwidth, bins</code></pre>
+<pre><code>## Warning: Ignoring unknown parameters: binwidth, bins, pad</code></pre>
 <pre class="r"><code># age
 ageRange &lt;- 17:30
 ss_age_plot &lt;- ggplotly(data %&gt;% filter(age %in% ageRange &amp; genderBinary %in% c(0, 1)) %&gt;% mutate(genderBinary = fct_rev(genderBinary)) %&gt;%
@@ -640,7 +736,7 @@ ss_sexOrien_n &lt;- data %&gt;%
 data$yearStudy &lt;- as.factor(as.numeric(gsub(&quot;([0-9]+).*$&quot;, &quot;\\1&quot;, data$yearStudy)))</code></pre>
 <pre><code>## Warning in is.factor(x): NAs introduced by coercion</code></pre>
 <pre class="r"><code>ss_yearStudy_plot &lt;- ggplotly(data %&gt;% filter(yearStudy %in% 1:7 &amp; genderBinary %in% c(0, 1)) %&gt;%
-                      ggplot(aes(yearStudy, fill = fct_rev(genderBinary))) + geom_bar(stat = &quot;count&quot;, position = position_stack(), alpha = .6) +
+                      ggplot(aes(yearStudy, fill = fct_rev(genderBinary))) + geom_bar(stat = &quot;count&quot;, position = &quot;stack&quot;, alpha = .6) +
                       scale_x_discrete(name = &quot;Rok štúdia&quot;) + labs(title = &quot;Rok štúdia&quot;, y = &quot;Počet&quot;, fill = &quot;Pohlavie&quot;) +
                       scale_fill_manual(values=c(cbPalette[1], cbPalette[2])))
 
@@ -649,10 +745,10 @@ ss_fieldStudyYear_n &lt;- data %&gt;%
   group_by(yearStudy, factor(fieldStudy)) %&gt;%
   summarise(n = n(),
             percent = round(100*n()/nrow(.), 2))</code></pre>
-<pre><code>## `summarise()` regrouping output by 'yearStudy' (override with `.groups` argument)</code></pre>
+<pre><code>## `summarise()` regrouping output by &#39;yearStudy&#39; (override with `.groups` argument)</code></pre>
 <pre class="r"><code>ss_fieldStudyYear_plot &lt;- ggplotly(data %&gt;% filter(yearStudy %in% 1:7 &amp; genderBinary %in% c(0, 1)) %&gt;%
            ggplot(aes(fieldStudy, fill = yearStudy)) + geom_bar(stat = &quot;count&quot;, position = position_stack(), alpha = .6) +
-           scale_x_discrete(name = &quot;Rok štúdia&quot;, limits = ss_fieldStudy_n$Odbor) + labs(title = &quot;Rok štúdia v rámci odborov&quot;, y = &quot;Počet&quot;, fill = &quot;Odbor&quot;) +
+           scale_x_discrete(name = &quot;Odbor&quot;, limits = ss_fieldStudy_n$Odbor) + labs(title = &quot;Rok štúdia v rámci odborov&quot;, y = &quot;Počet&quot;, fill = &quot;Ročník&quot;) +
            scale_fill_manual(values=cbPalette) + coord_flip())
 
 # field of study by region
@@ -660,7 +756,7 @@ ss_fieldStudyRegion_n &lt;- data %&gt;%
   group_by(facultyRegion, fieldStudy) %&gt;%
   summarise(n = n(),
             percent = round(100*n()/nrow(.), 2))</code></pre>
-<pre><code>## `summarise()` regrouping output by 'facultyRegion' (override with `.groups` argument)</code></pre>
+<pre><code>## `summarise()` regrouping output by &#39;facultyRegion&#39; (override with `.groups` argument)</code></pre>
 <pre class="r"><code># Sampling weights --------------------------------------------------------
 
 # population data
@@ -674,16 +770,32 @@ c(12297,    4783,   4471,
 dimnames = list(c(&quot;filozofický, humanitný, pedagogický, teologický&quot;, &quot;mediálny, umelecký&quot;, &quot;prírodovedecký&quot;, &quot;spoločenský, ekonomický, právny&quot;, &quot;technický&quot;, &quot;zdravotnícky&quot;),
                 c(&quot;Západné Slovensko&quot;, &quot;Stredné Slovensko&quot;, &quot;Východné Slovensko&quot;)))
 
-popProp &lt;- as.data.frame(t(popCounts)/99205)
-popProp &lt;- cbind(gather(popProp), region = rep(c(&quot;Západné Slovensko&quot;, &quot;Stredné Slovensko&quot;, &quot;Východné Slovensko&quot;), 3))
-names(popProp) &lt;- c(&quot;fieldStudy&quot;, &quot;popProp&quot;, &quot;facultyRegion&quot;)
+sampleProp &lt;- data %&gt;%
+  group_by(Odbor = factor(fieldStudy), Region = relevel(factor(data$facultyRegion), ref = &quot;Západné Slovensko&quot;)) %&gt;%
+  summarise(sampleProp = round(100*n()/nrow(.), 3))</code></pre>
+<pre><code>## `summarise()` regrouping output by &#39;Odbor&#39; (override with `.groups` argument)</code></pre>
+<pre class="r"><code>popProp &lt;- as.data.frame(t(round((popCounts)*100/99205, 3)))
+popProp &lt;- cbind(gather(popProp), region = rep(c(&quot;Západné Slovensko&quot;, &quot;Stredné Slovensko&quot;, &quot;Východné Slovensko&quot;), 3), sampleProp$sampleProp)
+names(popProp) &lt;- c(&quot;fieldStudy&quot;, &quot;popProp&quot;, &quot;facultyRegion&quot;, &quot;sampleProp&quot;)
 
 # Compute and trim weights
 data &lt;- data %&gt;% left_join(popProp, by = c(&quot;fieldStudy&quot;, &quot;facultyRegion&quot;)) %&gt;%
                   left_join(ss_fieldStudyRegion_n[-3], by = c(&quot;fieldStudy&quot;, &quot;facultyRegion&quot;)) %&gt;%
-                  mutate(weight = ifelse(popProp/(percent/100) &lt; .3,  .3, popProp/(percent/100)),
-                         weight = ifelse(popProp/(percent/100) &gt; 3,  3, popProp/(percent/100))) %&gt;%
+                  mutate(w = ifelse(popProp/sampleProp &lt; .3,  .3, popProp/sampleProp),
+                         w = ifelse(popProp/sampleProp &gt; 3,  3, popProp/sampleProp)) %&gt;%
                   select(-c(popProp, percent))
+
+table(data$w)</code></pre>
+<pre><code>## 
+## 0.391392685629849 0.499866529382603 0.585552812784202 0.681626305265497 
+##               166               402               118               138 
+## 0.743356802180332 0.828620102214651 0.864622288706058  1.00085154697701 
+##               135                45                41                54 
+##  1.01895206243032   1.1198606271777   1.3104979384713  1.62967504598406 
+##                55                66               145                25 
+##  2.33588850174216  2.48466981132075                 3 
+##                22               117                 4</code></pre>
+<pre class="r"><code>design &lt;- svydesign(ids = ~1, data = data, weights = ~w)
 
 # RQ1 Prevalence rates---------------------------------------------------------------------
 # RQ1 Aký je celkový výskyt všetkých foriem sexuálneho obťažovania
@@ -702,36 +814,36 @@ data &lt;- data %&gt;% mutate_at(vars(starts_with(&quot;q&quot;) &amp; !contains
 ## This warning is displayed once every 8 hours.
 ## Call `lifecycle::last_warnings()` to see where this warning was generated.</code></pre>
 <pre class="r"><code>### RQ1.1 Individual forms
-# frequency table (n's and %) for all individual types of abuse across the board
+# frequency table (n&#39;s and %) for all individual types of abuse across the board
 rq1.1_items_n &lt;- data %&gt;%
   summarise_at(vars(starts_with(&quot;q&quot;) &amp; !contains(&quot;_&quot;)),
-               funs(n = sum(., na.rm = TRUE),
-                    perc = sum(., na.rm = TRUE)*100/n()))
+               funs(n = sum(weight(., w), na.rm = TRUE),
+                    perc = sum(weight(., w), na.rm = TRUE)*100/sum(w)))
 
-rq1.1_items_plotData &lt;- as_tibble(cbind(item = names(rq1.1_items_n), t(rq1.1_items_n))) %&gt;% filter(!grepl(&quot;_perc&quot;, item, fixed = TRUE)) %&gt;%
-  mutate(n = as.numeric(V2), item = str_remove(item, &quot;_n&quot;), cluster = c(rep(&quot;GMH&quot;, 8), rep(&quot;USA&quot;, 8), rep(&quot;SAB&quot;, 4)), V2 = NULL) %&gt;% arrange(n)</code></pre>
+rq1.1_items_plotData &lt;- as_tibble(cbind(item = names(rq1.1_items_n), t(rq1.1_items_n))) %&gt;% filter(!grepl(&quot;_n&quot;, item, fixed = TRUE)) %&gt;%
+  mutate(perc = as.numeric(V2), item = str_remove(item, &quot;_perc&quot;), cluster = c(rep(&quot;GMH&quot;, 8), rep(&quot;USA&quot;, 8), rep(&quot;SAB&quot;, 4)), V2 = NULL) %&gt;% arrange(perc)</code></pre>
 <pre><code>## Warning: The `x` argument of `as_tibble.matrix()` must have unique column names if `.name_repair` is omitted as of tibble 2.0.0.
 ## Using compatibility `.name_repair`.
 ## This warning is displayed once every 8 hours.
 ## Call `lifecycle::last_warnings()` to see where this warning was generated.</code></pre>
-<pre class="r"><code>rq1.1_items_plot &lt;- ggplotly(rq1.1_items_plotData %&gt;% ggplot(aes(x = item, y = n, fill = cluster)) + geom_bar(stat = &quot;identity&quot;,  alpha = .6) +
-           labs(title = &quot;Forma sexuálneho obťažovania&quot;, x = &quot;&quot;, y = &quot;Počet participantov&quot;) + scale_fill_manual(&quot;legend&quot;, values = c(&quot;GMH&quot; = cbPalette[1], &quot;USA&quot; = cbPalette[2], &quot;SAB&quot; = cbPalette[3])) +
+<pre class="r"><code>rq1.1_items_plot &lt;- ggplotly(rq1.1_items_plotData %&gt;% ggplot(aes(x = item, y = perc, fill = cluster)) + geom_bar(stat = &quot;identity&quot;,  alpha = .6) +
+           labs(title = &quot;Forma sexuálneho obťažovania&quot;, x = &quot;&quot;, y = &quot;Percento participantov&quot;) + scale_fill_manual(&quot;legend&quot;, values = c(&quot;GMH&quot; = cbPalette[1], &quot;USA&quot; = cbPalette[2], &quot;SAB&quot; = cbPalette[3])) +
            coord_flip() + scale_x_discrete(limits = rq1.1_items_plotData$item))
 
 # individual forms by gender
-# frequency tables (n's and %) for all individual types of abuse by gender.
+# frequency tables (n&#39;s and %) for all individual types of abuse by gender.
 # Dropping other than female, male
 rq1.1_itemsGender_n &lt;- data %&gt;%
   group_by(factor(genderBinary)) %&gt;%
   summarise_at(vars(starts_with(&quot;q&quot;) &amp; !contains(&quot;_&quot;)),
-               funs(n = sum(., na.rm = TRUE),
-                    perc = sum(., na.rm = TRUE)*100/n())) %&gt;% na.omit()
+               funs(n = sum(weight(., w), na.rm = TRUE),
+                    perc = sum(weight(., w), na.rm = TRUE)*100/sum(w))) %&gt;% na.omit()
 
-rq1.1_itemsGender_plotData &lt;- as_tibble(cbind(item = names(rq1.1_itemsGender_n), t(rq1.1_itemsGender_n)))[-1,] %&gt;% filter(!grepl(&quot;_perc&quot;, item, fixed = TRUE)) %&gt;%
-  mutate(male = as.numeric(V2), female = as.numeric(V3), item = str_remove(item, &quot;_n&quot;), V2 = NULL, V3 = NULL) %&gt;% pivot_longer(cols = c(male, female), names_to = &quot;gender&quot;, values_to = &quot;n&quot;)
+rq1.1_itemsGender_plotData &lt;- as_tibble(cbind(item = names(rq1.1_itemsGender_n), t(rq1.1_itemsGender_n)))[-1,] %&gt;% filter(!grepl(&quot;_n&quot;, item, fixed = TRUE)) %&gt;%
+  mutate(male = as.numeric(V2), female = as.numeric(V3), item = str_remove(item, &quot;_perc&quot;), V2 = NULL, V3 = NULL) %&gt;% pivot_longer(cols = c(male, female), names_to = &quot;gender&quot;, values_to = &quot;perc&quot;)
 
-rq1.1_itemsGender_plot &lt;- ggplotly(rq1.1_itemsGender_plotData %&gt;% ggplot(aes(x = item, y = n, fill = gender)) + geom_bar(stat = &quot;identity&quot;,  alpha = .6) +
-                               labs(title = &quot;Forma sexuálneho obťažovania podľa pohlavia&quot;, x = &quot;&quot;, y = &quot;Počet participantov&quot;) + scale_fill_manual(&quot;legend&quot;, values = c(&quot;female&quot; = cbPalette[1], &quot;male&quot; = cbPalette[2])) +
+rq1.1_itemsGender_plot &lt;- ggplotly(rq1.1_itemsGender_plotData %&gt;% ggplot(aes(x = item, y = perc, fill = gender)) + geom_bar(stat = &quot;identity&quot;,  alpha = .6, position = &quot;dodge&quot;) +
+                               labs(title = &quot;Forma sexuálneho obťažovania podľa pohlavia&quot;, x = &quot;&quot;, y = &quot;Percento participantov&quot;) + scale_fill_manual(&quot;legend&quot;, values = c(&quot;female&quot; = cbPalette[1], &quot;male&quot; = cbPalette[2])) +
                                coord_flip() + scale_x_discrete(limits = rev(rq1.1_itemsGender_plotData$item)))
 
 ### Frequencies by cluster
@@ -752,40 +864,41 @@ data &lt;- data %&gt;% mutate(
 )
 
 ###
-# frequency table (n's and %) for aggregate categories of abuse across the board
+# frequency table (n&#39;s and %) for aggregate categories of abuse across the board
 rq1.2_cluster_n &lt;- data %&gt;%
   summarise_at(vars(genderMotivHarr, unwantedSexAtt, sexAbuse),
-               funs(n = sum(as.logical(.), na.rm = TRUE),
-                    perc = sum(as.logical(.), na.rm = TRUE)*100/n()))
+               funs(n = sum(as.logical(weight(., w)), na.rm = TRUE),
+                    perc = sum(as.logical(weight(., w)), na.rm = TRUE)*100/sum(w)))
 
-# frequency tables (n's and %) for aggregate categories of abuse by gender.
+# frequency tables (n&#39;s and %) for aggregate categories of abuse by gender.
 # dropping other than female, male
 rq1.2_clusterGender_n &lt;- data %&gt;%
   group_by(factor(genderBinary)) %&gt;%
   summarise_at(vars(genderMotivHarr, unwantedSexAtt, sexAbuse),
-               funs(n = sum(as.logical(.), na.rm = TRUE),
-                    perc = sum(as.logical(.), na.rm = TRUE)*100/n())) %&gt;%
+               funs(n = sum(as.logical(weight(., w)), na.rm = TRUE),
+                    perc = sum(as.logical(weight(., w)), na.rm = TRUE)*100/sum(w))) %&gt;%
   na.omit()
 
-rq1.2_clusterGender_plotData &lt;- as_tibble(cbind(item = names(rq1.2_clusterGender_n), t(rq1.2_clusterGender_n)))[-1,] %&gt;% filter(!grepl(&quot;_perc&quot;, item, fixed = TRUE)) %&gt;%
-  mutate(male = as.numeric(V2), female = as.numeric(V3), item = str_remove(item, &quot;_n&quot;), V2 = NULL, V3 = NULL) %&gt;% pivot_longer(cols = c(male, female), names_to = &quot;gender&quot;, values_to = &quot;n&quot;)
+rq1.2_clusterGender_plotData &lt;- as_tibble(cbind(item = names(rq1.2_clusterGender_n), t(rq1.2_clusterGender_n)))[-1,] %&gt;% filter(!grepl(&quot;_n&quot;, item, fixed = TRUE)) %&gt;%
+  mutate(male = as.numeric(V2), female = as.numeric(V3), item = str_remove(item, &quot;_perc&quot;), V2 = NULL, V3 = NULL) %&gt;% pivot_longer(cols = c(male, female), names_to = &quot;gender&quot;, values_to = &quot;perc&quot;)
 
-rq1.1_itemsGender_plot &lt;- ggplotly(rq1.2_clusterGender_plotData %&gt;% mutate(gender = fct_recode(gender, &quot;Muži&quot; = &quot;male&quot;, &quot;Ženy&quot; = &quot;female&quot;)) %&gt;%
-                                     ggplot(aes(x = item, y = n, fill = gender)) + geom_bar(stat = &quot;identity&quot;,  alpha = .6) +
+rq1.2_clusterGender_plot &lt;- ggplotly(rq1.2_clusterGender_plotData %&gt;% mutate(gender = fct_recode(gender, &quot;Muži&quot; = &quot;male&quot;, &quot;Ženy&quot; = &quot;female&quot;)) %&gt;%
+                                     ggplot(aes(x = item, y = perc, fill = gender)) + geom_bar(stat = &quot;identity&quot;,  alpha = .6, position = &quot;dodge&quot;) +
                                      labs(title = &quot;Klastre sexuálneho obťažovania podľa pohlavia&quot;, x = &quot;&quot;, y = &quot;Počet participantov&quot;) + scale_fill_manual(&quot;Pohlavie&quot;, values = c(&quot;Ženy&quot; = cbPalette[1], &quot;Muži&quot; = cbPalette[2])) +
                                      coord_flip() + scale_x_discrete(limits = rev(rq1.2_clusterGender_plotData$item), labels = c(genderMotivHarr = &quot;Rodovo motivované\nobťažovanie&quot;, unwantedSexAtt = &quot;Nechcená sexuálna\npozornosť&quot;, sexAbuse = &quot;Sexuálne\nnásilie&quot;)))
 
-# Computes the proportions (prevalence rates) and CIs of CSA forms in girls
+# Computes the unweighted proportions (prevalence rates) and CIs of CSA forms in girls
 rq1.2_female_ci &lt;- data %&gt;% filter(gender == &quot;Žena&quot;) %&gt;%  select(starts_with(&quot;q&quot;) &amp; !contains(&quot;_&quot;), genderMotivHarr, unwantedSexAtt, sexAbuse) %&gt;%
 map(~binom.exact(sum(as.logical(.),na.rm = TRUE), n = length(.)))
 
-# Computes the proportions (prevalence rates) and CIs of CSA forms in boys
+# Computes the unweighted proportions (prevalence rates) and CIs of CSA forms in boys
 rq1.2_male_ci &lt;- data %&gt;% filter(gender == &quot;Muž&quot;) %&gt;%  select(starts_with(&quot;q&quot;) &amp; !contains(&quot;_&quot;), genderMotivHarr, unwantedSexAtt, sexAbuse) %&gt;%
   map(~binom.exact(sum(as.logical(.),na.rm = TRUE), n = length(.)))
 
 # Computes odds ratios ($measure) for: type of abuse by gender contingency tables.
-rq1.2_clusterGender_or &lt;- data %&gt;% select(starts_with(&quot;q&quot;) &amp; !contains(&quot;_&quot;), genderMotivHarr, unwantedSexAtt, sexAbuse) %&gt;%
-  map(~riskratio.boot(table(data$genderBinary, .), replicates = 1e5))</code></pre>
+rq1.2_clusterGender_or &lt;- data %&gt;% mutate(genderMotivHarr = as.logical(genderMotivHarr), unwantedSexAtt = as.logical(unwantedSexAtt), sexAbuse = as.logical(sexAbuse)) %&gt;%
+  select(starts_with(&quot;q&quot;) &amp; !contains(&quot;_&quot;), genderMotivHarr, unwantedSexAtt, sexAbuse) %&gt;%
+  map(~riskratio.boot(round(wtd.table(data$genderBinary, ., weights = data$w, normwt = T), 0), replicates = 1e5))</code></pre>
 <pre><code>## Warning in chisq.test(xx, correct = correction): Chi-squared approximation may
 ## be incorrect</code></pre>
 <pre><code>## Warning in chisq.test(xx, correct = correction): Chi-squared approximation may
@@ -794,8 +907,9 @@ rq1.2_clusterGender_or &lt;- data %&gt;% select(starts_with(&quot;q&quot;) &amp;
 ## Warning in chisq.test(xx, correct = correction): Chi-squared approximation may
 ## be incorrect</code></pre>
 <pre class="r"><code># Computes Bayes factors (Poisson BF)  for: type of abuse by gender contingency tables.
-rq1.2_clusterGender_bf &lt;- data %&gt;% select(starts_with(&quot;q&quot;) &amp; !contains(&quot;_&quot;), genderMotivHarr, unwantedSexAtt, sexAbuse) %&gt;%
-  map(~contingencyTableBF(table(data$genderBinary, .), sampleType = &quot;poisson&quot;, priorConcentration = 1))
+rq1.2_clusterGender_bf &lt;- data %&gt;% mutate(genderMotivHarr = as.logical(genderMotivHarr), unwantedSexAtt = as.logical(unwantedSexAtt), sexAbuse = as.logical(sexAbuse)) %&gt;%
+  select(starts_with(&quot;q&quot;) &amp; !contains(&quot;_&quot;), genderMotivHarr, unwantedSexAtt, sexAbuse) %&gt;%
+  map(~contingencyTableBF(round(wtd.table(data$genderBinary, ., weights = data$w, normwt = T), 0), sampleType = &quot;poisson&quot;, priorConcentration = 1))
 
 # RQ2 Risk factors ------------------------------------------------------------
 # Existuje rozdiel vo výskyte SO vzhľadom na ... podľa klastrov?
@@ -813,46 +927,17 @@ rq1.2_clusterGender_bf &lt;- data %&gt;% select(starts_with(&quot;q&quot;) &amp;
 rfData &lt;- data %&gt;% select(genderBinary, nonheterosexual, minority, ageOver23, believer, languageOther, yearStudy, fieldStudy, facultyRegion)
 
 # Computes the CIs of proportions for the risk factors
-rq2_props_ci &lt;- rfData %&gt;% map(~binom.exact(table(.), n = length(.)))
+rq2_props_ci &lt;- rfData %&gt;% map(~binom.exact(round(wtd.table(., weights = data$w, normwt = T), 0), n = length(.)))
 
 # Computes odds ratios ($measure) for genderMotivHarr
-rq2_gmh_or &lt;- rfData %&gt;% map(~riskratio.boot(table(., data$genderMotivHarr), replicates = 1e5))</code></pre>
+rq2_gmh_or &lt;- rfData %&gt;% map(~riskratio.boot(round(wtd.table(., as.logical(data$genderMotivHarr), weights = data$w, normwt = T), 0), replicates = 1e5))
+
+# Computes odds ratios ($measure) for unwantedSexAtt
+rq2_usa_or &lt;- rfData %&gt;% map(~riskratio.boot(round(wtd.table(., as.logical(data$unwantedSexAtt), weights = data$w, normwt = T), 0), replicates = 1e5))
+
+# Computes odds ratios ($measure) for sexAbuse
+rq2_sab_or &lt;- rfData %&gt;% map(~riskratio.boot(round(wtd.table(., as.logical(data$sexAbuse), weights = data$w, normwt = T), 0), replicates = 1e5))</code></pre>
 <pre><code>## Warning in chisq.test(xx, correct = correction): Chi-squared approximation may
-## be incorrect
-
-## Warning in chisq.test(xx, correct = correction): Chi-squared approximation may
-## be incorrect
-
-## Warning in chisq.test(xx, correct = correction): Chi-squared approximation may
-## be incorrect
-
-## Warning in chisq.test(xx, correct = correction): Chi-squared approximation may
-## be incorrect</code></pre>
-<pre class="r"><code># Computes odds ratios ($measure) for unwantedSexAtt
-rq2_usa_or &lt;- rfData %&gt;% map(~riskratio.boot(table(., data$unwantedSexAtt), replicates = 1e5))</code></pre>
-<pre><code>## Warning in chisq.test(xx, correct = correction): Chi-squared approximation may
-## be incorrect
-
-## Warning in chisq.test(xx, correct = correction): Chi-squared approximation may
-## be incorrect
-
-## Warning in chisq.test(xx, correct = correction): Chi-squared approximation may
-## be incorrect
-
-## Warning in chisq.test(xx, correct = correction): Chi-squared approximation may
-## be incorrect</code></pre>
-<pre class="r"><code># Computes odds ratios ($measure) for sexAbuse
-rq2_sab_or &lt;- rfData %&gt;% map(~riskratio.boot(table(., data$sexAbuse), replicates = 1e5))</code></pre>
-<pre><code>## Warning in chisq.test(xx, correct = correction): Chi-squared approximation may
-## be incorrect
-
-## Warning in chisq.test(xx, correct = correction): Chi-squared approximation may
-## be incorrect
-
-## Warning in chisq.test(xx, correct = correction): Chi-squared approximation may
-## be incorrect
-
-## Warning in chisq.test(xx, correct = correction): Chi-squared approximation may
 ## be incorrect
 
 ## Warning in chisq.test(xx, correct = correction): Chi-squared approximation may
@@ -880,40 +965,38 @@ rq2_sab_or &lt;- rfData %&gt;% map(~riskratio.boot(table(., data$sexAbuse), repl
 ## be incorrect</code></pre>
 <pre class="r"><code># Bayes factors (Poisson BF10, BF01)  for: participant risk factors
 # by genderMotivHarr contingency tables
-rq2_gmh_bf &lt;- rfData %&gt;% map(~contingencyTableBF(table(., data$genderMotivHarr), sampleType = &quot;poisson&quot;, priorConcentration = 1))
+rq2_gmh_bf &lt;- rfData %&gt;% map(~contingencyTableBF(round(wtd.table(., as.logical(data$genderMotivHarr), weights = data$w, normwt = T), 0), sampleType = &quot;poisson&quot;, priorConcentration = 1))
 
 # Bayes factors (Poisson BF10, BF01)  for: participant risk factors
 # by unwantedSexAtt contingency tables
-rq2_usa_bf &lt;- rfData %&gt;% map(~contingencyTableBF(table(., data$unwantedSexAtt), sampleType = &quot;poisson&quot;, priorConcentration = 1))
+rq2_usa_bf &lt;- rfData %&gt;% map(~contingencyTableBF(round(wtd.table(., as.logical(data$unwantedSexAtt), weights = data$w, normwt = T), 0), sampleType = &quot;poisson&quot;, priorConcentration = 1))
 
 # Bayes factors (Poisson BF10, BF01)  for: participant risk factors
 # by sexAbuse contingency tables
-rq2_sab_bf &lt;- rfData %&gt;% map(~contingencyTableBF(table(., data$sexAbuse), sampleType = &quot;poisson&quot;, priorConcentration = 1))
+rq2_sab_bf &lt;- rfData %&gt;% map(~contingencyTableBF(round(wtd.table(., as.logical(data$sexAbuse), weights = data$w, normwt = T), 0), sampleType = &quot;poisson&quot;, priorConcentration = 1))
 
 ###
 
 # Regions
 
 # Computes odds ratios ($measure) for: type of abuse by region
-rq2_region_or &lt;- data %&gt;% select(genderMotivHarr, unwantedSexAtt, sexAbuse, harrassed) %&gt;%
-  map(~riskratio.boot(table(data$facultyRegion, .), rev = &quot;rows&quot;, replicates = 1e5))</code></pre>
-<pre><code>## Warning in chisq.test(xx, correct = correction): Chi-squared approximation may
-## be incorrect</code></pre>
-<pre class="r"><code># Computes Bayes factors (Poisson BF)  for: type of abuse by region
-rq2_region_bf &lt;- data %&gt;% select(genderMotivHarr, unwantedSexAtt, sexAbuse, harrassed) %&gt;%
-  map(~contingencyTableBF(table(data$facultyRegion, .), sampleType = &quot;poisson&quot;, priorConcentration = 1))
+rq2_region_or &lt;- data %&gt;% mutate(genderMotivHarr = as.logical(genderMotivHarr), unwantedSexAtt = as.logical(unwantedSexAtt), sexAbuse = as.logical(sexAbuse)) %&gt;% select(genderMotivHarr, unwantedSexAtt, sexAbuse, harrassed) %&gt;%
+  map(~riskratio.boot(round(wtd.table(data$facultyRegion, ., weights = data$w, normwt = T), 0), rev = &quot;rows&quot;, replicates = 1e5))
 
-rq2_region_mod &lt;- lm(harrassedSeverity ~ facultyRegion, weights = data$weight, data)
+# Computes Bayes factors (Poisson BF)  for: type of abuse by region
+rq2_region_bf &lt;- data %&gt;% mutate(genderMotivHarr = as.logical(genderMotivHarr), unwantedSexAtt = as.logical(unwantedSexAtt), sexAbuse = as.logical(sexAbuse)) %&gt;% select(genderMotivHarr, unwantedSexAtt, sexAbuse, harrassed) %&gt;%
+  map(~contingencyTableBF(round(wtd.table(data$facultyRegion, ., weights = data$w, normwt = T), 0), sampleType = &quot;poisson&quot;, priorConcentration = 1))
+
+rq2_region_mod &lt;- lm(harrassedSeverity ~ facultyRegion, weights = data$w, data)
 rq2_region_bf &lt;- lmBF(harrassedSeverity ~ facultyRegion, data, rscaleEffects = rScale)</code></pre>
 <pre><code>## Warning: data coerced from tibble to data frame</code></pre>
 <pre class="r"><code>rq2_region_summary &lt;- summary(rq2_region_mod)
 rq2_region_anova &lt;- anova(rq2_region_mod)
 
-
 # Length of study
 
 # Computes odds ratios ($measure) for: type of abuse by length of study
-rq2_studyLengthMod &lt;- lm(harrassedSeverity ~ yearStudy, weights = data$weight , data)
+rq2_studyLengthMod &lt;- lm(harrassedSeverity ~ yearStudy, weights = data$w , data)
 rq2_studyLengthBF &lt;- lmBF(harrassedSeverity ~ yearStudy, data[!is.na(data$yearStudy),], rscaleEffects = rScale)</code></pre>
 <pre><code>## Warning: data coerced from tibble to data frame</code></pre>
 <pre class="r"><code>rq2_studyLengthSummary &lt;- summary(rq2_studyLengthMod)
@@ -922,15 +1005,14 @@ rq2_studyLengthAnova &lt;- anova(rq2_studyLengthMod)
 
 # Language
 # Computes odds ratios ($measure) for: type of abuse by language.
-rq2_language_or &lt;- data %&gt;% select(genderMotivHarr, unwantedSexAtt, sexAbuse, harrassed) %&gt;%
-  map(~riskratio.boot(table(data$languageOther, .), replicates = 1e5))</code></pre>
-<pre><code>## Warning in chisq.test(xx, correct = correction): Chi-squared approximation may
-## be incorrect</code></pre>
-<pre class="r"><code># Computes Bayes factors (Poisson BF)  for: type of abuse by language
-rq2_language_bf &lt;- data %&gt;% select(genderMotivHarr, unwantedSexAtt, sexAbuse, harrassed) %&gt;%
-  map(~contingencyTableBF(table(data$languageOther, .), sampleType = &quot;poisson&quot;, priorConcentration = 1))
+rq2_language_or &lt;- data %&gt;% mutate(genderMotivHarr = as.logical(genderMotivHarr), unwantedSexAtt = as.logical(unwantedSexAtt), sexAbuse = as.logical(sexAbuse)) %&gt;% select(genderMotivHarr, unwantedSexAtt, sexAbuse, harrassed) %&gt;%
+  map(~riskratio.boot(round(wtd.table(data$languageOther, ., weights = data$w, normwt = T), 0), replicates = 1e5))
 
-rq2_language_mod &lt;- lm(harrassedSeverity ~ languageOther, weights = data$weight , data)
+# Computes Bayes factors (Poisson BF)  for: type of abuse by language
+rq2_language_bf &lt;- data %&gt;% mutate(genderMotivHarr = as.logical(genderMotivHarr), unwantedSexAtt = as.logical(unwantedSexAtt), sexAbuse = as.logical(sexAbuse)) %&gt;% select(genderMotivHarr, unwantedSexAtt, sexAbuse, harrassed) %&gt;%
+  map(~contingencyTableBF(round(wtd.table(data$languageOther, ., weights = data$w, normwt = T), 0), sampleType = &quot;poisson&quot;, priorConcentration = 1))
+
+rq2_language_mod &lt;- lm(harrassedSeverity ~ languageOther, weights = data$w , data)
 rq2_language_bf &lt;- lmBF(harrassedSeverity ~ languageOther, data[!is.na(data$languageOther),], rscaleEffects = rScale)</code></pre>
 <pre><code>## Warning: data coerced from tibble to data frame</code></pre>
 <pre class="r"><code>rq2_language_summary &lt;- summary(rq2_language_mod)
@@ -938,47 +1020,45 @@ rq2_language_bf &lt;- lmBF(harrassedSeverity ~ languageOther, data[!is.na(data$l
 # Religious belief
 
 # Computes odds ratios ($measure) for: type of abuse by religious belief
-rq2_belief_or &lt;- data %&gt;% select(genderMotivHarr, unwantedSexAtt, sexAbuse, harrassed) %&gt;%
-  map(~riskratio.boot(table(data$believer, .), replicates = 1e5))
+rq2_belief_or &lt;- data %&gt;% mutate(genderMotivHarr = as.logical(genderMotivHarr), unwantedSexAtt = as.logical(unwantedSexAtt), sexAbuse = as.logical(sexAbuse)) %&gt;% select(genderMotivHarr, unwantedSexAtt, sexAbuse, harrassed) %&gt;%
+  map(~riskratio.boot(round(wtd.table(data$believer, ., weights = data$w, normwt = T), 0), replicates = 1e5))
 
 # Computes Bayes factors (Poisson BF)  for: type of abuse by religious belief
-rq2_belief_bf &lt;- data %&gt;% select(genderMotivHarr, unwantedSexAtt, sexAbuse, harrassed) %&gt;%
-  map(~contingencyTableBF(table(data$believer, .), sampleType = &quot;poisson&quot;, priorConcentration = 1))
+rq2_belief_bf &lt;- data %&gt;% mutate(genderMotivHarr = as.logical(genderMotivHarr), unwantedSexAtt = as.logical(unwantedSexAtt), sexAbuse = as.logical(sexAbuse)) %&gt;% select(genderMotivHarr, unwantedSexAtt, sexAbuse, harrassed) %&gt;%
+  map(~contingencyTableBF(round(wtd.table(data$believer, ., weights = data$w, normwt = T), 0), sampleType = &quot;poisson&quot;, priorConcentration = 1))
 
-rq2_belief_mod &lt;- lm(harrassedSeverity ~ believer, weights = data$weight , data)
+rq2_belief_mod &lt;- lm(harrassedSeverity ~ believer, weights = data$w , data)
 rq2_belief_bf &lt;- lmBF(harrassedSeverity ~ believer, data[!is.na(data$believer),], rscaleEffects = rScale)</code></pre>
 <pre><code>## Warning: data coerced from tibble to data frame</code></pre>
 <pre class="r"><code>rq2_belief_summary &lt;- summary(rq2_belief_mod)
 
-
 # Minority
 # Computes odds ratios ($measure) for: type of abuse by minority status
-rq2_minority_or &lt;- data %&gt;% select(genderMotivHarr, unwantedSexAtt, sexAbuse, harrassed) %&gt;%
-  map(~riskratio.boot(table(data$minority, .), replicates = 1e5))</code></pre>
-<pre><code>## Warning in chisq.test(xx, correct = correction): Chi-squared approximation may
-## be incorrect</code></pre>
-<pre class="r"><code>rq2_minority_table &lt;- table(data$genderMotivHarr)
+rq2_minority_or &lt;- data %&gt;% mutate(genderMotivHarr = as.logical(genderMotivHarr), unwantedSexAtt = as.logical(unwantedSexAtt), sexAbuse = as.logical(sexAbuse)) %&gt;% select(genderMotivHarr, unwantedSexAtt, sexAbuse, harrassed) %&gt;%
+  map(~riskratio.boot(round(wtd.table(data$minority, ., weights = data$w, normwt = T), 0), replicates = 1e5))
+
+rq2_minority_table &lt;- round(wtd.table(data$genderMotivHarr, weights = data$w, normwt = T), 0)
 
 # Computes Bayes factors (Poisson BF)  for: type of abuse by minority status
-rq2_minority_bf &lt;- data %&gt;% select(genderMotivHarr, unwantedSexAtt, sexAbuse, harrassed) %&gt;%
-  map(~contingencyTableBF(table(data$minority, .), sampleType = &quot;poisson&quot;, priorConcentration = 1))
+rq2_minority_bf &lt;- data %&gt;% mutate(genderMotivHarr = as.logical(genderMotivHarr), unwantedSexAtt = as.logical(unwantedSexAtt), sexAbuse = as.logical(sexAbuse)) %&gt;% select(genderMotivHarr, unwantedSexAtt, sexAbuse, harrassed) %&gt;%
+  map(~contingencyTableBF(round(wtd.table(data$minority, ., weights = data$w, normwt = T), 0), sampleType = &quot;poisson&quot;, priorConcentration = 1))
 
-rq2_minority_mod &lt;- lm(harrassedSeverity ~ minority, weights = data$weight , data)
+rq2_minority_mod &lt;- lm(harrassedSeverity ~ minority, weights = data$w , data)
 rq2_minority_bf &lt;- lmBF(harrassedSeverity ~ minority, data[!is.na(data$minority),], rscaleEffects = rScale)</code></pre>
 <pre><code>## Warning: data coerced from tibble to data frame</code></pre>
 <pre class="r"><code>rq2_minority_summary &lt;- summary(rq2_minority_mod)
 
 # Sexual orientation
 # Computes odds ratios ($measure) for: type of abuse by sexual orientation
-rq2_orientation_or &lt;- data %&gt;% select(genderMotivHarr, unwantedSexAtt, sexAbuse, harrassed) %&gt;%
-  map(~riskratio.boot(table(data$nonheterosexual, .), replicates = 1e5))</code></pre>
+rq2_orientation_or &lt;- data %&gt;% mutate(genderMotivHarr = as.logical(genderMotivHarr), unwantedSexAtt = as.logical(unwantedSexAtt), sexAbuse = as.logical(sexAbuse)) %&gt;% select(genderMotivHarr, unwantedSexAtt, sexAbuse, harrassed) %&gt;%
+  map(~riskratio.boot(round(wtd.table(data$nonheterosexual, ., weights = data$w, normwt = T), 0), replicates = 1e5))</code></pre>
 <pre><code>## Warning in chisq.test(xx, correct = correction): Chi-squared approximation may
 ## be incorrect</code></pre>
 <pre class="r"><code># Computes Bayes factors (Poisson BF)  for: type of abuse by minority status
-rq2_orientation_bf &lt;- data %&gt;% select(genderMotivHarr, unwantedSexAtt, sexAbuse, harrassed) %&gt;%
-  map(~contingencyTableBF(table(data$nonheterosexual, .), sampleType = &quot;poisson&quot;, priorConcentration = 1))
+rq2_orientation_bf &lt;- data %&gt;% mutate(genderMotivHarr = as.logical(genderMotivHarr), unwantedSexAtt = as.logical(unwantedSexAtt), sexAbuse = as.logical(sexAbuse)) %&gt;% select(genderMotivHarr, unwantedSexAtt, sexAbuse, harrassed) %&gt;%
+  map(~contingencyTableBF(round(wtd.table(data$nonheterosexual, ., weights = data$w, normwt = T), 0), sampleType = &quot;poisson&quot;, priorConcentration = 1))
 
-rq2_orientation_mod &lt;- lm(harrassedSeverity ~ nonheterosexual, weights = data$weight , data)
+rq2_orientation_mod &lt;- lm(harrassedSeverity ~ nonheterosexual, weights = data$w , data)
 rq2_orientation_bf &lt;- lmBF(harrassedSeverity ~ nonheterosexual, data[!is.na(data$nonheterosexual),], rscaleEffects = rScale)</code></pre>
 <pre><code>## Warning: data coerced from tibble to data frame</code></pre>
 <pre class="r"><code>rq2_orientation_summary &lt;- summary(rq2_orientation_mod)
@@ -990,7 +1070,7 @@ rq2_orientation_bf &lt;- lmBF(harrassedSeverity ~ nonheterosexual, data[!is.na(d
 
 # Overall count
 # Kto sú páchatelia SO?
-rq3_perpetratorsItems_n &lt;- do.call(rbind.data.frame, data %&gt;% select(contains(&quot;_who&quot;) &amp; !contains(&quot;Other&quot;)) %&gt;% map(~cbind(&quot;freq&quot; = table(.), &quot;perc&quot; = prop.table(table(.))))) %&gt;%
+rq3_perpetratorsItems_n &lt;- do.call(rbind.data.frame, data %&gt;% select(contains(&quot;_who&quot;) &amp; !contains(&quot;Other&quot;)) %&gt;% map(~cbind(&quot;freq&quot; = round(wtd.table(., weights = data$w, normwt = T), 0), &quot;perc&quot; = prop.table(round(wtd.table(., weights = data$w, normwt = T), 0))))) %&gt;%
   rownames_to_column(&quot;who&quot;)
 
 whos &lt;- c(&quot;Teacher_M&quot;, &quot;Teacher_F&quot;, &quot;Student_M&quot;, &quot;Student_F&quot;, &quot;Employee_M&quot;, &quot;Employee_F&quot;)
@@ -1001,9 +1081,12 @@ for(n in 1:6){
   }
 }
 
+rq3_perpetratorsOverall_table &lt;- round(unlist(rq3_perpetratorsOverall_n)*100/sum(unlist(rq3_perpetratorsOverall_n)), 2)
+names(rq3_perpetratorsOverall_table) &lt;- gsub(&quot;.count.freq&quot;, &quot;&quot;, names(rq3_perpetratorsOverall_table))
+
 # Count per cluster
 # GenderMotivHarr
-whoGenderMotivHarr &lt;- do.call(rbind.data.frame, data %&gt;% select(q1:q9 &amp; contains(&quot;_who&quot;) &amp; !contains(&quot;Other&quot;)) %&gt;% map(~cbind(&quot;freq&quot; = table(.), &quot;perc&quot; = prop.table(table(.))))) %&gt;% rownames_to_column(&quot;who&quot;)
+whoGenderMotivHarr &lt;- do.call(rbind.data.frame, data %&gt;% select(q1:q9 &amp; contains(&quot;_who&quot;) &amp; !contains(&quot;Other&quot;)) %&gt;% map(~cbind(&quot;freq&quot; = round(wtd.table(., weights = data$w, normwt = T), 0), &quot;perc&quot; = prop.table(round(wtd.table(., weights = data$w, normwt = T), 0))))) %&gt;% rownames_to_column(&quot;who&quot;)
 rq3_perpetratorsGMH_n &lt;- list(NA)
 for(n in 1:6){
   for(i in whos){
@@ -1013,7 +1096,7 @@ for(n in 1:6){
 rq3_perpetratorsGMH_n[1] &lt;- NULL
 
 # UnwantedSexAtt
-whoUnwantedSexAtt &lt;- do.call(rbind.data.frame, data %&gt;% select(q9:q17 &amp; contains(&quot;_who&quot;) &amp; !contains(&quot;Other&quot;)) %&gt;% map(~cbind(&quot;freq&quot; = table(.), &quot;perc&quot; = prop.table(table(.))))) %&gt;% rownames_to_column(&quot;who&quot;)
+whoUnwantedSexAtt &lt;- do.call(rbind.data.frame, data %&gt;% select(q9:q17 &amp; contains(&quot;_who&quot;) &amp; !contains(&quot;Other&quot;)) %&gt;% map(~cbind(&quot;freq&quot; = round(wtd.table(., weights = data$w, normwt = T), 0), &quot;perc&quot; = prop.table(round(wtd.table(., weights = data$w, normwt = T), 0))))) %&gt;% rownames_to_column(&quot;who&quot;)
 rq3_perpetratorsUSA_n &lt;- list(NA)
 for(n in 1:6){
   for(i in whos){
@@ -1023,7 +1106,7 @@ for(n in 1:6){
 rq3_perpetratorsUSA_n[1] &lt;- NULL
 
 # SexAbuse
-whoSexAbuse &lt;- do.call(rbind.data.frame, data %&gt;% select(q17:anyYes &amp; contains(&quot;_who&quot;) &amp; !contains(&quot;Other&quot;)) %&gt;% map(~cbind(&quot;freq&quot; = table(.), &quot;perc&quot; = prop.table(table(.))))) %&gt;% rownames_to_column(&quot;who&quot;)
+whoSexAbuse &lt;- do.call(rbind.data.frame, data %&gt;% select(q17:anyYes &amp; contains(&quot;_who&quot;) &amp; !contains(&quot;Other&quot;)) %&gt;% map(~cbind(&quot;freq&quot; = round(wtd.table(., weights = data$w, normwt = T), 0), &quot;perc&quot; = prop.table(round(wtd.table(., weights = data$w, normwt = T), 0))))) %&gt;% rownames_to_column(&quot;who&quot;)
 rq3_perpetratorsSAB_n &lt;- NA
 for(n in 1:6){
   for(i in whos){
@@ -1031,6 +1114,9 @@ for(n in 1:6){
   }
 }
 rq3_perpetratorsSAB_n[1] &lt;- NULL
+
+perpertatorsTable &lt;- round(rbind(&quot;GMH&quot; = unlist(rq3_perpetratorsGMH_n)*100/sum(unlist(rq3_perpetratorsGMH_n)), &quot;USA&quot; = unlist(rq3_perpetratorsUSA_n)*100/sum(unlist(rq3_perpetratorsUSA_n)), &quot;SAB&quot; = unlist(rq3_perpetratorsSAB_n)*100/sum(unlist(rq3_perpetratorsSAB_n))), 2)
+colnames(perpertatorsTable) &lt;- gsub(&quot;.count.freq&quot;, &quot;&quot;, colnames(perpertatorsTable))
 
 # Sú ženy alebo muži náchylnejší páchať niektorú z foriem SO?
 # Aké osoby (učitelia, spolužiaci, atď.) najčastejšie páchajú aké druhy obťažovania?
@@ -1087,7 +1173,7 @@ rq3_abusesByPerpetratorGenderSAB_bf &lt;- contingencyTableBF(abusesByPerpetrator
 
 # RQ4 Where did it happen -------------------------------------------------------------------
 
-rq4_whereItems_n &lt;- do.call(rbind.data.frame, data %&gt;% select(contains(&quot;_where&quot;) &amp; !contains(&quot;Other&quot;)) %&gt;% map(~cbind(&quot;freq&quot; = table(.), &quot;perc&quot; = prop.table(table(.))))) %&gt;%
+rq4_whereItems_n &lt;- do.call(rbind.data.frame, data %&gt;% select(contains(&quot;_where&quot;) &amp; !contains(&quot;Other&quot;)) %&gt;% map(~cbind(&quot;freq&quot; = round(wtd.table(., weights = data$w, normwt = T), 0), &quot;perc&quot; = prop.table(round(wtd.table(., weights = data$w, normwt = T), 0))))) %&gt;%
   rownames_to_column(&quot;where&quot;)
 
 wheres &lt;- c(&quot;EduProcess&quot;, &quot;Break&quot;, &quot;Dorm&quot;, &quot;Lab&quot;, &quot;Practice&quot;, &quot;Online&quot;, &quot;DontKnow&quot;)
@@ -1100,10 +1186,13 @@ for(n in 1:6){
 }
 rq4_whereOverall_n[1] &lt;- NULL
 
+rq4_whereOverall_table &lt;- round(unlist(rq4_whereOverall_n)*100/sum(unlist(rq4_whereOverall_n)), 2)
+names(rq4_whereOverall_table) &lt;- gsub(&quot;.count.freq&quot;, &quot;&quot;, names(rq4_whereOverall_table))
+
 # Existujú rozdiely medzi klastrami SO a prostredím v ktorom sa SO odohráva?
 # Count per cluster
 # GenderMotivHarr
-whereGenderMotivHarr &lt;- do.call(rbind.data.frame, data %&gt;% select(q1:q9 &amp; contains(&quot;_where&quot;) &amp; !contains(&quot;Other&quot;)) %&gt;% map(~cbind(&quot;freq&quot; = table(.), &quot;perc&quot; = prop.table(table(.))))) %&gt;% rownames_to_column(&quot;where&quot;)
+whereGenderMotivHarr &lt;- do.call(rbind.data.frame, data %&gt;% select(q1:q9 &amp; contains(&quot;_where&quot;) &amp; !contains(&quot;Other&quot;)) %&gt;% map(~cbind(&quot;freq&quot; = round(wtd.table(., weights = data$w, normwt = T), 0), &quot;perc&quot; = prop.table(round(wtd.table(., weights = data$w, normwt = T), 0))))) %&gt;% rownames_to_column(&quot;where&quot;)
 rq4_whereGMH_n &lt;- list(NA)
 for(n in 1:6){
   for(i in wheres){
@@ -1113,7 +1202,7 @@ for(n in 1:6){
 rq4_whereGMH_n[1] &lt;- NULL
 
 # UnwantedSexAtt
-whereUnwantedSexAtt &lt;- do.call(rbind.data.frame, data %&gt;% select(q9:q17 &amp; contains(&quot;_where&quot;) &amp; !contains(&quot;Other&quot;)) %&gt;% map(~cbind(&quot;freq&quot; = table(.), &quot;perc&quot; = prop.table(table(.))))) %&gt;% rownames_to_column(&quot;where&quot;)
+whereUnwantedSexAtt &lt;- do.call(rbind.data.frame, data %&gt;% select(q9:q17 &amp; contains(&quot;_where&quot;) &amp; !contains(&quot;Other&quot;)) %&gt;% map(~cbind(&quot;freq&quot; = round(wtd.table(., weights = data$w, normwt = T), 0), &quot;perc&quot; = prop.table(round(wtd.table(., weights = data$w, normwt = T), 0))))) %&gt;% rownames_to_column(&quot;where&quot;)
 rq4_whereUSA_n &lt;- list(NA)
 for(n in 1:6){
   for(i in wheres){
@@ -1123,7 +1212,7 @@ for(n in 1:6){
 rq4_whereUSA_n[1] &lt;- NULL
 
 # SexAbuse
-whereSexAbuse &lt;- do.call(rbind.data.frame, data %&gt;% select(q17:anyYes &amp; contains(&quot;_where&quot;) &amp; !contains(&quot;Other&quot;)) %&gt;% map(~cbind(&quot;freq&quot; = table(.), &quot;perc&quot; = prop.table(table(.))))) %&gt;% rownames_to_column(&quot;where&quot;)
+whereSexAbuse &lt;- do.call(rbind.data.frame, data %&gt;% select(q17:anyYes &amp; contains(&quot;_where&quot;) &amp; !contains(&quot;Other&quot;)) %&gt;% map(~cbind(&quot;freq&quot; = round(wtd.table(., weights = data$w, normwt = T), 0), &quot;perc&quot; = prop.table(round(wtd.table(., weights = data$w, normwt = T), 0))))) %&gt;% rownames_to_column(&quot;where&quot;)
 rq4_whereSAB_n &lt;- NA
 for(n in 1:6){
   for(i in wheres){
@@ -1132,6 +1221,9 @@ for(n in 1:6){
 }
 rq4_whereSAB_n[1] &lt;- NULL
 
+whereTable &lt;- round(rbind(&quot;GMH&quot; = unlist(rq4_whereGMH_n)*100/sum(unlist(rq4_whereGMH_n)), &quot;USA&quot; = unlist(rq4_whereUSA_n)*100/sum(unlist(rq4_whereUSA_n)), &quot;SAB&quot; = unlist(rq4_whereSAB_n)*100/sum(unlist(rq4_whereSAB_n))), 2)
+colnames(whereTable) &lt;- gsub(&quot;.count.freq&quot;, &quot;&quot;, colnames(whereTable))
+
 
 # RQ5 Abuse Impacts -----------------------------------------------------------
 # Subjektívne vnímané dôsledky sexuálneho obťažovania
@@ -1139,14 +1231,14 @@ rq4_whereSAB_n[1] &lt;- NULL
 data &lt;- data %&gt;% mutate(impactSeverity = rowSums(data %&gt;% select(contains(&quot;suffer_&quot;) &amp; !contains(c(&quot;_other&quot;, &quot;_none&quot;, &quot;dontKnow&quot;))), na.rm = T))
 
 rq5_impacts_n &lt;- do.call(rbind.data.frame, data %&gt;% filter(harrassed == 1) %&gt;% select(contains(&quot;suffer_&quot;) &amp; !contains(c(&quot;_other&quot;, &quot;_none&quot;, &quot;dontKnow&quot;))) %&gt;%
-                         map(~cbind(&quot;freq&quot; = table(.), &quot;perc&quot; = prop.table(table(.))))) %&gt;%
+                           map(~cbind(&quot;freq&quot; = round(wtd.table(., weights = data[data$harrassed == 1,]$w, normwt = T), 0), &quot;perc&quot; = prop.table(round(wtd.table(., weights = data[data$harrassed == 1,]$w, normwt = T), 0))))) %&gt;%
   rownames_to_column(&quot;impactType&quot;) %&gt;%
   filter(grepl(&quot;.1&quot;, impactType, fixed = TRUE)) %&gt;%
-  arrange(desc(freq))
-
+  arrange(desc(freq)) %&gt;% mutate(impactType = str_remove(impactType, &quot;.1&quot;),
+                                 perc = round(perc, 2)*100)
 
 # Je rozsah uvádzaných dôsledkov podmienený zažitou formou SO?
-rq5_harrassedByImpactSeverity_cor &lt;- data %&gt;% filter(anyYes == 1) %$% cor.test(harrassedSeverity, impactSeverity)
+rq5_harrassedByImpactSeverity_cor &lt;- data %&gt;% filter(anyYes == 1) %&gt;% weighted_correlation(harrassedSeverity, impactSeverity, weights = w)
 rq5_harrassedByImpactSeverity_bf &lt;- data %&gt;% filter(anyYes == 1) %$% correlationBF(y = harrassedSeverity, x = impactSeverity, rscale = rScale)
 
 # Je rozsah uvádzaných dôsledkov podmienený tým, kto je páchateľom?
@@ -1178,8 +1270,9 @@ data$mostFreqAbuserSAB &lt;- data %&gt;% select(sabTeacherFreq, sabStudentFreq, 
 
 # identify the most frequent perpetrator committing the most severe type of abuse
 data$perpetratorMostSevere &lt;- data %$% ifelse(!is.na(mostFreqAbuserSAB), mostFreqAbuserSAB, ifelse(!is.na(mostFreqAbuserUSA), mostFreqAbuserUSA, ifelse(!is.na(mostFreqAbuserGMH), mostFreqAbuserGMH, NA)))
+perpetratorMostFrequent &lt;- table(data$perpetratorMostSevere)
 
-rq5_severPerpMod &lt;- lm(impactSeverity ~ perpetratorMostSevere, weights = data$weight, data)
+rq5_severPerpMod &lt;- lm(impactSeverity ~ perpetratorMostSevere, weights = data$w, data)
 rq5_severPerpBF &lt;- lmBF(impactSeverity ~ perpetratorMostSevere, data[!is.na(data$perpetratorMostSevere),], rscaleEffects = rScale)</code></pre>
 <pre><code>## Warning: data coerced from tibble to data frame</code></pre>
 <pre><code>## Warning in mean.default(colmn): argument is not numeric or logical: returning NA
@@ -1203,39 +1296,44 @@ rq5_severPerpBF &lt;- lmBF(impactSeverity ~ perpetratorMostSevere, data[!is.na(d
 rq5_severPerpAnova &lt;- anova(rq5_severPerpMod)
 
 # Existuje rozdiel medzi mužmi a ženami z hľadiska množstva / typu uvádzaných následkov?
-rq5_severGenderMod &lt;- data %&gt;% filter(harrassed == 1) %$% lm(impactSeverity ~ genderBinary, weights = weight)
+rq5_severGenderMod &lt;- data %&gt;% filter(harrassed == 1) %$% lm(impactSeverity ~ genderBinary, weights = w)
 rq5_severGenderBF &lt;- data %&gt;% filter(harrassed == 1) %$% lmBF(impactSeverity ~ genderBinary, .[!is.na(genderBinary),], rscaleEffects = rScale)</code></pre>
 <pre><code>## Warning: data coerced from tibble to data frame</code></pre>
 <pre class="r"><code>rq5_severGenderSummary &lt;- summary(rq5_severGenderMod)
 rq5_severGenderAnova &lt;- anova(rq5_severGenderMod)
 
-# Je rozsah uvádzaných dôsledkov podmienený tým, či sa obete zdôverili (či hľadali podporu)? # ADRESOVANE V RQ7 V OPACNEJ DIREKTIVITE
+# Je rozsah uvádzaných dôsledkov podmienený tým, či sa obete zdôverili (či hľadali podporu)? # ADRESOVANE V RQ6 V OPACNEJ DIREKTIVITE
+rq5_severDisclosureMod &lt;- data %&gt;% filter(harrassed == 1) %$% lm(impactSeverity ~ disclosureBinary, weights = w)
+rq5_severDisclosureBF &lt;- data %&gt;% filter(harrassed == 1) %$% lmBF(impactSeverity ~ disclosureBinary, .[!is.na(disclosureBinary),], rscaleEffects = rScale)</code></pre>
+<pre><code>## Warning: data coerced from tibble to data frame</code></pre>
+<pre class="r"><code>rq5_severDisclosureSummary &lt;- summary(rq5_severDisclosureMod)
+rq5_severDisclosureAnova &lt;- anova(rq5_severDisclosureMod)
 
 # Je rozsah úvádzaných dôsledkov podmienený tým, či osoba zažila negatívne reakcie zo strany školy?
 data &lt;- data %&gt;% mutate(consequencesSeverity = rowSums(data %&gt;% select(contains(&quot;conseq_&quot;) &amp; !contains(c(&quot;_other&quot;, &quot;_none&quot;, &quot;dontKnow&quot;))), na.rm = T))
 
-rq5_severConseqMod &lt;- data %&gt;% filter(harrassed == 1) %$% lm(impactSeverity ~ as.logical(consequencesSeverity), weights = weight)
+rq5_severConseqMod &lt;- data %&gt;% filter(harrassed == 1) %$% lm(impactSeverity ~ as.logical(consequencesSeverity), weights = w)
 rq5_severConseqBF &lt;- data %&gt;% filter(harrassed == 1) %&gt;% mutate(consequencesSeverity = as.logical(consequencesSeverity)) %$% lmBF(impactSeverity ~ consequencesSeverity, .[!is.na(consequencesSeverity),], rscaleEffects = rScale)</code></pre>
 <pre><code>## Warning: data coerced from tibble to data frame</code></pre>
 <pre class="r"><code>rq5_severConseqSummary &lt;- summary(rq5_severConseqMod)
 rq5_severConseqAnova &lt;- anova(rq5_severConseqMod)
 
 # Je rozsah uvádzaných dôsledkov podmienený mierou spokojnosti obetí s tým, ako reagovali osoby, u ktorých hľadali pomoc/radu?
-rq5_severSatisfactionMod &lt;- data %&gt;% filter(harrassed == 1) %$% lm(impactSeverity ~ satisfaction, weights = weight)
-rq5_severSatisfactionBF &lt;- data %&gt;% filter(harrassed == 1) %$% lmBF(impactSeverity ~ satisfaction, .[!is.na(satisfaction),], rscaleEffects = rScale)</code></pre>
+rq5_severSatisfactionMod &lt;- data %&gt;% filter(harrassed == 1 &amp; disclosureBinary == 1) %$% lm(impactSeverity ~ satisfaction, weights = w)
+rq5_severSatisfactionBF &lt;- data %&gt;% filter(harrassed == 1 &amp; disclosureBinary == 1) %$% lmBF(impactSeverity ~ satisfaction, .[!is.na(satisfaction),], rscaleEffects = rScale)</code></pre>
 <pre><code>## Warning: data coerced from tibble to data frame</code></pre>
 <pre class="r"><code>rq5_severSatisfactionSummary &lt;- summary(rq5_severSatisfactionMod)
 rq5_severSatisfactionAnova &lt;- anova(rq5_severSatisfactionMod)
 
 # Je rozsah uvádzaných dôsledkov podmienený príslušnosťou k niektorej menšine?
-rq5_severMinorityMod &lt;- data %&gt;% filter(harrassed == 1) %$% lm(impactSeverity ~ minority, weights = weight)
+rq5_severMinorityMod &lt;- data %&gt;% filter(harrassed == 1) %$% lm(impactSeverity ~ minority, weights = w)
 rq5_severMinorityBF &lt;- data %&gt;% filter(harrassed == 1) %$% lmBF(impactSeverity ~ minority, .[!is.na(minority),], rscaleEffects = rScale)</code></pre>
 <pre><code>## Warning: data coerced from tibble to data frame</code></pre>
 <pre class="r"><code>rq5_severMinoritySummary &lt;- summary(rq5_severMinorityMod)
 rq5_severMinorityAnova &lt;- anova(rq5_severMinorityMod)
 
 # Je rozsah uvádzaných dôsledkov podmienený vierovyznaním obetí?
-rq5_severBelieverMod &lt;- data %&gt;% filter(harrassed == 1) %$% lm(impactSeverity ~ believer, weights = weight)
+rq5_severBelieverMod &lt;- data %&gt;% filter(harrassed == 1) %$% lm(impactSeverity ~ believer, weights = w)
 rq5_severBelieverBF &lt;- data %&gt;% filter(harrassed == 1) %$% lmBF(impactSeverity ~ believer, .[!is.na(believer),], rscaleEffects = rScale)</code></pre>
 <pre><code>## Warning: data coerced from tibble to data frame</code></pre>
 <pre class="r"><code>rq5_severBelieverSummary &lt;- summary(rq5_severBelieverMod)
@@ -1258,9 +1356,9 @@ rq6_disclosureN &lt;- data %&gt;%
   group_by(disclosureBinary, genderBinary) %&gt;%
   summarise(n = n(),
             percent = round(100*n()/nrow(.), 2))</code></pre>
-<pre><code>## `summarise()` regrouping output by 'disclosureBinary' (override with `.groups` argument)</code></pre>
+<pre><code>## `summarise()` regrouping output by &#39;disclosureBinary&#39; (override with `.groups` argument)</code></pre>
 <pre class="r"><code># U koho hľadali obete najčastejšie pomoc?
-rq6_disclosureWhoFreq &lt;- do.call(rbind.data.frame, data %&gt;% select(contains(&quot;disclosure_&quot;) &amp; !contains(&quot;whyNo&quot;)) %&gt;% map(~cbind(&quot;freq&quot; = table(as.logical(.)), &quot;perc&quot; = prop.table(table(as.logical(.)))))) %&gt;% #Turning disclosure_ vars to logical; T = disclosed, F = not disclosed
+rq6_disclosureWhoFreq &lt;- do.call(rbind.data.frame, data %&gt;% select(contains(&quot;disclosure_&quot;) &amp; !contains(&quot;whyNo&quot;)) %&gt;% map(~cbind(&quot;freq&quot; = round(wtd.table(., weights = data$w, normwt = T), 0), &quot;perc&quot; = prop.table(round(wtd.table(., weights = data$w, normwt = T), 0))))) %&gt;% #Turning disclosure_ vars to logical; T = disclosed, F = not disclosed
   rownames_to_column(&quot;disclosureWho&quot;) %&gt;% filter(grepl(&quot;.TRUE&quot;, disclosureWho, fixed = TRUE)) %&gt;% arrange(desc(freq))
 
 rq6_disclosureWhoFreq[,&quot;disclosureWho&quot;] &lt;- rq6_disclosureWhoFreq[,&quot;disclosureWho&quot;] %&gt;% str_remove(&quot;disclosure_&quot;) %&gt;% str_remove(&quot;.TRUE&quot;)
@@ -1268,11 +1366,9 @@ rq6_disclosureWhoFreq[,&quot;disclosureWho&quot;] &lt;- rq6_disclosureWhoFreq[,&
 # Existuje súvis medzi zažitou formou SO a tendenciou obetí hľadať pomoc? &amp; Existuje súvis medzi častosťou (frekvenciou) SO a tendenciou obetí hľadať pomoc?
 # Severity as predictor
 
-rq6_severDisclosureMod0 &lt;- data %&gt;% filter(harrassed == 1) %$% glm(disclosureBinary ~ 1, family=binomial(), weights = weight)</code></pre>
-<pre><code>## Warning in eval(family$initialize): non-integer #successes in a binomial glm!</code></pre>
-<pre class="r"><code>rq6_severDisclosureMod &lt;- data %&gt;% filter(harrassed == 1) %$% glm(disclosureBinary ~ impactSeverity, family=binomial(), weights = weight)</code></pre>
-<pre><code>## Warning in eval(family$initialize): non-integer #successes in a binomial glm!</code></pre>
-<pre class="r"><code>rq6_severDisclosureSummary &lt;- summary(rq6_severDisclosureMod)
+rq6_severDisclosureMod0 &lt;- data %&gt;% filter(harrassed == 1) %$% glm(disclosureBinary ~ 1, family=quasibinomial(), weights = w)
+rq6_severDisclosureMod &lt;- data %&gt;% filter(harrassed == 1) %$% glm(disclosureBinary ~ impactSeverity, family=quasibinomial(), weights = w)
+rq6_severDisclosureSummary &lt;- summary(rq6_severDisclosureMod)
 rq6_severDisclosureAnova &lt;- anova(rq6_severDisclosureMod)
 
 rq6_severDisclosureBF10 &lt;- 1/exp((BIC(rq6_severDisclosureMod) - BIC(rq6_severDisclosureMod0))/2) # Bayes Factor based on BIC approximation assuming unit information prior
@@ -1280,19 +1376,17 @@ rq6_severDisclosurePosterior &lt;- rq6_severDisclosureBF10/(1+rq6_severDisclosur
 rq6_severDisclosureBayesOut &lt;- data.frame(BF10 = round(rq6_severDisclosureBF10, 3), Posterior = round(rq6_severDisclosurePosterior, 3))
 
 # Existuje rozdiel medzi pohlaviami v tendencii hľadať pomoc?
-rq6_genderDisclosureOR &lt;- data %$% riskratio.boot(table(genderBinary, disclosureBinary), replicates = 1e5)
-rq6_genderDisclosureBF &lt;- data %$% contingencyTableBF(table(genderBinary, disclosureBinary), sampleType = &quot;poisson&quot;, priorConcentration = 1)
+rq6_genderDisclosureOR &lt;- data %$% riskratio.boot(round(wtd.table(genderBinary, disclosureBinary, weights = data$w, normwt = T), 0), replicates = 1e5)
+rq6_genderDisclosureBF &lt;- data %$% contingencyTableBF(round(wtd.table(genderBinary, disclosureBinary, weights = data$w, normwt = T), 0), sampleType = &quot;poisson&quot;, priorConcentration = 1)
 
 # Súvisí hľadanie pomoci s vierovyznaním obete?
-rq6_believerDisclosureOR &lt;- data %$% riskratio.boot(table(believer, disclosureBinary), replicates = 1e5)
-rq6_believerDisclosureBF &lt;- data %$% contingencyTableBF(table(believer, disclosureBinary), sampleType = &quot;poisson&quot;, priorConcentration = 1)
+rq6_believerDisclosureOR &lt;- data %$% riskratio.boot(round(wtd.table(believer, disclosureBinary, weights = data$w, normwt = T), 0), replicates = 1e5)
+rq6_believerDisclosureBF &lt;- data %$% contingencyTableBF(round(wtd.table(believer, disclosureBinary, weights = data$w, normwt = T), 0), sampleType = &quot;poisson&quot;, priorConcentration = 1)
 
 # Súvisí hľadanie pomoci s odborom štúdia?
-rq6_fieldDisclosureMod0 &lt;- data %&gt;% filter(harrassed == 1) %$% glm(disclosureBinary ~ 1, family=binomial(), weights = weight)</code></pre>
-<pre><code>## Warning in eval(family$initialize): non-integer #successes in a binomial glm!</code></pre>
-<pre class="r"><code>rq6_fieldDisclosureMod &lt;- data %&gt;% filter(harrassed == 1) %$% glm(disclosureBinary ~ fieldStudy, family=binomial(), weights = weight)</code></pre>
-<pre><code>## Warning in eval(family$initialize): non-integer #successes in a binomial glm!</code></pre>
-<pre class="r"><code>rq6_fieldDisclosureSummary &lt;- summary(rq6_fieldDisclosureMod)
+rq6_fieldDisclosureMod0 &lt;- data %&gt;% filter(harrassed == 1) %$% glm(disclosureBinary ~ 1, family=quasibinomial(), weights = w)
+rq6_fieldDisclosureMod &lt;- data %&gt;% filter(harrassed == 1) %$% glm(disclosureBinary ~ fieldStudy, family=quasibinomial(), weights = w)
+rq6_fieldDisclosureSummary &lt;- summary(rq6_fieldDisclosureMod)
 rq6_fieldDisclosureAnova &lt;- anova(rq6_fieldDisclosureMod)
 
 rq6_fieldDisclosureBF10 &lt;- 1/exp((BIC(rq6_fieldDisclosureMod) - BIC(rq6_fieldDisclosureMod0))/2) # Bayes Factor based on BIC approximation assuming unit information prior
@@ -1300,11 +1394,9 @@ rq6_fieldDisclosurePosterior &lt;- rq6_fieldDisclosureBF10/(1+rq6_fieldDisclosur
 rq6_fieldDisclosureBayesOut &lt;- data.frame(BF10 = round(rq6_fieldDisclosureBF10, 3), Posterior = round(rq6_fieldDisclosurePosterior, 3))
 
 # Súvisí hľadanie pomoci s regiónom, z ktorého obete pochádzajú?
-rq6_regionDisclosureMod0 &lt;- data %&gt;% filter(harrassed == 1) %$% glm(disclosureBinary ~ 1, family=binomial(), weights = weight)</code></pre>
-<pre><code>## Warning in eval(family$initialize): non-integer #successes in a binomial glm!</code></pre>
-<pre class="r"><code>rq6_regionDisclosureMod &lt;- data %&gt;% filter(harrassed == 1) %$% glm(disclosureBinary ~ facultyRegion, family=binomial(), weights = weight)</code></pre>
-<pre><code>## Warning in eval(family$initialize): non-integer #successes in a binomial glm!</code></pre>
-<pre class="r"><code>rq6_regionDisclosureSummary &lt;- summary(rq6_regionDisclosureMod)
+rq6_regionDisclosureMod0 &lt;- data %&gt;% filter(harrassed == 1) %$% glm(disclosureBinary ~ 1, family=quasibinomial(), weights = w)
+rq6_regionDisclosureMod &lt;- data %&gt;% filter(harrassed == 1) %$% glm(disclosureBinary ~ facultyRegion, family=quasibinomial(), weights = w)
+rq6_regionDisclosureSummary &lt;- summary(rq6_regionDisclosureMod)
 rq6_regionDisclosureAnova &lt;- anova(rq6_regionDisclosureMod)
 
 rq6_regionDisclosureBF10 &lt;- 1/exp((BIC(rq6_regionDisclosureMod) - BIC(rq6_regionDisclosureMod0))/2) # Bayes Factor based on BIC approximation assuming unit information prior
@@ -1314,11 +1406,9 @@ rq6_regionDisclosureBayesOut &lt;- data.frame(BF10 = round(rq6_regionDisclosureB
 # Súvisí hľadanie pomoci s povedomím o tom čo je SO?
 # Compute sensitivity to harrassment by summing the att items
 data &lt;- data %&gt;% mutate(sensitivityToHarrasment = rowSums(data %&gt;% select(contains(&quot;att&quot;) &amp; !contains(c(&quot;unwanted&quot;))), na.rm = T))
-rq6_sensitivityDisclosureMod0 &lt;- data %&gt;% filter(harrassed == 1) %$% glm(disclosureBinary ~ 1, family=binomial(), weights = weight)</code></pre>
-<pre><code>## Warning in eval(family$initialize): non-integer #successes in a binomial glm!</code></pre>
-<pre class="r"><code>rq6_sensitivityDisclosureMod &lt;- data %&gt;% filter(harrassed == 1) %$% glm(disclosureBinary ~ sensitivityToHarrasment, family=binomial(), weights = weight)</code></pre>
-<pre><code>## Warning in eval(family$initialize): non-integer #successes in a binomial glm!</code></pre>
-<pre class="r"><code>rq6_sensitivityDisclosureSummary &lt;- summary(rq6_sensitivityDisclosureMod)
+rq6_sensitivityDisclosureMod0 &lt;- data %&gt;% filter(harrassed == 1) %$% glm(disclosureBinary ~ 1, family=quasibinomial(), weights = w)
+rq6_sensitivityDisclosureMod &lt;- data %&gt;% filter(harrassed == 1) %$% glm(disclosureBinary ~ sensitivityToHarrasment, family=quasibinomial(), weights = w)
+rq6_sensitivityDisclosureSummary &lt;- summary(rq6_sensitivityDisclosureMod)
 rq6_sensitivityDisclosureAnova &lt;- anova(rq6_sensitivityDisclosureMod)
 
 rq6_sensitivityDisclosureBF10 &lt;- 1/exp((BIC(rq6_sensitivityDisclosureMod) - BIC(rq6_sensitivityDisclosureMod0))/2) # Bayes Factor based on BIC approximation assuming unit information prior
@@ -1330,9 +1420,11 @@ rq6_satisfaction_n &lt;- data %&gt;% filter(satisfaction != 0) %&gt;% summarise(
                    sdSatisfaction = sd(satisfaction, na.rm = T))
 rq6_satisfaction_table &lt;- data %&gt;% filter(satisfaction != 0) %$% table(satisfaction)
 
-
-rq6_disclosureSatisfaction &lt;- do.call(rbind.data.frame, data %&gt;% select(contains(&quot;disclosure_&quot;) &amp; !contains(&quot;whyNo&quot;)) %&gt;% map(~cbind(&quot;freq&quot; = table(.), &quot;perc&quot; = prop.table(table(.))))) %&gt;%
+rq6_disclosureSatisfaction &lt;- do.call(rbind.data.frame, data %&gt;% select(contains(&quot;disclosure_&quot;) &amp; !contains(&quot;whyNo&quot;)) %&gt;% map(~cbind(&quot;freq&quot; = round(wtd.table(., weights = data$w, normwt = T), 0), &quot;perc&quot; = prop.table(round(wtd.table(., weights = data$w, normwt = T), 0))))) %&gt;%
   rownames_to_column(&quot;disclosureWho&quot;) %&gt;% filter(!grepl(&quot;.0&quot;, disclosureWho, fixed = TRUE)) %&gt;% arrange(desc(freq))
+
+# Existuje rozdiel medzi pohlavím obete a mierou spokojnosti s reakciou ľudí, u ktorých obete hľadali pomoc?
+rq6_satisfactionGender &lt;- svyttest(satisfaction ~ genderBinary, design)
 
 # V koľkých percentách prípadov bolo spustené oficiálne konanie voči osobe, ktorá sa dopustila SO?
 rq6_investigationN &lt;- data %&gt;%
@@ -1342,22 +1434,20 @@ rq6_investigationN &lt;- data %&gt;%
             percent = round(100*n()/nrow(.), 2))</code></pre>
 <pre><code>## `summarise()` ungrouping output (override with `.groups` argument)</code></pre>
 <pre class="r"><code># Existuje súvis medzi zažitou formou SO a spustením oficiálneho konania? &amp; Existuje súvis medzi častosťou (frekvenciou) SO a spustením oficiálneho konania?
-rq6_investigationMod0 &lt;- data %&gt;% filter(harrassed == 1) %$% glm(investigation ~ 1, family=binomial(), weights = weight)</code></pre>
-<pre><code>## Warning in eval(family$initialize): non-integer #successes in a binomial glm!</code></pre>
-<pre class="r"><code>rq6_investigationMod &lt;- data %&gt;% filter(harrassed == 1) %$% glm(investigation ~ harrassedSeverity, family=binomial(), weights = weight)</code></pre>
-<pre><code>## Warning in eval(family$initialize): non-integer #successes in a binomial glm!</code></pre>
-<pre class="r"><code>investigationSummary &lt;- summary(rq6_investigationMod)
+rq6_investigationMod0 &lt;- data %&gt;% filter(harrassed == 1) %$% glm(investigation ~ 1, family=quasibinomial(), weights = w)
+rq6_investigationMod &lt;- data %&gt;% filter(harrassed == 1) %$% glm(investigation ~ harrassedSeverity, family=quasibinomial(), weights = w)
+investigationSummary &lt;- summary(rq6_investigationMod)
 rq6_investigationAnova &lt;- anova(rq6_investigationMod)
 
 rq6_investigationBF10 &lt;- 1/exp((BIC(rq6_investigationMod) - BIC(rq6_investigationMod0))/2) # Bayes Factor based on BIC approximation assuming unit information prior
 rq6_investigationPosterior &lt;- rq6_investigationBF10/(1+rq6_investigationBF10)
 rq6_investigationBayesOut &lt;- data.frame(BF10 = round(rq6_investigationBF10, 3), Posterior = round(rq6_investigationPosterior, 3))
 
-rq6_investigationHarrassed_cor &lt;- data %$% cor(investigation, harrassedSeverity, use = &quot;complete.obs&quot;)
+rq6_investigationHarrassed_cor &lt;- data %&gt;% weighted_correlation(investigation, harrassedSeverity, weights = w)
 
 # Aké sú dôvody, pre ktoré obete nehľadali pomoc
 
-rq6_disclosureWhyNoFreq &lt;- do.call(rbind.data.frame, data %&gt;% select(contains(&quot;whyNo&quot;) &amp; !contains(&quot;_other&quot;)) %&gt;% map(~cbind(&quot;freq&quot; = table(as.logical(.)), &quot;perc&quot; = prop.table(table(as.logical(.)))))) %&gt;% #Turning disclosure_ vars to logical; T = disclosed, F = not disclosed
+rq6_disclosureWhyNoFreq &lt;- do.call(rbind.data.frame, data %&gt;% select(contains(&quot;whyNo&quot;) &amp; !contains(&quot;_other&quot;)) %&gt;% map(~cbind(&quot;freq&quot; = round(wtd.table(as.logical(.), weights = data$w, normwt = T), 0), &quot;perc&quot; = prop.table(round(wtd.table(as.logical(.), weights = data$w, normwt = T), 0))))) %&gt;% #Turning disclosure_ vars to logical; T = disclosed, F = not disclosed
   rownames_to_column(&quot;disclosureWhyNo&quot;) %&gt;% filter(grepl(&quot;.TRUE&quot;, disclosureWhyNo, fixed = TRUE)) %&gt;% arrange(desc(freq))
 
 rq6_disclosureWhyNoFreq[,&quot;disclosureWhyNo&quot;] &lt;- rq6_disclosureWhyNoFreq[,&quot;disclosureWhyNo&quot;] %&gt;% str_remove(&quot;whyNoDisclosure_&quot;) %&gt;% str_remove(&quot;.TRUE&quot;)
@@ -1392,7 +1482,7 @@ data$mostFreqAbuserSAB &lt;- data %&gt;% select(sabTeacherFreq, sabStudentFreq, 
 # identify the most frequent perpetrator committing the most severe type of abuse
 data$perpetratorMostSevere &lt;- data %$% ifelse(!is.na(mostFreqAbuserSAB), mostFreqAbuserSAB, ifelse(!is.na(mostFreqAbuserUSA), mostFreqAbuserUSA, ifelse(!is.na(mostFreqAbuserGMH), mostFreqAbuserGMH, NA)))
 
-rq6_severPerpMod &lt;- lm(impactSeverity ~ perpetratorMostSevere, weights = data$weight, data)
+rq6_severPerpMod &lt;- lm(impactSeverity ~ perpetratorMostSevere, weights = data$w, data)
 rq6_severPerpBF &lt;- lmBF(impactSeverity ~ perpetratorMostSevere, data[!is.na(data$perpetratorMostSevere),], rscaleEffects = rScale)</code></pre>
 <pre><code>## Warning: data coerced from tibble to data frame
 
@@ -1418,7 +1508,7 @@ rq6_severPerpAnova &lt;- anova(rq6_severPerpMod)
 
 # RQ7 ---------------------------------------------------------------------
 # Aké dôsledky spojené so zverejnením sťažnosti na pôde VŠ sú uvádzané najčastejšie?
-rq7_investigation_n &lt;- do.call(rbind.data.frame, data %&gt;% select(contains(&quot;investigation_&quot;) &amp; !contains(&quot;_other&quot;)) %&gt;% map(~cbind(&quot;freq&quot; = table(as.logical(.)), &quot;perc&quot; = prop.table(table(as.logical(.)))))) %&gt;% #Turning disclosure_ vars to logical; T = disclosed, F = not disclosed
+rq7_investigation_n &lt;- do.call(rbind.data.frame, data %&gt;% select(contains(&quot;investigation_&quot;) &amp; !contains(&quot;_other&quot;)) %&gt;% map(~cbind(&quot;freq&quot; = round(wtd.table(as.logical(.), weights = data$w, normwt = T), 0), &quot;perc&quot; = prop.table(round(wtd.table(as.logical(.), weights = data$w, normwt = T), 0))))) %&gt;% #Turning disclosure_ vars to logical; T = disclosed, F = not disclosed
   rownames_to_column(&quot;investigationConsq&quot;) %&gt;% filter(grepl(&quot;.TRUE&quot;, investigationConsq, fixed = TRUE)) %&gt;% arrange(desc(freq))
 
 
@@ -1426,30 +1516,30 @@ rq7_investigation_n &lt;- do.call(rbind.data.frame, data %&gt;% select(contains(
 # Vnímanie sexuálneho obťažovania (operacionalizovane ako senzitivita)
 # Ktoré prejavy správania považujú respondenti/tky za SO?
 rq8_attitudes_n &lt;- data %&gt;% select(starts_with(&quot;att&quot;) &amp; !contains(c(&quot;unwanted&quot;))) %&gt;%
-  map(~mean(.,na.rm = TRUE)) %&gt;% as.tibble() %&gt;% gather(key = &quot;perception&quot;, value = &quot;mean&quot;) %&gt;% arrange(desc(mean))
+  map(~weighted.mean(., data$w, na.rm = T)) %&gt;% as.tibble() %&gt;% gather(key = &quot;perception&quot;, value = &quot;mean&quot;) %&gt;% arrange(desc(mean))
 
 # Existujú rozdiely s ohľadom na klastre foriem SO (1. rodové obťažovanie, 2. nechcená sexuálna pozornosť, 3. sexuálne donútenie/násilie) ?
 # Tazko zodpovedatelne. Alternativa: vztah zavaznosti SO a senzitivity na obtazovanie
 
-rq8_harrassedSensitivity_cor &lt;-  data %$% cor.test(harrassedSeverity, sensitivityToHarrasment)
+rq8_harrassedSensitivity_cor &lt;-  data %&gt;% weighted_correlation(harrassedSeverity, sensitivityToHarrasment, weights = w)
 rq8_harrassedSensitivity_bf &lt;- data %$% correlationBF(harrassedSeverity, sensitivityToHarrasment, rscale = rScale)
 
 # Existujú rozdiely medzi pohlaviami?
-rq8_genderSensitivityMod &lt;- lm(sensitivityToHarrasment ~ genderBinary, weights = weight, data)
+rq8_genderSensitivityMod &lt;- lm(sensitivityToHarrasment ~ genderBinary, weights = w, data)
 rq8_genderSensitivityBF &lt;- lmBF(sensitivityToHarrasment ~ genderBinary, data[!is.na(data$genderBinary),], rscaleEffects = rScale)</code></pre>
 <pre><code>## Warning: data coerced from tibble to data frame</code></pre>
 <pre class="r"><code>rq8_genderSensitivitySummary &lt;- summary(rq8_genderSensitivityMod)
 rq8_genderSensitivityAnova &lt;- anova(rq8_genderSensitivityMod)
 
 # Existujú rozdiely v závislosti od veku respondentov/tiek?
-rq8_ageSensitivityMod &lt;- lm(sensitivityToHarrasment ~ age, weights = weight, data)
+rq8_ageSensitivityMod &lt;- lm(sensitivityToHarrasment ~ age, weights = w, data)
 rq8_ageSensitivityBF &lt;- lmBF(sensitivityToHarrasment ~ age, data[!is.na(data$age),], rscaleEffects = rScale)</code></pre>
 <pre><code>## Warning: data coerced from tibble to data frame</code></pre>
 <pre class="r"><code>rq8_ageSensitivitySummary &lt;- summary(rq8_ageSensitivityMod)
 rq8_ageSensitivityAnova &lt;- anova(rq8_ageSensitivityMod)
 
 # Existujú rozdiely v závislosti od odboru štúdia respondentov/tiek?
-rq8_fieldSensitivityMod &lt;- lm(sensitivityToHarrasment ~ fieldStudy, weights = weight, data)
+rq8_fieldSensitivityMod &lt;- lm(sensitivityToHarrasment ~ fieldStudy, weights = w, data)
 rq8_fieldSensitivityBF &lt;- lmBF(sensitivityToHarrasment ~ fieldStudy, data[!is.na(data$fieldStudy),], rscaleEffects = rScale)</code></pre>
 <pre><code>## Warning: data coerced from tibble to data frame
 
@@ -1473,11 +1563,12 @@ rq8_fieldSensitivityBF &lt;- lmBF(sensitivityToHarrasment ~ fieldStudy, data[!is
 <pre class="r"><code>rq8_fieldSensitivitySummary &lt;- summary(rq8_fieldSensitivityMod)
 rq8_fieldSensitivityAnova &lt;- anova(rq8_fieldSensitivityMod)
 
-rq8_fieldSensitivity_means &lt;- data %&gt;% group_by(fieldStudy) %&gt;% summarise(meanSensitivity = mean(sensitivityToHarrasment, na.rm = T),
-                                            sdSensitivity = sd(sensitivityToHarrasment, na.rm = T))</code></pre>
+rq8_fieldSensitivity_means &lt;- data %&gt;% group_by(fieldStudy) %&gt;% summarise(meanSensitivity = weighted_mean(sensitivityToHarrasment, w),
+                                                                          sdSensitivity = weighted_sd(sensitivityToHarrasment, w))</code></pre>
 <pre><code>## `summarise()` ungrouping output (override with `.groups` argument)</code></pre>
 <pre class="r"><code># Existujú rozdiely v závislosti od regiónov, z ktorých respondenti/tky pochádzajú?
-rq8_regionSensitivityMod &lt;- lm(sensitivityToHarrasment ~ facultyRegion, weights = weight, data)
+data$facultyRegion &lt;- factor(data$facultyRegion)
+rq8_regionSensitivityMod &lt;- lm(sensitivityToHarrasment ~ facultyRegion, weights = w, data)
 rq8_regionSensitivityBF &lt;- anovaBF(sensitivityToHarrasment ~ facultyRegion, data[!is.na(data$facultyRegion),], rscaleEffects = rScale)</code></pre>
 <pre><code>## Warning: data coerced from tibble to data frame
 
@@ -1501,32 +1592,32 @@ rq8_regionSensitivityBF &lt;- anovaBF(sensitivityToHarrasment ~ facultyRegion, d
 <pre class="r"><code>rq8_regionSensitivitySummary &lt;- summary(rq8_regionSensitivityMod)
 rq8_regionSensitivityAnova &lt;- anova(rq8_regionSensitivityMod)
 
-rq8_regionSensitivity_means &lt;- data %&gt;% group_by(facultyRegion) %&gt;% summarise(meanSensitivity = mean(sensitivityToHarrasment, na.rm = T),
-                                            sdSensitivity = sd(sensitivityToHarrasment, na.rm = T))</code></pre>
+rq8_regionSensitivity_means &lt;- data %&gt;% group_by(facultyRegion) %&gt;% summarise(meanSensitivity = weighted_mean(sensitivityToHarrasment, w),
+                                                                              sdSensitivity = weighted_sd(sensitivityToHarrasment, w))</code></pre>
 <pre><code>## `summarise()` ungrouping output (override with `.groups` argument)</code></pre>
 <pre class="r"><code># Existujú rozdiely v závislosti od vierovyznania respondentov/tiek?
-rq8_believerSensitivityMod &lt;- lm(sensitivityToHarrasment ~ believer, weights = weight, data)
+rq8_believerSensitivityMod &lt;- lm(sensitivityToHarrasment ~ believer, weights = w, data)
 rq8_believerSensitivityBF &lt;- anovaBF(sensitivityToHarrasment ~ believer, data[!is.na(data$believer),], rscaleEffects = rScale)</code></pre>
 <pre><code>## Warning: data coerced from tibble to data frame</code></pre>
 <pre class="r"><code>rq8_believerSensitivitySummary &lt;- summary(rq8_believerSensitivityMod)
 rq8_believerSensitivityAnova &lt;- anova(rq8_believerSensitivityMod)
 
-rq8_believerSensitivity_means &lt;- data %&gt;% group_by(believer) %&gt;% summarise(meanSensitivity = mean(sensitivityToHarrasment, na.rm = T),
-                                               sdSensitivity = sd(sensitivityToHarrasment, na.rm = T))</code></pre>
+rq8_believerSensitivity_means &lt;- data %&gt;% group_by(believer) %&gt;% summarise(meanSensitivity = weighted_mean(sensitivityToHarrasment, w),
+                                                                           sdSensitivity = weighted_sd(sensitivityToHarrasment, w))</code></pre>
 <pre><code>## `summarise()` ungrouping output (override with `.groups` argument)</code></pre>
 <pre class="r"><code># Existujú rozdiely medzi obeťami SO a osobami, ktoré nemajú osobnú skúsenosť s SO? (častý poznatok - osoby, ktoré majú viac skúseností so SO zvyknú aj viac situácií vyhodnocovať ako SO).
-rq8_harrassedSensitivityMod &lt;- lm(sensitivityToHarrasment ~ harrassed, weights = weight, data)
+rq8_harrassedSensitivityMod &lt;- lm(sensitivityToHarrasment ~ harrassed, weights = w, data)
 rq8_harrassedSensitivityBF &lt;- anovaBF(sensitivityToHarrasment ~ harrassed, data[!is.na(data$harrassed),], rscaleEffects = rScale)</code></pre>
 <pre><code>## Warning: data coerced from tibble to data frame</code></pre>
 <pre class="r"><code>rq8_harrassedSensitivitySummary &lt;- summary(rq8_harrassedSensitivityMod)
 rq8_harrassedSensitivityAnova &lt;- anova(rq8_harrassedSensitivityMod)
 
-rq8_harrassedSensitivity_means &lt;- data %&gt;% group_by(harrassed) %&gt;% summarise(meanSensitivity = mean(sensitivityToHarrasment, na.rm = T),
-                                          sdSensitivity = sd(sensitivityToHarrasment, na.rm = T))</code></pre>
+rq8_harrassedSensitivity_means &lt;- data %&gt;% group_by(harrassed) %&gt;% summarise(meanSensitivity = weighted_mean(sensitivityToHarrasment, w),
+                                                                             sdSensitivity = weighted_sd(sensitivityToHarrasment, w))</code></pre>
 <pre><code>## `summarise()` ungrouping output (override with `.groups` argument)</code></pre>
 <pre class="r"><code># Existuje súvis medzi tým, čo respondenti/tky považujú za SO a tým, či majú tendenciou hľadať pomoc, ak sa s niektorou z foriem SO osobne stretli?
 # controlling for harrassedSeverity
-rq8_disclosureSensitivityMod &lt;- lm(sensitivityToHarrasment ~ disclosureBinary + harrassedSeverity, weights = weight, data)
+rq8_disclosureSensitivityMod &lt;- lm(sensitivityToHarrasment ~ disclosureBinary + harrassedSeverity, weights = w, data)
 rq8_disclosureSensitivityBF &lt;- lmBF(sensitivityToHarrasment ~ disclosureBinary + harrassedSeverity, data[!is.na(data$disclosureBinary),], rscaleEffects = rScale)</code></pre>
 <pre><code>## Warning: data coerced from tibble to data frame
 
@@ -1556,21 +1647,21 @@ rq8_disclosureSensitivity_means &lt;- data %&gt;% group_by(disclosureBinary) %&g
 data &lt;- data %&gt;% mutate(legalAwareness = rowSums(cbind(know1, know2), na.rm = T))
 
 rq8_legalAwareness_mean &lt;- data %&gt;%
-  summarise(meanLegalAwareness = mean(legalAwareness, na.rm = TRUE),
-            sdLegalAwareness = sd(legalAwareness, na.rm = TRUE))
+  summarise(meanLegalAwareness = weighted_mean(legalAwareness, w),
+            sdLegalAwareness = weighted_sd(legalAwareness, w))
 
 # Existujú rozdiely medzi pohlaviami?
-rq8_genderLegalAwarenessMod &lt;- lm(legalAwareness ~ genderBinary, weights = weight, data)
+rq8_genderLegalAwarenessMod &lt;- lm(legalAwareness ~ genderBinary, weights = w, data)
 rq8_genderLegalAwarenessBF &lt;- lmBF(legalAwareness ~ genderBinary, data[!is.na(data$genderBinary) &amp; !is.na(data$legalAwareness),], rscaleEffects = rScale)</code></pre>
 <pre><code>## Warning: data coerced from tibble to data frame</code></pre>
 <pre class="r"><code>rq8_genderLegalAwarenessSummary &lt;- summary(rq8_genderLegalAwarenessMod)
 rq8_genderLegalAwarenessAnova &lt;- anova(rq8_genderLegalAwarenessMod)
 
-rq8_genderLegalAwareness_means &lt;- data %&gt;% group_by(genderBinary) %&gt;% summarise(meanLegalAwareness = mean(legalAwareness, na.rm = T),
-                                                  sdLegalAwareness = sd(legalAwareness, na.rm = T))</code></pre>
+rq8_genderLegalAwareness_means &lt;- data %&gt;% group_by(genderBinary) %&gt;% summarise(meanLegalAwareness = weighted_mean(legalAwareness, w),
+                                                                                sdLegalAwareness = weighted_sd(legalAwareness, w))</code></pre>
 <pre><code>## `summarise()` ungrouping output (override with `.groups` argument)</code></pre>
 <pre class="r"><code># Existujú rozdiely v závislosti od regiónov, z ktorých respondenti/tky pochádzajú?
-rq8_regionLegalAwarenessMod &lt;- lm(legalAwareness ~ facultyRegion, weights = weight, data)
+rq8_regionLegalAwarenessMod &lt;- lm(legalAwareness ~ facultyRegion, weights = w, data)
 rq8_regionLegalAwarenessBF &lt;- anovaBF(legalAwareness ~ facultyRegion, data[!is.na(data$facultyRegion) &amp; !is.na(data$legalAwareness),], rscaleEffects = rScale)</code></pre>
 <pre><code>## Warning: data coerced from tibble to data frame
 
@@ -1596,7 +1687,7 @@ rq8_regionLegalAwarenessAnova &lt;- anova(rq8_regionLegalAwarenessMod)
 
 # Existuje súvis medzi tým, čo respondenti/tky považujú za SO a tým, či majú tendenciou hľadať pomoc, ak sa s niektorou z foriem SO osobne stretli?
 # controlling for harrassedSeverity
-rq8_disclosureLegalAwarenessMod &lt;- lm(legalAwareness ~ disclosureBinary + harrassedSeverity, weights = weight, data)
+rq8_disclosureLegalAwarenessMod &lt;- lm(legalAwareness ~ disclosureBinary + harrassedSeverity, weights = w, data)
 rq8_disclosureLegalAwarenessBF &lt;- lmBF(legalAwareness ~ disclosureBinary + harrassedSeverity, data[!is.na(data$disclosureBinary),], rscaleEffects = rScale)</code></pre>
 <pre><code>## Warning: data coerced from tibble to data frame
 
@@ -1620,8 +1711,8 @@ rq8_disclosureLegalAwarenessBF &lt;- lmBF(legalAwareness ~ disclosureBinary + ha
 <pre class="r"><code>rq8_disclosureLegalAwarenessSummary &lt;- summary(rq8_disclosureLegalAwarenessMod)
 rq8_disclosureLegalAwarenessAnova &lt;- anova(rq8_disclosureLegalAwarenessMod)
 
-rq8_disclosureLegalAwareness_means &lt;- data %&gt;% group_by(disclosureBinary) %&gt;% summarise(meanLegalAwareness = mean(legalAwareness, na.rm = T),
-                                                  sdLegalAwareness = sd(legalAwareness, na.rm = T))</code></pre>
+rq8_disclosureLegalAwareness_means &lt;- data %&gt;% group_by(disclosureBinary) %&gt;% summarise(meanLegalAwareness = weighted_mean(legalAwareness, w),
+                                                                                        sdLegalAwareness = weighted_sd(legalAwareness, w))</code></pre>
 <pre><code>## `summarise()` ungrouping output (override with `.groups` argument)</code></pre>
 <pre class="r"><code># RQ9 --------------------------------------------------------------------
 # Poskytla im ich vysoká škola dostatok informácií o SO?
@@ -1631,14 +1722,14 @@ rq9_dostatokInformacii_n &lt;- data %&gt;%
             dostatokInformaciiPerc = sum(know3 &gt; 2, na.rm = TRUE)*100/n())
 
 # Existujú rozdiely medzi pohlaviami?
-rq9_genderInformationMod &lt;- lm(know3 ~ genderBinary, weights = weight, data)
+rq9_genderInformationMod &lt;- lm(know3 ~ genderBinary, weights = w, data)
 rq9_genderInformationBF &lt;- lmBF(know3 ~ genderBinary, data[!is.na(data$genderBinary) &amp; !is.na(data$know3),], rscaleEffects = rScale)</code></pre>
 <pre><code>## Warning: data coerced from tibble to data frame</code></pre>
 <pre class="r"><code>rq9_genderInformationSummary &lt;- summary(rq9_genderInformationMod)
 rq9_genderInformationAnova &lt;- anova(rq9_genderInformationMod)
 
 # Existujú rozdiely v závislosti od regiónov, z ktorých respondenti/tky pochádzajú?
-rq9_regionInformationMod &lt;- lm(know3 ~ facultyRegion, weights = weight, data)
+rq9_regionInformationMod &lt;- lm(know3 ~ facultyRegion, weights = w, data)
 rq9_regionInformationBF &lt;- anovaBF(know3 ~ facultyRegion, data[!is.na(data$facultyRegion) &amp; !is.na(data$know3),], rscaleEffects = rScale)</code></pre>
 <pre><code>## Warning: data coerced from tibble to data frame
 
@@ -1663,7 +1754,7 @@ rq9_regionInformationBF &lt;- anovaBF(know3 ~ facultyRegion, data[!is.na(data$fa
 rq9_regionInformationAnova &lt;- anova(rq9_regionInformationMod)
 
 # Existujú rozdiely v závislosti od odboru štúdia respondentov/tiek?
-rq9_fieldInformationMod &lt;- lm(know3 ~ fieldStudy, weights = weight, data)
+rq9_fieldInformationMod &lt;- lm(know3 ~ fieldStudy, weights = w, data)
 rq9_fieldInformationBF &lt;- lmBF(know3 ~ fieldStudy, data[!is.na(data$fieldStudy) &amp; !is.na(data$know3),], rscaleEffects = rScale)</code></pre>
 <pre><code>## Warning: data coerced from tibble to data frame
 
@@ -1700,21 +1791,21 @@ rq.10_agreeMisconceptions &lt;- data %&gt;%
             sdAgreementMisconceptions = sd(misconceptScore, na.rm = TRUE))
 
 # Existujú rozdiely medzi pohlaviami?
-rq.10_genderMisconceptionsMod &lt;- lm(misconceptScore ~ genderBinary, weights = weight, data)
+rq.10_genderMisconceptionsMod &lt;- lm(misconceptScore ~ genderBinary, weights = w, data)
 rq.10_genderMisconceptionsBF &lt;- lmBF(misconceptScore ~ genderBinary, data[!is.na(data$genderBinary) &amp; !is.na(data$misconceptScore),], rscaleEffects = rScale)</code></pre>
 <pre><code>## Warning: data coerced from tibble to data frame</code></pre>
 <pre class="r"><code>rq.10_genderMisconceptionsSummary &lt;- summary(rq.10_genderMisconceptionsMod)
 rq.10_genderMisconceptionsAnova &lt;- anova(rq.10_genderMisconceptionsMod)
 
 # Existujú rozdiely v závislosti od veku respondentov/tiek?
-rq.10_ageMisconceptionsMod &lt;- lm(misconceptScore ~ age, weights = weight, data)
+rq.10_ageMisconceptionsMod &lt;- lm(misconceptScore ~ age, weights = w, data)
 rq.10_ageMisconceptionsBF &lt;- lmBF(misconceptScore ~ age, data[!is.na(data$age),], rscaleEffects = rScale)</code></pre>
 <pre><code>## Warning: data coerced from tibble to data frame</code></pre>
 <pre class="r"><code>rq.10_ageMisconceptionsSummary &lt;- summary(rq.10_ageMisconceptionsMod)
 rq.10_ageMisconceptionsAnova &lt;- anova(rq.10_ageMisconceptionsMod)
 
 # Existujú rozdiely v závislosti od odboru štúdia respondentov/tiek?
-rq.10_fieldMisconceptionsMod &lt;- lm(misconceptScore ~ fieldStudy, weights = weight, data)
+rq.10_fieldMisconceptionsMod &lt;- lm(misconceptScore ~ fieldStudy, weights = w, data)
 rq.10_fieldMisconceptionsBF &lt;- lmBF(misconceptScore ~ fieldStudy, data[!is.na(data$fieldStudy) &amp; !is.na(data$misconceptScore),], rscaleEffects = rScale)</code></pre>
 <pre><code>## Warning: data coerced from tibble to data frame
 
@@ -1739,7 +1830,7 @@ rq.10_fieldMisconceptionsBF &lt;- lmBF(misconceptScore ~ fieldStudy, data[!is.na
 rq.10_fieldMisconceptionsAnova &lt;- anova(rq.10_fieldMisconceptionsMod)
 
 # Existujú rozdiely v závislosti od regiónov, z ktorých respondenti/tky pochádzajú?
-rq.10_regionMisconceptionsMod &lt;- lm(misconceptScore ~ facultyRegion, weights = weight, data)
+rq.10_regionMisconceptionsMod &lt;- lm(misconceptScore ~ facultyRegion, weights = w, data)
 rq.10_regionMisconceptionsBF &lt;- anovaBF(misconceptScore ~ facultyRegion, data[!is.na(data$facultyRegion) &amp; !is.na(data$misconceptScore),], rscaleEffects = rScale)</code></pre>
 <pre><code>## Warning: data coerced from tibble to data frame
 
@@ -1764,7 +1855,7 @@ rq.10_regionMisconceptionsBF &lt;- anovaBF(misconceptScore ~ facultyRegion, data
 rq.10_regionMisconceptionsAnova &lt;- anova(rq.10_regionMisconceptionsMod)
 
 # Existujú rozdiely v závislosti od vierovyznania respondentov/tiek?
-rq.10_believerMisconceptionsMod &lt;- lm(misconceptScore ~ believer, weights = weight, data)
+rq.10_believerMisconceptionsMod &lt;- lm(misconceptScore ~ believer, weights = w, data)
 rq.10_believerMisconceptionsBF &lt;- anovaBF(misconceptScore ~ believer, data[!is.na(data$believer),], rscaleEffects = rScale)</code></pre>
 <pre><code>## Warning: data coerced from tibble to data frame</code></pre>
 <pre class="r"><code>rq.10_believerMisconceptionsSummary &lt;- summary(rq.10_believerMisconceptionsMod)
@@ -1774,7 +1865,7 @@ rq.10_believerMisconceptions_means &lt;- data %&gt;% group_by(believer) %&gt;% s
                                           sdMisconceptions = sd(misconceptScore, na.rm = T))</code></pre>
 <pre><code>## `summarise()` ungrouping output (override with `.groups` argument)</code></pre>
 <pre class="r"><code># Existujú rozdiely medzi obeťami SO a osobami, ktoré nemajú osobnú skúsenosť s SO? (častý poznatok - osoby, ktoré majú viac skúseností so SO zvyknú aj viac situácií vyhodnocovať ako SO).
-rq.10_harrassedMisconceptionsMod &lt;- lm(misconceptScore ~ harrassed, weights = weight, data)
+rq.10_harrassedMisconceptionsMod &lt;- lm(misconceptScore ~ harrassed, weights = w, data)
 rq.10_harrassedMisconceptionsBF &lt;- anovaBF(misconceptScore ~ harrassed, data[!is.na(data$harrassed),], rscaleEffects = rScale)</code></pre>
 <pre><code>## Warning: data coerced from tibble to data frame</code></pre>
 <pre class="r"><code>rq.10_harrassedMisconceptionsSummary &lt;- summary(rq.10_harrassedMisconceptionsMod)
@@ -1785,7 +1876,7 @@ rq.10_harrassedMisconceptions_means &lt;- data %&gt;% group_by(harrassed) %&gt;%
 <pre><code>## `summarise()` ungrouping output (override with `.groups` argument)</code></pre>
 <pre class="r"><code># Existuje súvis medzi tým, čo respondenti/tky považujú za SO a tým, či majú tendenciou hľadať pomoc, ak sa s niektorou z foriem SO osobne stretli?
 # controlling for harrassedSeverity
-rq.10_disclosureMisconceptionsMod &lt;- lm(misconceptScore ~ disclosureBinary + harrassedSeverity, weights = weight, data)
+rq.10_disclosureMisconceptionsMod &lt;- lm(misconceptScore ~ disclosureBinary + harrassedSeverity, weights = w, data)
 rq.10_disclosureMisconceptionsBF &lt;- lmBF(misconceptScore ~ disclosureBinary + harrassedSeverity, data[!is.na(data$disclosureBinary),], rscaleEffects = rScale)</code></pre>
 <pre><code>## Warning: data coerced from tibble to data frame
 
@@ -1812,6 +1903,67 @@ rq.10_disclosureMisconceptionsAnova &lt;- anova(rq.10_disclosureMisconceptionsMo
 rq.10_disclosureMisconceptions_means &lt;- data %&gt;% group_by(disclosureBinary) %&gt;% summarise(meanMisconceptions = mean(misconceptScore, na.rm = T),
                                                   sdMisconceptions = sd(misconceptScore, na.rm = T))</code></pre>
 <pre><code>## `summarise()` ungrouping output (override with `.groups` argument)</code></pre>
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>## R version 4.0.2 (2020-06-22)
+## Platform: x86_64-apple-darwin17.0 (64-bit)
+## Running under: macOS Catalina 10.15.6
+## 
+## Matrix products: default
+## BLAS:   /Library/Frameworks/R.framework/Versions/4.0/Resources/lib/libRblas.dylib
+## LAPACK: /Library/Frameworks/R.framework/Versions/4.0/Resources/lib/libRlapack.dylib
+## 
+## locale:
+## [1] sk_SK.UTF-8/sk_SK.UTF-8/sk_SK.UTF-8/C/sk_SK.UTF-8/sk_SK.UTF-8
+## 
+## attached base packages:
+## [1] grid      stats     graphics  grDevices utils     datasets  methods  
+## [8] base     
+## 
+## other attached packages:
+##  [1] careless_1.1.3         magrittr_1.5           BayesFactor_0.9.12-4.2
+##  [4] coda_0.19-3            questionr_0.7.3        sjstats_0.18.0        
+##  [7] survey_4.0             survival_3.1-12        Matrix_1.2-18         
+## [10] plotly_4.9.2.1         epitools_0.5-10.1      psych_2.0.7           
+## [13] forcats_0.5.0          stringr_1.4.0          dplyr_1.0.1           
+## [16] purrr_0.3.4            readr_1.3.1            tidyr_1.1.1           
+## [19] tibble_3.0.3           ggplot2_3.3.2          tidyverse_1.3.0       
+## [22] car_3.0-9              carData_3.0-4         
+## 
+## loaded via a namespace (and not attached):
+##   [1] TH.data_1.0-10     minqa_1.2.4        colorspace_1.4-1  
+##   [4] ellipsis_0.3.1     rio_0.5.16         sjlabelled_1.1.7  
+##   [7] estimability_1.3   parameters_0.8.6   fs_1.5.0          
+##  [10] rstudioapi_0.11    MatrixModels_0.4-1 fansi_0.4.1       
+##  [13] mvtnorm_1.1-1      lubridate_1.7.9    xml2_1.3.2        
+##  [16] codetools_0.2-16   splines_4.0.2      mnormt_2.0.1      
+##  [19] knitr_1.29         sjmisc_2.8.5       jsonlite_1.7.0    
+##  [22] nloptr_1.2.2.2     broom_0.7.0        dbplyr_1.4.4      
+##  [25] shiny_1.5.0        effectsize_0.3.3   compiler_4.0.2    
+##  [28] httr_1.4.2         emmeans_1.5.1      backports_1.1.8   
+##  [31] fastmap_1.0.1      assertthat_0.2.1   lazyeval_0.2.2    
+##  [34] cli_2.0.2          later_1.1.0.1      htmltools_0.5.0   
+##  [37] tools_4.0.2        gtable_0.3.0       glue_1.4.1        
+##  [40] Rcpp_1.0.5         cellranger_1.1.0   vctrs_0.3.2       
+##  [43] nlme_3.1-148       crosstalk_1.1.0.1  insight_0.9.6     
+##  [46] xfun_0.16          openxlsx_4.1.5     lme4_1.1-23       
+##  [49] rvest_0.3.6        mime_0.9           miniUI_0.1.1.1    
+##  [52] lifecycle_0.2.0    gtools_3.8.2       statmod_1.4.34    
+##  [55] MASS_7.3-51.6      zoo_1.8-8          scales_1.1.1      
+##  [58] promises_1.1.1     hms_0.5.3          parallel_4.0.2    
+##  [61] sandwich_2.5-1     yaml_2.2.1         curl_4.3          
+##  [64] pbapply_1.4-2      labelled_2.7.0     stringi_1.4.6     
+##  [67] highr_0.8          bayestestR_0.7.2   boot_1.3-25       
+##  [70] zip_2.1.0          rlang_0.4.7        pkgconfig_2.0.3   
+##  [73] evaluate_0.14      lattice_0.20-41    labeling_0.3      
+##  [76] htmlwidgets_1.5.1  tidyselect_1.1.0   R6_2.4.1          
+##  [79] generics_0.0.2     multcomp_1.4-13    DBI_1.1.0         
+##  [82] pillar_1.4.6       haven_2.3.1        foreign_0.8-80    
+##  [85] withr_2.2.0        abind_1.4-5        performance_0.5.0 
+##  [88] modelr_0.1.8       crayon_1.3.4       utf8_1.1.4        
+##  [91] tmvnsim_1.0-2      rmarkdown_2.3      readxl_1.3.1      
+##  [94] data.table_1.13.0  blob_1.2.1         reprex_0.3.0      
+##  [97] digest_0.6.25      xtable_1.8-4       httpuv_1.5.4      
+## [100] munsell_0.5.0      viridisLite_0.3.0  mitools_2.4</code></pre>
 
 
 

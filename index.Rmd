@@ -1,0 +1,57 @@
+---
+title: "Sexuálne obťažovanie na vysokých školách"
+author: "Ivan Ropovik"
+site: bookdown::bookdown_site
+documentclass: book
+output:
+  bookdown::gitbook: default
+  #bookdown::pdf_book: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = F)
+library(kableExtra)
+library(tidyverse)
+```
+
+
+```{r}
+load("analysisWorkspace.RData")
+```
+
+# Popis výskumnej vzorky
+
+## Demografické charakteristiky
+Výskumná vzorka pozostávala z `r ss_total_n` participantov, študentov slovenských vysokých škôl. Priemerný vek participantov bol `r round(mean(data$age, na.rm = T), 2)` rokov (*SD* = `r round(sd(data$age, na.rm = T), 2)`). Z hľadiska pohlavia, vzorku tvorilo `r round(ss_gender_n[1,3], 0)`% žien, `r round(ss_gender_n[2,3], 0)`% mužov a menej než 1% transrodových osôb (`r round(ss_gender_n[4,3], 0)`% participantov rod neuviedlo). Graf \@ref(fig:ageplot) zobrazuje distribúciu veku podľa rodu (ako binárnej premennej). 
+
+```{r ageplot, fig.cap= "Distribúcia veku podľa pohlavia"}
+ss_age_plot
+```
+
+Z celkovej vzorky, 2,7% participantov sa hlásilo k etnickej minorite, 3.5% k sexuálnej menšine (queer), 5,2% k náboženskej minorite, a po 1,0% participantov reportovalo postihnutie alebo status imigranta.
+
+Najviac zastúpení vo vzorke boli študenti pochádzajúci z krajov východného Slovenska. V Tabuľke \@ref(tab:regionTab) sú zobrazené počty a proporcie participantov podľa kraja, odkiaľ pochádzajú.
+
+```{r regionTab}
+colnames(ss_region_n)[1] <- "Región pôvodu participantov"
+kable(arrange(ss_region_n, desc(percent)), "html", digits = 3, caption = "Participanti podľa kraja") %>%   kable_styling(bootstrap_options = "striped", full_width = F, font_size = 12, position = "left")
+```
+
+## Študijné charakteristiky
+Výskumná vzorka reprezentovala participantov študujúcich všetky skupiny odborov. Tabuľka \@ref(tab:regFieldTab)a (naľavo) zobrazuje počty participantov vo vzorke podľa lokality fakulty, na ktorej v čase výskumu študovali, zatiaľ čo Tabuľka \@ref(tab:regFieldTab)b (napravo) zobrazuje počty participantov podľa študijných odborov, ktoré študovali. Najviac zastúpené je západné, najmenej stredné Slovensko. Rozdelenie participantov vo vzorke z hľadiska odborov približne kopíruje populačné proporcie počtu študentov študujúcich dané odbory na Slovensku.
+
+```{r regFieldTab}
+colnames(ss_facultyRegion_n)[1] <- "Región fakulty"
+kable(list(arrange(ss_facultyRegion_n, desc(percent)), arrange(ss_fieldStudy_n, desc(percent))), "html", digits = 3, caption = "Región fakulty a skupiny študijných odborov") %>% kable_styling(bootstrap_options = "striped", full_width = T, font_size = 12, position = "left")
+```
+
+Nižšie je možné vidieť skupiny odborov rozdelené podľa pohlavia (Graf \@ref(fig:fieldPlotMF)) a podľa ročníka (Graf \@ref(fig:fieldPlotYear)).
+
+```{r fieldPlotMF, fig.cap="Odbor štúdia podľa pohlavia"}
+ss_fieldStudy_plot
+```
+
+```{r fieldPlotYear, fig.cap="Odbor štúdia podľa ročníka"}
+ss_fieldStudyYear_plot
+```
+

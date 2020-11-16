@@ -1,0 +1,11 @@
+fig:ageplot
+tab:regionTab
+popis-výskumnej-vzorky
+demografické-charakteristiky
+študijné-charakteristiky
+región-fakulty
+študijný-odbor
+tab:regFieldTab
+fig:fieldPlot
+fig:fieldPlotMF
+fig:fieldPlotYear

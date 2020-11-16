@@ -1,0 +1,585 @@
+---
+title: "Rýchly basic report"
+author: "Ivan Ropovik"
+date: "`r Sys.Date()`"
+output: 
+  html_document:
+       toc: true
+       toc_float: true
+       code_folding: hide
+       fig_retina: 2
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = F)
+library(kableExtra)
+```
+
+
+```{r include = FALSE}
+source("analysis.R")
+```
+
+
+# Deskriptívne štatistiky
+
+## N
+```{r}
+ss_total_n
+```
+
+## Participanti podla regiónu
+
+```{r}
+kable(ss_region_n, "html", digits = 3) %>%   kable_styling(bootstrap_options = "striped", full_width = F, font_size = 12, position = "left")
+```
+ 
+```{r}
+ss_region_plot
+```
+
+### Región fakulty
+```{r}
+kable(ss_facultyRegion_n, "html", digits = 3) %>%   kable_styling(bootstrap_options = "striped", full_width = F, font_size = 12, position = "left")
+```
+
+## Študijný odbor
+```{r}
+kable(ss_fieldStudy_n, "html", digits = 3) %>%   kable_styling(bootstrap_options = "striped", full_width = F, font_size = 12, position = "left")
+```
+
+```{r}
+ss_fieldStudy_plot
+```
+
+### Ročník štúdia
+0 = chlapec, 1 = dievča
+```{r}
+ss_yearStudy_plot
+```
+
+Vo vzorke bolo celkovo `r sum(table(data$yearStudy)[4:6])` študentov 4-6. ročníka, čo tvorí `r round(sum(table(data$yearStudy)[4:6])/nrow(data)*100, 2)`
+
+### Odbor podľa roku
+```{r}
+kable(ss_fieldStudyYear_n, "html", digits = 3) %>%   kable_styling(bootstrap_options = "striped", full_width = F, font_size = 12, position = "left") %>%
+  kableExtra::scroll_box(height = "400px", width = "500px", fixed_thead = T)
+
+```
+
+```{r}
+ss_fieldStudyYear_plot
+```
+
+### Odbor podľa regiónu
+```{r}
+kable(ss_fieldStudyRegion_n, "html", digits = 3) %>%   kable_styling(bootstrap_options = "striped", full_width = F, font_size = 12, position = "left") %>%
+  kableExtra::scroll_box(height = "400px", width = "500px", fixed_thead = T)
+```
+
+#### Populačné proporcie
+```{r}
+kable(round((popCounts)*100/99205, 3), "html", digits = 3) %>%   kable_styling(bootstrap_options = "striped", full_width = F, font_size = 12, position = "left")
+```
+
+## Vek
+
+Priemerný vek
+
+```{r}
+round(mean(data$age, na.rm = T), 2)
+```
+SD vek
+
+```{r}
+round(sd(data$age, na.rm = T), 2)
+```
+
+
+0 = menej ako 23, 1 = 23 rokov a viac
+```{r}
+kable(ss_ageGroups_n, "html", digits = 3) %>%   kable_styling(bootstrap_options = "striped", full_width = F, font_size = 12, position = "left")
+```
+
+```{r}
+ss_age_plot
+```
+
+## Rod a sexuálna orientácia
+```{r}
+ss_gender_n
+```
+
+```{r}
+kable(ss_sexOrien_n, "html", digits = 3) %>%   kable_styling(bootstrap_options = "striped", full_width = F, font_size = 12, position = "left")
+```
+
+Mužov = 598, žien = 972. Počet queer participantov bol n = 56 (3.5%). Počty pred exclusions.
+
+## Minority
+Etnické n = 44
+Imigranti n = 17
+Náboženské n = 85
+Postihnutia n = 15
+
+# Vylúčenie careless responders
+Na základe viacerých metód detekcie careless responders bol z datasetu vylúčený nasledujúci počet participantov.
+```{r}
+ss_total_n - nrow(data)
+```
+Kritéria na vylúčenie (pomerne veľmi konzervatívne) boli:
+
+1. doba vyplnenia menej ako 3 minúty
+
+2. menej ako 10% dát o formách SO
+
+3. prítomnosť longstrings v častiach dotazníka zameraných na postoje alebo miskoncepcie. Konkrétne nulová intra-individuálna variabilita v odpovediach - všetky odpovede identické.
+
+4. vysoko nepravdepodobný pattern odpovedí v častiach dotazníka zameraných na postoje alebo miskoncepcie detekovaný metódou Mahalanobisových vzdialeností.
+
+5. zjavne neseriózne odpovede v otvorených otázkach
+
+# Prevalencia SO
+## Individuálne formy SO
+
+**Aký je celkový výskyt všetkých foriem sexuálneho obťažovania (SO)  (predpokladám, že tieto základné otázky budú všetky delené aj podľa demografie a menšinového statusu)? Aký je výskyt SO za všetky otázky?**
+
+Najprv su pocty, potom percenta
+
+```{r}
+kable(rq1.1_items_n, "html", digits = 3) %>%   kable_styling(bootstrap_options = "striped", full_width = F, font_size = 12, position = "left") %>%
+  kableExtra::scroll_box(width = "800px", height = "70px")
+```
+
+gmh = gender motivated harassment
+
+usa = unwanted sexual attention
+
+sab = sexual abuse
+
+```{r}
+rq1.1_items_plot
+```
+
+### Individuálne formy SO podľa pohlavia
+Aký je pomer pohlaví vo vzťahu k riziku SO všeobecne?
+
+0 = chlapec
+1 = dievca
+
+```{r}
+kable(rq1.1_itemsGender_n, "html", digits = 3) %>%   kable_styling(bootstrap_options = "striped", full_width = F, font_size = 12, position = "left") %>%
+  kableExtra::scroll_box(width = "800px", height = "120px", fixed_thead = T)
+```
+
+
+```{r}
+rq1.1_itemsGender_plot
+```
+
+## Klastre SO
+
+**Aký je výskyt SO v prvom klastri otázok (rodové obťažovanie), (otázky 2-9)? Aký je výskyt SO v druhom klastri otázok (nechcená sexuálna pozornosť), (otázky 10 - 17)? Aký je výskyt SO v treťom klastri otázok (sexuálne donútenie/násilie), (otázky 18 - 21)?** 
+
+```{r}
+kable(rq1.2_cluster_n, "html", digits = 3) %>%   kable_styling(bootstrap_options = "striped", full_width = F, font_size = 12, position = "left")
+```
+
+### Prevalencia v klastroch podľa pohlavia
+```{r}
+kable(rq1.2_clusterGender_n, "html", digits = 3) %>%   kable_styling(bootstrap_options = "striped", full_width = F, font_size = 12, position = "left")
+
+```
+
+```{r}
+rq1.2_clusterGender_plot
+```
+
+
+#### Populačné odhady s intervalmi spoľahlivosti
+**Dievčatá**
+```{r}
+lapply(rq1.2_female_ci, round, 3)
+```
+
+**Chlapci**
+```{r}
+lapply(rq1.2_male_ci, round, 3)
+```
+
+**Sú niektorým formám SO vystavení častejšie muži alebo ženy?**
+**Aký je pomer pohlaví vo vzťahu k riziku SO všeobecne?**  
+
+
+
+
+Dievčatá pri individuálnych formách: q6 1.8x vačšie riziko, q7 o ~74% menšie riziko; q8 o 13% vacsie riziko no miera dôkazov v prospech tvrdenia je mimoriadne slabá; q9 o 44% menšie riziko; q11 o 31% mensie riziko no miera dôkazov v prospech tvrdenia je mimoriadne slabá, q14 2.2x vačšie riziko, q15 o 43% vačšie riziko no miera dôkazov je veĺmi slabá, q16 o 40% menšie riziko no miera dôkazov je skôr slabá; q17 o 52% mensie riziko, no dôkladnejsia analýza indikuje, že rozdiel nie je štatisticky robustný. Pri ostatných položkách nie je rozdiel
+
+Pri klastroch: rozdiel medzi pohlaviami vo výskyte SO nie je štatisticky robustný v žiadnom klastri
+
+**Je u transrodových osôb zvýšené riziko SO?**  
+Na to nemáme a nebudeme mať dostatok dát
+
+# Rizikové faktory SO
+
+**Sú študenti / študentky niektorých odborov vystavení väčšiemu riziku SO než u iných študijných odborov**
+
+genderMotivHarr áno (vyssie riziko u zdravotnikov (o 29%), potom prírodovedcov (o 23%), technických odborov (o 17%), a spol-ekon-právnych (o 11%)) -  v porovnaní s fil-hum-ped-teologickými odbormi. 
+
+unwantedSexAtt nie
+
+sexAbuse nie
+
+**Zvyšuje sa s dĺžkou štúdia aj riziko SO?**
+
+genderMotivHarr veľmi mierne áno; 
+
+unwantedSexAtt ano
+
+sexAbuse paradoxne v prvom ročníku o niečo vyššie riziko
+
+Celkovo ale s dĺžkou štúdia stúpa závažnosť obťažovania.
+
+**Existuje zvýšené riziko SO s ohľadom na to, akým jazykom respondenti/respondentky hovoria?**
+
+genderMotivHarr nie; 
+
+unwantedSexAtt skôr nie;
+
+sexAbuse nie
+
+**Existuje zvýšené riziko SO s ohľadom na to, aké je ich vierovyznanie?**
+
+genderMotivHarr nie; 
+
+unwantedSexAtt nie; 
+
+sexAbuse nie
+
+**Existuje zvýšené riziko SO s ohľadom na príslušnosť k niektorej menšine (otázka 79) ?**
+
+genderMotivHarr ano; 
+
+unwantedSexAtt nie
+
+sexAbuse nie
+
+**Existuje zvýšené riziko SO s ohľadom na príslušnosť s ohľadom na sexuálnu orientáciu? (oddelene gej, lesba, bi)**
+
+genderMotivHarr nie; 
+
+unwantedSexAtt nie;
+
+sexAbuse áno =  relatívne riziko je 2.5x väčšie. Toto zistenie je ale založené na 5 pozitívnych pripadoch z 60 (jedná sa o vážené počty). Je to veľmi nestabilný odhad.
+
+**Existuje rozdiel vo výskyte SO z hľadiska regiónov (krajov)?**
+
+genderMotivHarr viac prípadov na východe; 
+
+unwantedSexAtt nie;
+
+sexAbuse vyrazne viac pripadov na strednom Slovensku.
+
+
+# Páchatelia SO? 
+**Aký je pomer pohlaví páchateľov pri všetkých formách SO spolu?** 
+
+Udaje v percentach
+```{r}
+kable(rq3_perpetratorsOverall_table, "html", digits = 3, col.names = "%") %>%   kable_styling(bootstrap_options = "striped", full_width = F, font_size = 12, position = "left")
+```
+
+**Aký je pomer pohlaví páchateľov pri jednotlivých formách SO osobitne?. Sú ženy alebo muži náchylnejší páchať niektorú z foriem SO?. Aké osoby (učitelia, spolužiaci, atď.) najčastejšie páchajú aké druhy obťažovania?**
+
+Celkovo je o 85% pravdepodobnejsie, ze pachatel nejakej formy SO je muz. Silny pattern.
+2x pravdepodobnejsie pri GMH, o 57% pravdepodobnejsie pri USA. Pri SAB nie je signifikantný rozdiel.
+
+Udaje v percentach
+```{r}
+kable(perpertatorsTable, "html", digits = 3) %>%   kable_styling(bootstrap_options = "striped", full_width = F, font_size = 12, position = "left")
+```
+
+# Prostredie SO
+
+Udaje v percentach
+```{r}
+kable(rq4_whereOverall_table, "html", digits = 3, col.names = "%") %>% kable_styling(bootstrap_options = "striped", full_width = F, font_size = 12, position = "left")
+```
+
+**Existujú rozdiely medzi klastrami SO a prostredím v ktorom sa SO odohráva?** 
+
+Udaje v percentach
+```{r}
+kable(whereTable, "html", digits = 3) %>%  kable_styling(bootstrap_options = "striped", full_width = F, font_size = 12, position = "left")
+```
+
+
+# Subjektívne vnímané dôsledky SO
+
+**Aké psychické / psychosomatické dôsledky obete najčastejšie uvádzajú?**
+```{r}
+kable(rq5_impacts_n, "html", digits = 3) %>%   kable_styling(bootstrap_options = "striped", full_width = F, font_size = 12, position = "left")
+
+```
+
+**Je rozsah uvádzaných dôsledkov podmienený zažitou formou SO (často opakujúci poznatok - osoby, ktoré majú viac skúseností so SO majú aj častejšie následky na mentálnom zdraví)? Je rozsah uvádzaných dôsledkov podmienený frekvenciou (častosťou) SO?**
+
+Efekt je skôr slabý (r = .15), no velmi robustný. So zvyšujúcou sa závažnosťou a frekvenciou SO rastie aj rozsah dôsledkov.
+
+**Je rozsah uvádzaných dôsledkov podmienený tým, kto je páchateľom?**
+
+Najčastejší páchatelia
+```{r}
+kable(perpetratorMostFrequent, "html", digits = 3, col.names = c("Perpetrator", "N")) %>%   kable_styling(bootstrap_options = "striped", full_width = F, font_size = 12, position = "left")
+```
+
+Celkovo ale nie je rozsah uvádzaných dôsledkov podmienený tým, kto je páchateľom.
+
+**Existuje rozdiel medzi mužmi a ženami z hľadiska množstva / typu uvádzaných následkov?**
+
+Nie
+
+**Je rozsah uvádzaných dôsledkov podmienený tým, či sa obete zdôverili (či hľadali podporu)?** 
+
+Áno, čím závažnejšie dôsledky, tým vyššia pravdepodobnosť zdôverenia sa. Jednoznačný, pomerne silný efekt.
+
+**Je rozsah úvádzaných dôsledkov podmienený tým, či osoba zažila negatívne reakcie zo strany školy? (v otázke 68 odpovedali - Zažili ste iné negatívne dôsledky (napr. odmietnutie ďalšieho vzdelávania), Zhoršilo sa vaše hodnotenie v rámci kurzov/predmetov/skúšok, Boli/a ste vylúčený/á z kolektívu, Boli ste ohováraný/á, Boli ste označený za problémového/problémovú, Boli ste preradený/á do iného študijného programu/odboru/skupiny, Odišli ste zo školy, Dostali ste napomenutie)**
+
+Ešte zanalyzujem do finálneho reportu.
+
+**Je rozsah uvádzaných dôsledkov podmienený mierou spokojnosti obetí s tým, ako reagovali osoby, u ktorých hľadali pomoc/radu?**
+
+Mierne áno. Vzťah je ale mierne pozitívny (väččší rozsah dôsledkov asociovaný s vyššou mierou spokojnosti).
+
+**Je rozsah uvádzaných dôsledkov podmienený príslušnosťou k niektorej menšine?**
+
+Nie
+
+**Je rozsah uvádzaných dôsledkov podmienený vierovyznaním obetí?**
+
+Nie
+
+# Hľadanie podpory
+
+**Koľko percent obetí vôbec hľadalo pomoc/radu?**
+
+31%, z toho 9% chlapcov a 22% dievcat
+
+**U koho hľadali obete najčastejšie pomoc?**
+
+```{r}
+kable(rq6_disclosureWhoFreq, "html", digits = 3) %>%   kable_styling(bootstrap_options = "striped", full_width = F, font_size = 12, position = "left")
+```
+
+**Existuje súvis medzi zažitou formou SO a tendenciou obetí hľadať pomoc? Existuje súvis medzi častosťou (frekvenciou) SO a tendenciou obetí hľadať pomoc?**
+
+Zodpovedane uz v predchadzajucej sekcii otazok. Plati aj v opacnom poradi, pri uplanteni inej analyzy. Cim zavaznejsia forma SO (a frekvencia), tym vacsia pravdepodobnost, ze obet bude hladat pomoc.
+
+**Existuje rozdiel medzi pohlaviami v tendencii hľadať pomoc? **
+
+U dievcat je o 62% vyssia pravdepodobnost, ze budu hladat pomoc.
+
+**Súvisí hľadanie pomoci s vierovyznaním obete? **
+
+Nie
+
+**Súvisí hľadanie pomoci s odborom štúdia? **
+
+V skratke ano - tendencia hladat pomoc nie je vo vsetkych odboroch rovnaka. Rozdiely sú ale skôr menšie. No tym padom, ze odborov je pomerne dost, je blizsia odpoved komplikovanejsia. Ide o to ako sa odbory porovnavaju, resp. ktory je ten baseline obor. Mozme rozviest v sprave, ak budete chcieť
+
+**Súvisí hľadanie pomoci s regiónom, z ktorého obete pochádzajú? **
+
+Na východnom slovensku bola nižšia pravdepodobnosť, že obete budú hľadať pomoc
+
+**Súvisí hľadanie pomoci s povedomím o tom čo je SO? (hypotéza - osoby, ktoré vyhodnocujú viac situácií ako SO - otázka 69 - majú tendenciu vyhľadávať pomoc/zdôverovať sa so SO častejšie). **
+
+Ano, pomerne solidny efekt.
+
+**Existuje súvis medzi tým, kto je páchateľom SO a tým, u koho obete hľadajú pomoc? **
+
+Prilis komplikovana otazka, neda sa na nu dat jednoznacna odpoved. Trebalo by to zuzit.
+
+**V akej miere boli obete spokojné s reakciou osôb, u ktorých hľadali pomoc? **
+
+Skor spokojne (priemer je pozitivny)...tato otazka je ale problematicka zo psychometrickeho hladiska. To je ako sa pytat ci su svk ucitelia spokojni so ziakmi. Zavisi od toho, ako sa pytas.
+
+Mam k tomu ale jednu velku tabulku, ktora podla mna nedava velky zmysel :D
+
+**Existuje rozdiel medzi zažitou formou SO a mierou spokojnosti s reakciou ľudí, u ktorých obete hľadali pomoc? **
+
+Detto, len rozmenene na klastre. Problem ostava ten isty.
+
+**Existuje rozdiel medzi pohlavím obete a mierou spokojnosti s reakciou ľudí, u ktorých obete hľadali pomoc?**
+
+Dievcata su mierne spokojnejsie.
+
+**Existuje rozdiel medzi pohlavím páchateľa a mierou spokojnosti s reakciou ľudí, u ktorých obete hľadali pomoc? **
+
+Toto este dorobim do finálneho reportu
+
+**Súvisí miera spokojnosti s reakciou ľudí, u ktorých obete hľadali pomoc s príslušnosťou obete k nejakej menšine (vrátane sexuálnej orientácie a transrodových osôb)? **
+
+Malo dat
+
+**V koľkých percentách prípadov bolo spustené oficiálne konanie voči osobe, ktorá sa dopustila SO? **
+
+1.1%
+
+**Existuje súvis medzi zažitou formou SO a spustením oficiálneho konania? Existuje súvis medzi častosťou (frekvenciou) SO a spustením oficiálneho konania?**
+
+Ano, cim zavaznejsie a castejsie, tym vacsia pravdepodobnost spustenia konania. Tych nahlaseni je ale velmi malo.
+
+**Existuje rozdiel medzi pohlavím obete a spustením oficiálneho konania?**
+
+Na dalsie parcelovanie tejto temy uz mame malo dat
+
+**Je v niektorých študijných odboroch väčšia pravdepodobnosť spustenia oficiálneho konania? **
+
+Na dalsie parcelovanie tejto temy uz mame malo dat
+
+**Je v niektorých regiónoch väčšia pravdepodobnosť spustenia oficiálneho konania? **
+
+Na dalsie parcelovanie tejto temy uz mame malo dat
+
+**Aké sú dôvody, pre ktoré obete nehľadali pomoc **
+
+```{r}
+kable(rq6_disclosureWhyNoFreq, "html", digits = 3) %>%   kable_styling(bootstrap_options = "striped", full_width = F, font_size = 12, position = "left")
+```
+
+
+
+
+**Existuje súvis medzi určitými dôvodmi nevyhľadania pomoci a zažitými formami SO? Existuje súvis medzi určitými dôvodmi nevyhľadania pomoci a tým, kto je páchateľom SO? Existuje súvis medzi určitými dôvodmi nevyhľadania pomoci a pohlavím obetí? Existuje súvis medzi určitými dôvodmi nevyhľadania pomoci a vierovyznaním obetí? Existuje súvis medzi určitými dôvodmi nevyhľadania pomoci a minoritným statusom obetí? **
+
+Zle polozene otazky. Neda sa na nich dat dobra odpoved. 
+
+# Dôsledky spojené so zverejnením sťažnosti
+
+**Aké dôsledky spojené so zverejnením sťažnosti na pôde VŠ sú uvádzané najčastejšie?**
+
+```{r}
+kable(rq7_investigation_n, "html", digits = 3) %>%   kable_styling(bootstrap_options = "striped", full_width = F, font_size = 12, position = "left")
+```
+
+**Existuje súvis medzi určitými dôsledkami a zažitou formou SO? Existuje súvis medzi určitými dôsledkami a tým, kto bol páchateľ (z hľadiska postavenia a pohlavia)? Existuje súvis medzi určitými dôsledkami a pohlavím obete? Existuje súvis medzi určitými dôsledkami a príslušnosťou obete k menšine? Vyskytujú sa určité dôsledky častejšie na niektorých študijných odboroch? Vyskytujú sa určité dôsledky častejšie v niektorých regiónoch?**
+
+Na tieto otazky nemame dostatok dat. Tie zverejnenia su velmi zriedkave.
+
+# Vnímanie sexuálneho obťažovania
+
+**Ktoré prejavy správania považujú respondenti/tky za SO? **
+```{r}
+kable(rq8_attitudes_n, "html", digits = 3) %>%   kable_styling(bootstrap_options = "striped", full_width = F, font_size = 12, position = "left")
+```
+
+**Existujú rozdiely s ohľadom na klastre foriem SO (1. rodové obťažovanie, 2. nechcená sexuálna pozornosť, 3. sexuálne donútenie/násilie) ?**
+Tazko zodpovedatelne. Alternativa: vztah zavaznosti SO a senzitivity na obtazovanie. Tu je odpoved nie.
+
+**Existujú rozdiely medzi pohlaviami? **
+Ano, dievcata su na SO citlivejsie.
+
+**Existujú rozdiely v závislosti od veku respondentov/tiek? **
+
+Nie
+
+**Existujú rozdiely v závislosti od odboru štúdia respondentov/tiek? **
+
+Ano, napr. spolocenske vedy > prirodne, umelecke, technicke, ci zdravotnicke
+
+```{r}
+kable(rq8_fieldSensitivity_means, "html", digits = 3) %>%   kable_styling(bootstrap_options = "striped", full_width = F, font_size = 12, position = "left")
+```
+
+**Existujú rozdiely v závislosti od regiónov, z ktorých respondenti/tky pochádzajú? **
+
+Nie
+
+```{r}
+kable(rq8_regionSensitivity_means, "html", digits = 3) %>%   kable_styling(bootstrap_options = "striped", full_width = F, font_size = 12, position = "left")
+```
+
+
+**Existujú rozdiely v závislosti od vierovyznania respondentov/tiek? **
+
+Nie
+
+**Existujú rozdiely medzi obeťami SO a osobami, ktoré nemajú osobnú skúsenosť s SO? (častý poznatok - osoby, ktoré majú viac skúseností so SO zvyknú aj viac situácií vyhodnocovať ako SO). **
+
+Nie
+
+**Existuje súvis medzi tým, čo respondenti/tky považujú za SO a tým, či majú tendenciou hľadať pomoc, ak sa s niektorou z foriem SO osobne stretli? **
+
+Jednoznacne ano, senzitivia voci SO je asociovana s tendenciou zdoverit sa.
+
+**Aké je právne povedomie o SO?**
+
+Priemerne povedomie je 5.7 :) Nie je to velmi informativne. Ale pri skale 0-8 (sumar dvoch poloziek), to povedomie podla nich skor maju ako nemaju.
+
+**Existujú rozdiely medzi pohlaviami?**
+
+Chlapci reportuju vyssie povedomie (o 0.4 boda z 8).
+
+**Existujú rozdiely v závislosti od regiónov, z ktorých respondenti/tky pochádzajú? **
+
+Nie
+
+**Existuje vzťah medzi právnym povedomím a tým, či sa osoby častejšie na niekoho obracajú so skúsenosťou so SO? **
+
+Nie
+
+**Existuje vzťah medzi právnym povedomím a tým, či sa osoby obracajú so svojou skúsenosťou na vedenie fakúlt a autority? (v otázke 65 odpovedali učiteľ/ka, Predstaviteľ / predstaviteľka akademického senátu, Vedenie fakulty (napr. dekan / dekanka), Vedenie univerzity (napr. rektor / rektorka), Polícia, Poradca / poradkyňa)**
+
+Mame malo dat, aby sme toto zodpovedali.
+
+# Informácie 
+**Poskytla im ich vysoká škola dostatok informácií o SO?**
+
+11% hovori skor ano alebo urcite ano
+
+**Existujú rozdiely medzi pohlaviami?**
+
+Chlapci reportuju, ze maju viac info
+
+**Existujú rozdiely v závislosti od regiónov, z ktorých respondenti/tky pochádzajú? **
+
+Ano, signifikantne viac info na Strednom Slovensku
+
+**Existujú rozdiely medzi odbormi?**
+
+Nie
+
+# Stereotypy o sexuálnom obťažovaní
+
+**V akej miere súhlasia respondenti/tky s jednotlivými tvrdeniami? **
+
+Tazko interpretovatelne ale priemerna miera suhlasu s miskoncepciami je 12 z 55 (vyssie cislo = vacsia miera miskoncepcii).
+
+**Existujú rozdiely medzi pohlaviami? **
+
+Dievcata maju vyrazne nizsiu mieru miskoncepcii.
+
+**Existujú rozdiely v závislosti od veku respondentov/tiek? **
+
+Vobec nie
+
+**Existujú rozdiely v závislosti od odboru štúdia respondentov/tiek? **
+
+Vyssia miera miskoncepcii najma v technickych odboroch a prirodovedeckych. Relativne najmenej v zdravotnickych.
+
+**Existujú rozdiely v závislosti od regiónov, z ktorých respondenti/tky pochádzajú? **
+
+Nie
+
+**Existujú rozdiely v závislosti od vierovyznania respondentov/tiek? **
+
+Nie
+
+**Existujú rozdiely medzi obeťami SO a osobami, ktoré nemajú osobnú skúsenosť s SO? **
+
+Velmi, velmi mierne vyssia miera u tych, ktori osobnu skusenost maju. Miera dokazov v prospech tento fakt je ale mala.
+
+**Existuje vzťah medzi postojmi a tým, či sa osoby niekomu zverujú so svojou skúsenosťou? (častý poznatok - osoby, ktoré uviedli v otázke 73, že “So sexuálnym obťažovaním sa nedá nič robiť”, sa zdiedka niekomu zverujú so svojou skúsenosťou.)**
+
+Nie
+

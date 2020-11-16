@@ -125,6 +125,13 @@ ss_gender_n <- data %>%
   summarise(n = n(),
             percent = round(100*n()/nrow(.), 2))
 
+minorityEthnic <- table(data$minority_ethnic)
+minorityImmigrant <- table(data$minority_immigrant)
+minorityReligion <- table(data$minority_religion)
+minorityDisabled <- table(data$minority_disabled)
+minorityOther <- table(data$minority_other)
+minoritySexual <- data$sexualOrientation
+
 # sexual orientation
 sexOrienLevels <- c("Heterosexuál/ka (osoba, ktorá je citovo a sexuálne priťahovaná opačným pohlavím)",
                     "Bisexuál/ka (osoba, ktorá je citovo a sexuálne priťahovaná oboma pohlaviami)",
@@ -457,6 +464,31 @@ rq2_orientation_summary <- summary(rq2_orientation_mod)
 rq3_perpetratorsItems_n <- do.call(rbind.data.frame, data %>% select(contains("_who") & !contains("Other")) %>% map(~cbind("freq" = round(wtd.table(., weights = data$w, normwt = T), 0), "perc" = prop.table(round(wtd.table(., weights = data$w, normwt = T), 0))))) %>%
   rownames_to_column("who")
 
+# Kto sú pachatelia SO v rámci jednotlivých foriem SO
+seqq <- paste0("q", 1:20, "_")
+rq3_perpByItem <- list()
+for(i in seqq){
+rq3_perpByItem[[i]] <- do.call(rbind.data.frame, data %>% select(contains("_who") & !contains("Other")) %>% map(~cbind("freq" = round(wtd.table(., weights = data$w, normwt = T), 0), "perc" = round(prop.table(wtd.table(., weights = data$w, normwt = T)), 2)))) %>%
+  rownames_to_column("who") %>% filter(grepl(".1", who, fixed = TRUE)) %>% filter(str_detect(who, i))
+}
+rq3_perpetratorsByItem <- rq3_perpByItem %>% map(~arrange(., desc(freq))[1:2,])
+
+# Kto sú pachatelia SO v rámci jednotlivých foriem SO u dievčat
+rq3_perpByItem_female <- list()
+for(i in seqq){
+  rq3_perpByItem_female[[i]] <- do.call(rbind.data.frame, data[data$genderBinary == 1,] %>% select(contains("_who") & !contains("Other")) %>% map(~cbind("freq" = round(wtd.table(., weights = data[data$genderBinary == 1,]$w, normwt = T), 0), "perc" = round(prop.table(wtd.table(., weights = data[data$genderBinary == 1,]$w, normwt = T)), 2)))) %>%
+    rownames_to_column("who") %>% filter(grepl(".1", who, fixed = TRUE)) %>% filter(str_detect(who, i))
+}
+rq3_perpetratorsByItem_female <- rq3_perpByItem_female %>% map(~arrange(., desc(freq))[1:2,])
+
+# Kto sú pachatelia SO v rámci jednotlivých foriem SO u chlapcov
+rq3_perpByItem_male <- list()
+for(i in seqq){
+  rq3_perpByItem_male[[i]] <- do.call(rbind.data.frame, data[data$genderBinary == 0,] %>% select(contains("_who") & !contains("Other")) %>% map(~cbind("freq" = round(wtd.table(., weights = data[data$genderBinary == 0,]$w, normwt = T), 0), "perc" = round(prop.table(wtd.table(., weights = data[data$genderBinary == 0,]$w, normwt = T)), 2)))) %>%
+    rownames_to_column("who") %>% filter(grepl(".1", who, fixed = TRUE)) %>% filter(str_detect(who, i))
+}
+rq3_perpetratorsByItem_male <- rq3_perpByItem_male %>% map(~arrange(., desc(freq))[1:2,])
+
 whos <- c("Teacher_M", "Teacher_F", "Student_M", "Student_F", "Employee_M", "Employee_F")
 rq3_perpetratorsOverall_n <- list()
 for(n in 1:6){
@@ -573,6 +605,37 @@ rq4_whereOverall_n[1] <- NULL
 rq4_whereOverall_table <- round(unlist(rq4_whereOverall_n)*100/sum(unlist(rq4_whereOverall_n)), 2)
 names(rq4_whereOverall_table) <- gsub(".count.freq", "", names(rq4_whereOverall_table))
 
+# For females
+rq4_whereItems_n_females <- do.call(rbind.data.frame, data[data$genderBinary == 1,] %>% select(contains("_where") & !contains("Other")) %>% map(~cbind("freq" = round(wtd.table(., weights = data[data$genderBinary == 1,]$w, normwt = T), 0), "perc" = prop.table(round(wtd.table(., weights = data[data$genderBinary == 1,]$w, normwt = T), 0))))) %>%
+  rownames_to_column("where")
+
+rq4_whereOverall_n_females <- list(NA)
+for(n in 1:6){
+  for(i in wheres){
+    rq4_whereOverall_n_females[[i]] <- rq4_whereItems_n_females %>% filter(str_detect(where, i) & grepl(".1", where, fixed = TRUE)) %>% summarise(count = colSums(.["freq"]))
+  }
+}
+rq4_whereOverall_n_females[1] <- NULL
+
+rq4_whereOverall_table_females <- round(unlist(rq4_whereOverall_n_females)*100/sum(unlist(rq4_whereOverall_n_females)), 2)
+names(rq4_whereOverall_table_females) <- gsub(".count.freq", "", names(rq4_whereOverall_table_females))
+
+
+# For males
+rq4_whereItems_n_males <- do.call(rbind.data.frame, data[data$genderBinary == 0,] %>% select(contains("_where") & !contains("Other")) %>% map(~cbind("freq" = round(wtd.table(., weights = data[data$genderBinary == 0,]$w, normwt = T), 0), "perc" = prop.table(round(wtd.table(., weights = data[data$genderBinary == 0,]$w, normwt = T), 0))))) %>%
+  rownames_to_column("where")
+
+rq4_whereOverall_n_males <- list(NA)
+for(n in 1:6){
+  for(i in wheres){
+    rq4_whereOverall_n_males[[i]] <- rq4_whereItems_n_males %>% filter(str_detect(where, i) & grepl(".1", where, fixed = TRUE)) %>% summarise(count = colSums(.["freq"]))
+  }
+}
+rq4_whereOverall_n_males[1] <- NULL
+
+rq4_whereOverall_table_males <- round(unlist(rq4_whereOverall_n_males)*100/sum(unlist(rq4_whereOverall_n_males)), 2)
+names(rq4_whereOverall_table_males) <- gsub(".count.freq", "", names(rq4_whereOverall_table_males))
+
 # Existujú rozdiely medzi klastrami SO a prostredím v ktorom sa SO odohráva?
 # Count per cluster
 # GenderMotivHarr
@@ -621,6 +684,21 @@ rq5_impacts_n <- do.call(rbind.data.frame, data %>% filter(harrassed == 1) %>% s
   arrange(desc(freq)) %>% mutate(impactType = str_remove(impactType, ".1"),
                                  perc = round(perc, 2)*100)
 
+# U dievčat
+rq5_impacts_n_females <- do.call(rbind.data.frame, data[data$harrassed == 1 & data$genderBinary == 1,] %>% select(contains("suffer_") & !contains(c("_other", "_none", "dontKnow"))) %>%
+                           map(~cbind("freq" = round(wtd.table(., weights = data[data$harrassed == 1 & data$genderBinary == 1,]$w, normwt = T), 0), "perc" = prop.table(round(wtd.table(., weights = data[data$harrassed == 1 & data$genderBinary == 1,]$w, normwt = T), 0))))) %>%
+  rownames_to_column("impactType") %>%
+  filter(grepl(".1", impactType, fixed = TRUE)) %>%
+  arrange(desc(freq)) %>% mutate(impactType = str_remove(impactType, ".1"),
+                                 perc = round(perc, 2)*100)
+# U chlapcov
+rq5_impacts_n_males <- do.call(rbind.data.frame, data[data$harrassed == 1 & data$genderBinary == 0,] %>% select(contains("suffer_") & !contains(c("_other", "_none", "dontKnow"))) %>%
+                           map(~cbind("freq" = round(wtd.table(., weights = data[data$harrassed == 1 & data$genderBinary == 0,]$w, normwt = T), 0), "perc" = prop.table(round(wtd.table(., weights = data[data$harrassed == 1 & data$genderBinary == 0,]$w, normwt = T), 0))))) %>%
+  rownames_to_column("impactType") %>%
+  filter(grepl(".1", impactType, fixed = TRUE)) %>%
+  arrange(desc(freq)) %>% mutate(impactType = str_remove(impactType, ".1"),
+                                 perc = round(perc, 2)*100)
+
 # Je rozsah uvádzaných dôsledkov podmienený zažitou formou SO?
 rq5_harrassedByImpactSeverity_cor <- data %>% filter(anyYes == 1) %>% weighted_correlation(harrassedSeverity, impactSeverity, weights = w)
 rq5_harrassedByImpactSeverity_bf <- data %>% filter(anyYes == 1) %$% correlationBF(y = harrassedSeverity, x = impactSeverity, rscale = rScale)
@@ -655,6 +733,8 @@ data$mostFreqAbuserSAB <- data %>% select(sabTeacherFreq, sabStudentFreq, sabEmp
 # identify the most frequent perpetrator committing the most severe type of abuse
 data$perpetratorMostSevere <- data %$% ifelse(!is.na(mostFreqAbuserSAB), mostFreqAbuserSAB, ifelse(!is.na(mostFreqAbuserUSA), mostFreqAbuserUSA, ifelse(!is.na(mostFreqAbuserGMH), mostFreqAbuserGMH, NA)))
 perpetratorMostFrequent <- table(data$perpetratorMostSevere)
+
+data %>% select(contains("_whoTeacher") & !contains("Other"))
 
 rq5_severPerpMod <- lm(impactSeverity ~ perpetratorMostSevere, weights = data$w, data)
 rq5_severPerpBF <- lmBF(impactSeverity ~ perpetratorMostSevere, data[!is.na(data$perpetratorMostSevere),], rscaleEffects = rScale)
@@ -846,13 +926,13 @@ rq6_severPerpBF <- lmBF(impactSeverity ~ perpetratorMostSevere, data[!is.na(data
 rq6_severPerpSummary <- summary(rq6_severPerpMod)
 rq6_severPerpAnova <- anova(rq6_severPerpMod)
 
-# RQ7 ---------------------------------------------------------------------
+# RQ7 Dôsledky spojené so zverejnením sťažnosti---------------------------------------------------------------------
 # Aké dôsledky spojené so zverejnením sťažnosti na pôde VŠ sú uvádzané najčastejšie?
 rq7_investigation_n <- do.call(rbind.data.frame, data %>% select(contains("investigation_") & !contains("_other")) %>% map(~cbind("freq" = round(wtd.table(as.logical(.), weights = data$w, normwt = T), 0), "perc" = prop.table(round(wtd.table(as.logical(.), weights = data$w, normwt = T), 0))))) %>% #Turning disclosure_ vars to logical; T = disclosed, F = not disclosed
   rownames_to_column("investigationConsq") %>% filter(grepl(".TRUE", investigationConsq, fixed = TRUE)) %>% arrange(desc(freq))
 
 
-# RQ8 ---------------------------------------------------------------------
+# RQ8 Vnímanie sexuálneho obťažovania ---------------------------------------------------------------------
 # Vnímanie sexuálneho obťažovania (operacionalizovane ako senzitivita)
 # Ktoré prejavy správania považujú respondenti/tky za SO?
 rq8_attitudes_n <- data %>% select(starts_with("att") & !contains(c("unwanted"))) %>%
@@ -861,6 +941,17 @@ rq8_attitudes_n <- data %>% select(starts_with("att") & !contains(c("unwanted"))
 rq8_attitudes_item_freqs <- data %>% select(starts_with("att") & !contains(c("unwanted"))) %>%
 map(~round(prop.table(wtd.table(., weights = data$w, normwt = T, na.rm = T))*100, 2))
 rq8_attitudes_item_freqs
+
+# Pre dievčatá
+rq8_attitudes_item_freqs_females <- data[data$genderBinary == 1,] %>% select(starts_with("att") & !contains(c("unwanted"))) %>%
+  map(~round(prop.table(wtd.table(., weights = data[data$genderBinary == 1,]$w, normwt = T, na.rm = T))*100, 2))
+rq8_attitudes_item_freqs_females
+
+# Pre chlapcov
+rq8_attitudes_item_freqs_males <- data[data$genderBinary == 0,] %>% select(starts_with("att") & !contains(c("unwanted"))) %>%
+  map(~round(prop.table(wtd.table(., weights = data[data$genderBinary == 0,]$w, normwt = T, na.rm = T))*100, 2))
+rq8_attitudes_item_freqs_males
+
 
 rq8_attitudes_item_freqs_wNA <- data %>% select(starts_with("att") & !contains(c("unwanted"))) %>%
   map(~round(prop.table(wtd.table(., weights = data$w, normwt = T, na.rm = F, na.show = T))*100, 2))
@@ -939,10 +1030,16 @@ rq8_legalAwareness_mean <- data %>%
 
 # Koľko percent participantov vie o tom, že SO je súčasťou zákona
 rq8_legalAwareness_q70_table <- round(prop.table(wtd.table(data$know1, weights = data$w))*100, 2)
+rq8_legalAwareness_q70_table_females <- round(prop.table(wtd.table(data[data$genderBinary == 1,]$know1, weights = data[data$genderBinary == 1,]$w))*100, 2)
+rq8_legalAwareness_q70_table_males <- round(prop.table(wtd.table(data[data$genderBinary == 0,]$know1, weights = data[data$genderBinary == 0,]$w))*100, 2)
 # Koľko percent participantov vie o tom, že sa môžu obrátiť na súd
 rq8_legalAwareness_q71_table <- round(prop.table(wtd.table(data$know2, weights = data$w))*100, 2)
+rq8_legalAwareness_q71_table_females <- round(prop.table(wtd.table(data[data$genderBinary == 1,]$know2, weights = data[data$genderBinary == 1,]$w))*100, 2)
+rq8_legalAwareness_q71_table_males <- round(prop.table(wtd.table(data[data$genderBinary == 0,]$know2, weights = data[data$genderBinary == 0,]$w))*100, 2)
 # Koľko percent participantov cíti, že či ich škola dostatočne v téme SO vyvzdelala/informovala
 rq8_legalAwareness_q72_table <- round(prop.table(wtd.table(data$know3, weights = data$w))*100, 2)
+rq8_legalAwareness_q72_table_females <- round(prop.table(wtd.table(data[data$genderBinary == 1,]$know3, weights = data[data$genderBinary == 1,]$w))*100, 2)
+rq8_legalAwareness_q72_table_males <- round(prop.table(wtd.table(data[data$genderBinary == 0,]$know3, weights = data[data$genderBinary == 0,]$w))*100, 2)
 
 # Existujú rozdiely medzi pohlaviami?
 rq8_genderLegalAwarenessMod <- lm(legalAwareness ~ genderBinary, weights = w, data)
@@ -970,7 +1067,7 @@ rq8_disclosureLegalAwareness_means <- data %>% group_by(disclosureBinary) %>% su
                                                                                         sdLegalAwareness = weighted_sd(legalAwareness, w))
 
 
-# RQ9 --------------------------------------------------------------------
+# RQ9 Poskytnutie info školou --------------------------------------------------------------------
 # Poskytla im ich vysoká škola dostatok informácií o SO?
 # dostatok informacii = odpoved skor ano alebo urcite ano
 rq9_dostatokInformacii_n <- data %>%
@@ -996,7 +1093,7 @@ rq9_fieldInformationSummary <- summary(rq9_fieldInformationMod)
 rq9_fieldInformationAnova <- anova(rq9_fieldInformationMod)
 
 
-# RQ10 --------------------------------------------------------------------
+# RQ10 Stereotypy --------------------------------------------------------------------
 
 # Tvrdenia / stereotypy /  predsudky o sexuálnom obťažovaní
 data <- data %>% mutate(misconceptScore = rowSums(data %>% select(starts_with("misconcept")), na.rm = T))
@@ -1004,6 +1101,16 @@ data <- data %>% mutate(misconceptScore = rowSums(data %>% select(starts_with("m
 rq10_misconcept_item_freqs <- data %>% select(starts_with("misconcept")) %>%
   map(~round(prop.table(wtd.table(., weights = data$w, normwt = T, na.rm = T))*100, 2))
 rq10_misconcept_item_freqs
+
+# Pre dievčatá
+rq10_misconcept_item_freqs_females <- data[data$genderBinary == 1,] %>% select(starts_with("misconcept")) %>%
+  map(~round(prop.table(wtd.table(., weights = data[data$genderBinary == 1,]$w, normwt = T, na.rm = T))*100, 2))
+rq10_misconcept_item_freqs_females
+
+# Pre chlapcov
+rq10_misconcept_item_freqs_males  <- data[data$genderBinary == 0,] %>% select(starts_with("misconcept")) %>%
+  map(~round(prop.table(wtd.table(., weights = data[data$genderBinary == 0,]$w, normwt = T, na.rm = T))*100, 2))
+rq10_misconcept_item_freqs_males
 
 rq10_misconcept_item_freqs_wNA <- data %>% select(starts_with("misconcept")) %>%
   map(~round(prop.table(wtd.table(., weights = data$w, normwt = T, na.rm = F, na.show = T))*100, 2))

@@ -500,7 +500,7 @@ for(n in 1:6){
 rq3_perpetratorsOverall_table <- round(unlist(rq3_perpetratorsOverall_n)*100/sum(unlist(rq3_perpetratorsOverall_n)), 2)
 names(rq3_perpetratorsOverall_table) <- gsub(".count.freq", "", names(rq3_perpetratorsOverall_table))
 
-# Count per cluster
+# Count per cluster overall
 # GenderMotivHarr
 whoGenderMotivHarr <- do.call(rbind.data.frame, data %>% select(q1:q9 & contains("_who") & !contains("Other")) %>% map(~cbind("freq" = round(wtd.table(., weights = data$w, normwt = T), 0), "perc" = prop.table(round(wtd.table(., weights = data$w, normwt = T), 0))))) %>% rownames_to_column("who")
 rq3_perpetratorsGMH_n <- list(NA)
@@ -533,6 +533,74 @@ rq3_perpetratorsSAB_n[1] <- NULL
 
 perpertatorsTable <- round(rbind("GMH" = unlist(rq3_perpetratorsGMH_n)*100/sum(unlist(rq3_perpetratorsGMH_n)), "USA" = unlist(rq3_perpetratorsUSA_n)*100/sum(unlist(rq3_perpetratorsUSA_n)), "SAB" = unlist(rq3_perpetratorsSAB_n)*100/sum(unlist(rq3_perpetratorsSAB_n))), 2)
 colnames(perpertatorsTable) <- gsub(".count.freq", "", colnames(perpertatorsTable))
+
+# Pre dievčatá
+# GenderMotivHarr
+whoGenderMotivHarr_female <- do.call(rbind.data.frame, data[data$genderBinary == 1,] %>% select(q1:q9 & contains("_who") & !contains("Other")) %>% map(~cbind("freq" = round(wtd.table(., weights = data[data$genderBinary == 1,]$w, normwt = T), 0), "perc" = prop.table(round(wtd.table(., weights = data[data$genderBinary == 1,]$w, normwt = T), 0))))) %>% rownames_to_column("who")
+rq3_perpetratorsGMH_n_female <- list(NA)
+for(n in 1:6){
+  for(i in whos){
+    rq3_perpetratorsGMH_n_female[[i]] <- whoGenderMotivHarr_female %>% filter(str_detect(who, i) & grepl(".1", who, fixed = TRUE)) %>% summarise(count = colSums(.["freq"]))
+  }
+}
+rq3_perpetratorsGMH_n_female[1] <- NULL
+
+# UnwantedSexAtt
+whoUnwantedSexAtt_female <- do.call(rbind.data.frame, data[data$genderBinary == 1,] %>% select(q9:q17 & contains("_who") & !contains("Other")) %>% map(~cbind("freq" = round(wtd.table(., weights = data[data$genderBinary == 1,]$w, normwt = T), 0), "perc" = prop.table(round(wtd.table(., weights = data[data$genderBinary == 1,]$w, normwt = T), 0))))) %>% rownames_to_column("who")
+rq3_perpetratorsUSA_n_female <- list(NA)
+for(n in 1:6){
+  for(i in whos){
+    rq3_perpetratorsUSA_n_female[[i]] <- whoUnwantedSexAtt_female %>% filter(str_detect(who, i) & grepl(".1", who, fixed = TRUE)) %>% summarise(count = colSums(.["freq"]))
+  }
+}
+rq3_perpetratorsUSA_n_female[1] <- NULL
+
+# SexAbuse
+whoSexAbuse_female <- do.call(rbind.data.frame, data[data$genderBinary == 1,] %>% select(q17:anyYes & contains("_who") & !contains("Other")) %>% map(~cbind("freq" = round(wtd.table(., weights = data[data$genderBinary == 1,]$w, normwt = T), 0), "perc" = prop.table(round(wtd.table(., weights = data[data$genderBinary == 1,]$w, normwt = T), 0))))) %>% rownames_to_column("who")
+rq3_perpetratorsSAB_n_female <- NA
+for(n in 1:6){
+  for(i in whos){
+    rq3_perpetratorsSAB_n_female[[i]] <- whoSexAbuse_female %>% filter(str_detect(who, i) & grepl(".1", who, fixed = TRUE)) %>% summarise(count = colSums(.["freq"]))
+  }
+}
+rq3_perpetratorsSAB_n_female[1] <- NULL
+
+perpertatorsTable_female <- round(rbind("GMH" = unlist(rq3_perpetratorsGMH_n_female)*100/sum(unlist(rq3_perpetratorsGMH_n_female)), "USA" = unlist(rq3_perpetratorsUSA_n_female)*100/sum(unlist(rq3_perpetratorsUSA_n_female)), "SAB" = unlist(rq3_perpetratorsSAB_n_female)*100/sum(unlist(rq3_perpetratorsSAB_n_female))), 2)
+colnames(perpertatorsTable_female) <- gsub(".count.freq", "", colnames(perpertatorsTable_female))
+
+# Pre chlapcov
+# GenderMotivHarr
+whoGenderMotivHarr_male <- do.call(rbind.data.frame, data[data$genderBinary == 0,] %>% select(q1:q9 & contains("_who") & !contains("Other")) %>% map(~cbind("freq" = round(wtd.table(., weights = data[data$genderBinary == 0,]$w, normwt = T), 0), "perc" = prop.table(round(wtd.table(., weights = data[data$genderBinary == 0,]$w, normwt = T), 0))))) %>% rownames_to_column("who")
+rq3_perpetratorsGMH_n_male <- list(NA)
+for(n in 1:6){
+  for(i in whos){
+    rq3_perpetratorsGMH_n_male[[i]] <- whoGenderMotivHarr_male %>% filter(str_detect(who, i) & grepl(".1", who, fixed = TRUE)) %>% summarise(count = colSums(.["freq"]))
+  }
+}
+rq3_perpetratorsGMH_n_male[1] <- NULL
+
+# UnwantedSexAtt
+whoUnwantedSexAtt_male <- do.call(rbind.data.frame, data[data$genderBinary == 0,] %>% select(q9:q17 & contains("_who") & !contains("Other")) %>% map(~cbind("freq" = round(wtd.table(., weights = data[data$genderBinary == 0,]$w, normwt = T), 0), "perc" = prop.table(round(wtd.table(., weights = data[data$genderBinary == 0,]$w, normwt = T), 0))))) %>% rownames_to_column("who")
+rq3_perpetratorsUSA_n_male <- list(NA)
+for(n in 1:6){
+  for(i in whos){
+    rq3_perpetratorsUSA_n_male[[i]] <- whoUnwantedSexAtt_male %>% filter(str_detect(who, i) & grepl(".1", who, fixed = TRUE)) %>% summarise(count = colSums(.["freq"]))
+  }
+}
+rq3_perpetratorsUSA_n_male[1] <- NULL
+
+# SexAbuse
+whoSexAbuse_male <- do.call(rbind.data.frame, data[data$genderBinary == 0,] %>% select(q17:anyYes & contains("_who") & !contains("Other")) %>% map(~cbind("freq" = round(wtd.table(., weights = data[data$genderBinary == 0,]$w, normwt = T), 0), "perc" = prop.table(round(wtd.table(., weights = data[data$genderBinary == 0,]$w, normwt = T), 0))))) %>% rownames_to_column("who")
+rq3_perpetratorsSAB_n_male <- NA
+for(n in 1:6){
+  for(i in whos){
+    rq3_perpetratorsSAB_n_male[[i]] <- whoSexAbuse_male %>% filter(str_detect(who, i) & grepl(".1", who, fixed = TRUE)) %>% summarise(count = colSums(.["freq"]))
+  }
+}
+rq3_perpetratorsSAB_n_male[1] <- NULL
+
+perpertatorsTable_male <- round(rbind("GMH" = unlist(rq3_perpetratorsGMH_n_male)*100/sum(unlist(rq3_perpetratorsGMH_n_male)), "USA" = unlist(rq3_perpetratorsUSA_n_male)*100/sum(unlist(rq3_perpetratorsUSA_n_male)), "SAB" = unlist(rq3_perpetratorsSAB_n_male)*100/sum(unlist(rq3_perpetratorsSAB_n_male))), 2)
+colnames(perpertatorsTable_male) <- gsub(".count.freq", "", colnames(perpertatorsTable_male))
 
 # Sú ženy alebo muži náchylnejší páchať niektorú z foriem SO?
 # Aké osoby (učitelia, spolužiaci, atď.) najčastejšie páchajú aké druhy obťažovania?

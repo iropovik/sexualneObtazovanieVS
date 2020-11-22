@@ -62,7 +62,7 @@ V následnom kroku boli z celkovej vzorky vylúčení participanti, ktorých št
 # Výsledky výskumu
 
 ## Prevalencia foriem sexuálneho obťažovania
-Primárnym výsledkom výskumu sú odhady populačných proporcií jednotlivých foriem sexuálneho obťažovania. Celkovo bolo meraných 20 rôznych foriem sexuálneho obťažovania (ich konkrétna špecifikácia je uvedená v časti ??). Týchto 20 konkrétnych foriem spadá do 3 nadradených klastrov, ktorými sú (1) rodovo motivované obťažovanie (formy 1-8), (2) nechcená sexuálna pozornosť (formy 9-16), a (3) sexuálne násilie (formy 17-20). Na grafe \@ref(fig:prevItems) sú zobrazené vážené percentuálne prevalencie 20 individuálnych foriem, s farebným odlíšením foriem, do ktorých spadajú.
+Primárnym výsledkom výskumu sú odhady populačných proporcií jednotlivých foriem sexuálneho obťažovania. Celkovo bolo meraných 20 rôznych foriem sexuálneho obťažovania (ich konkrétna špecifikácia je uvedená v časti ??). Týchto 20 konkrétnych foriem spadá do 3 nadradených klastrov, ktorými sú (1) rodovo motivované obťažovanie (formy 1-8), (2) nechcená sexuálna pozornosť (formy 9-16), a (3) sexuálny nátlak (formy 17-20). Na grafe \@ref(fig:prevItems) sú zobrazené vážené percentuálne prevalencie 20 individuálnych foriem, s farebným odlíšením foriem, do ktorých spadajú.
 
 ```{r prevItems, fig.cap="Prevalencia individuálnych foriem sexuálneho obťažovania"}
 rq1.1_items_plot
@@ -70,11 +70,18 @@ rq1.1_items_plot
 
 Prevalencia rodovo motivovaného obťažovania variuje od `r round(rq1.1_items_n$q7_perc[1], 1)`% do `r round(rq1.1_items_n$q1_perc[1], 1)`%, prevalencia foriem nechcenej sexuálnej pozornosti od `r round(rq1.1_items_n$q13_perc[1], 1)`% do `r round(rq1.1_items_n$q12_perc[1], 1)`%, a najmenej frekventovanou formou sexuálneho obťažovania je sexuálne násilie, kde sa prevalencia jednotlivých foriem pohybuje medzi `r round(rq1.1_items_n$q20_perc[1], 1)`% a `r round(rq1.1_items_n$q17_perc[1], 1)`%.
 
+
+
 Populačné odhady prevalencií separátne pre ženy a mužov je možné vidieť na grafe \@ref(fig:prevItemsG).
 
 ```{r prevItemsG, fig.cap="Prevalencia individuálnych foriem sexuálneho obťažovania podľa rodu"}
 rq1.1_itemsGender_plot
 ```
 
+
+
+```{r}
+kable(rq1.2_clusterGender_n, "html", digits = 3) %>%   kable_styling(bootstrap_options = "striped", full_width = F, font_size = 12, position = "left")
+```
 
 

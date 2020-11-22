@@ -188,7 +188,6 @@ kable(rq1.2_cluster_n, "html", digits = 3) %>%   kable_styling(bootstrap_options
 ### Prevalencia v klastroch podľa pohlavia
 ```{r}
 kable(rq1.2_clusterGender_n, "html", digits = 3) %>%   kable_styling(bootstrap_options = "striped", full_width = F, font_size = 12, position = "left")
-
 ```
 
 ```{r}

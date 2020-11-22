@@ -130,7 +130,7 @@ minorityImmigrant <- table(data$minority_immigrant)
 minorityReligion <- table(data$minority_religion)
 minorityDisabled <- table(data$minority_disabled)
 minorityOther <- table(data$minority_other)
-minoritySexual <- data$sexualOrientation
+minoritySexual <- table(data$sexualOrientation)
 
 # sexual orientation
 sexOrienLevels <- c("Heterosexuál/ka (osoba, ktorá je citovo a sexuálne priťahovaná opačným pohlavím)",
@@ -318,13 +318,17 @@ rq1.2_clusterGender_plot <- ggplotly(rq1.2_clusterGender_plotData %>% mutate(gen
                                      labs(title = "Klastre sexuálneho obťažovania podľa pohlavia", x = "", y = "Počet participantov") + scale_fill_manual("Pohlavie", values = c("Ženy" = cbPalette[1], "Muži" = cbPalette[2])) +
                                      coord_flip() + scale_x_discrete(limits = rev(rq1.2_clusterGender_plotData$item), labels = c(genderMotivHarr = "Rodovo motivované\nobťažovanie", unwantedSexAtt = "Nechcená sexuálna\npozornosť", sexAbuse = "Sexuálne\nnásilie")))
 
-# Computes the unweighted proportions (prevalence rates) and CIs of CSA forms in girls
-rq1.2_female_ci <- data %>% filter(gender == "Žena") %>%  select(starts_with("q") & !contains("_"), genderMotivHarr, unwantedSexAtt, sexAbuse) %>%
-map(~binom.exact(sum(as.logical(.),na.rm = TRUE), n = length(.)))
+# Computes the weighted proportions (prevalence rates) and CIs of CSA forms in girls
+rq1.2_female_ci <- data[data$genderBinary == 1,] %>%  select(starts_with("q") & !contains("_"), genderMotivHarr, unwantedSexAtt, sexAbuse) %>% map(~as.integer(wtd.table(as.logical(.), weights = data[data$genderBinary ==1,]$w, normwt = T))) %>%
+  map(~binom.exact(.[2], n = .[1] + .[2])[3:5]*100) %>% map(~round(., 2)) %>% rbindlist(., use.names=TRUE, idcol="Forma SO")
+names(rq1.2_female_ci)[2:4] <- c("Prevalencia v %", "CI spodný", "CI horný")
+rq1.2_female_ci
 
-# Computes the unweighted proportions (prevalence rates) and CIs of CSA forms in boys
-rq1.2_male_ci <- data %>% filter(gender == "Muž") %>%  select(starts_with("q") & !contains("_"), genderMotivHarr, unwantedSexAtt, sexAbuse) %>%
-  map(~binom.exact(sum(as.logical(.),na.rm = TRUE), n = length(.)))
+# Computes the weighted proportions (prevalence rates) and CIs of CSA forms in boys
+rq1.2_male_ci <- data[data$genderBinary == 0,] %>%  select(starts_with("q") & !contains("_"), genderMotivHarr, unwantedSexAtt, sexAbuse) %>% map(~as.integer(wtd.table(as.logical(.), weights = data[data$genderBinary == 0,]$w, normwt = T))) %>%
+  map(~binom.exact(.[2], n = .[1] + .[2])[3:5]*100) %>% map(~round(., 2)) %>% rbindlist(., use.names=TRUE, idcol="Forma SO")
+names(rq1.2_male_ci)[2:4] <- c("Prevalencia v %", "CI spodný", "CI horný")
+rq1.2_male_ci
 
 # Computes odds ratios ($measure) for: type of abuse by gender contingency tables.
 rq1.2_clusterGender_or <- data %>% mutate(genderMotivHarr = as.logical(genderMotivHarr), unwantedSexAtt = as.logical(unwantedSexAtt), sexAbuse = as.logical(sexAbuse)) %>%

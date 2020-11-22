@@ -9,3 +9,8 @@ tab:regFieldTab
 fig:fieldPlot
 fig:fieldPlotMF
 fig:fieldPlotYear
+výsledky-výskumu
+prevalencia-foriem-sexuálneho-obťažovania
+fig:prevItems
+fig:prevItemsG
+vylúčenie-nedbanlivých-participantov

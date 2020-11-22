@@ -55,3 +55,26 @@ ss_fieldStudy_plot
 ss_fieldStudyYear_plot
 ```
 
+## Vylúčenie nedbanlivých participantov
+ 
+V následnom kroku boli z celkovej vzorky vylúčení participanti, ktorých štýl odpovedania vykazoval znaky nedbanlivosti. Konkrétne, boli vylúčení participanti, ktorí spĺňali aspoň jedno z nasledujúcich (pomerne konzervatívnych) kritérií: (1) dokončili dotazník za menej než 3 minúty, (2) v primárnych otázkach o formách sexuálneho obťažovania vyplnili menej než 10% položiek, (3) ak ich odpovede na postojové otázky vykazovali nulovú intra-individuálnu variabilitu (všetky odpovede boli identické), (4) vykazovali vo vzťahu k referenčnej skupine ostatných participantov signifikantne nepravdepodobnú multivariátnu distribúciu odpovedí indikujúcu náhodné označovanie odpovedí (detekované metódou Mahalanobisových vzdialeností), alebo (5) uvádzali zjavne neseriózne alebo vulgárne odpovede v otvorených otázkach. Týmto spôsobo bolo vylúčených *n* = `r ss_total_n - nrow(data)`, čo predstavuje `r round((ss_total_n - nrow(data))/nrow(data), 4)*100`% participantov, redukujúc analytickú vzorku pre nasledujúce analýzy na *n* = `r nrow(data)`.
+
+# Výsledky výskumu
+
+## Prevalencia foriem sexuálneho obťažovania
+Primárnym výsledkom výskumu sú odhady populačných proporcií jednotlivých foriem sexuálneho obťažovania. Celkovo bolo meraných 20 rôznych foriem sexuálneho obťažovania (ich konkrétna špecifikácia je uvedená v časti ??). Týchto 20 konkrétnych foriem spadá do 3 nadradených klastrov, ktorými sú (1) rodovo motivované obťažovanie (formy 1-8), (2) nechcená sexuálna pozornosť (formy 9-16), a (3) sexuálne násilie (formy 17-20). Na grafe \@ref(fig:prevItems) sú zobrazené vážené percentuálne prevalencie 20 individuálnych foriem, s farebným odlíšením foriem, do ktorých spadajú.
+
+```{r prevItems, fig.cap="Prevalencia individuálnych foriem sexuálneho obťažovania"}
+rq1.1_items_plot
+```
+
+Prevalencia rodovo motivovaného obťažovania variuje od `r round(rq1.1_items_n$q7_perc[1], 1)`% do `r round(rq1.1_items_n$q1_perc[1], 1)`%, prevalencia foriem nechcenej sexuálnej pozornosti od `r round(rq1.1_items_n$q13_perc[1], 1)`% do `r round(rq1.1_items_n$q12_perc[1], 1)`%, a najmenej frekventovanou formou sexuálneho obťažovania je sexuálne násilie, kde sa prevalencia jednotlivých foriem pohybuje medzi `r round(rq1.1_items_n$q20_perc[1], 1)`% a `r round(rq1.1_items_n$q17_perc[1], 1)`%.
+
+Populačné odhady prevalencií separátne pre ženy a mužov je možné vidieť na grafe \@ref(fig:prevItemsG).
+
+```{r prevItemsG, fig.cap="Prevalencia individuálnych foriem sexuálneho obťažovania podľa rodu"}
+rq1.1_itemsGender_plot
+```
+
+
+

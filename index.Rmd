@@ -10,16 +10,32 @@ output:
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = F)
+library(knitr)
 library(kableExtra)
 library(tidyverse)
+library(BayesFactor)
 ```
 
+```{r}
+load("workspace.RDS")
+```
 
 ```{r}
-load("analysisWorkspace.RData")
+out <- function(bayesFactor, anova){
+  noquote(paste("<I>F(</I>", anova$Df[1], ", ", anova$Df[2], ") = ",
+        round(anova$`F value`[1], 2),
+        ", <I>p</I> = ", round(anova$`Pr(>F)`[1], 2), ", ",
+        paste(ifelse(extractBF(bayesFactor)$bf > 1, "<I>BF<sub>10</sub></I> = ", "<I>BF<sub>01</sub></I> = "), round(ifelse(extractBF(bayesFactor)$bf > 1, extractBF(bayesFactor)$bf, 1/extractBF(bayesFactor)$bf), 2), sep = "")
+        , sep = ""))
+}
 ```
 
 # Popis výskumnej vzorky
+
+Calculates risk ratio by unconditional maximum likelihood estimation (Wald), and small sample adjustment (small). Confidence intervals are calculated using normal approximation (Wald), and normal approximation with small sample adjustment (small), and bootstrap method (boot). median-unbiased estimation and exact confidence interval using the mid-p method (Rothman 1998, p. 251).
+
+
+
 
 ## Demografické charakteristiky
 Výskumná vzorka pozostávala z `r ss_total_n` participantov, študentov slovenských vysokých škôl. Priemerný vek participantov bol `r round(mean(data$age, na.rm = T), 2)` rokov (*SD* = `r round(sd(data$age, na.rm = T), 2)`). Z hľadiska pohlavia, vzorku tvorilo `r round(ss_gender_n[1,3], 0)`% žien, `r round(ss_gender_n[2,3], 0)`% mužov a menej než 1% transrodových osôb (`r round(ss_gender_n[4,3], 0)`% participantov rod neuviedlo). Graf \@ref(fig:ageplot) zobrazuje distribúciu veku podľa rodu (ako binárnej premennej). 
@@ -34,7 +50,7 @@ Najviac zastúpení vo vzorke boli študenti pochádzajúci z krajov východnéh
 
 ```{r regionTab}
 colnames(ss_region_n)[1] <- "Región pôvodu participantov"
-kable(arrange(ss_region_n, desc(percent)), "html", digits = 3, caption = "Participanti podľa kraja") %>%   kable_styling(bootstrap_options = "striped", full_width = F, font_size = 12, position = "left")
+kable(arrange(ss_region_n, desc(percent)), "html", digits = 3, caption = "Participanti podľa kraja") %>% kable_paper("hover", full_width = F, font_size = 12)
 ```
 
 ## Študijné charakteristiky
@@ -42,7 +58,7 @@ Výskumná vzorka reprezentovala participantov študujúcich všetky skupiny odb
 
 ```{r regFieldTab}
 colnames(ss_facultyRegion_n)[1] <- "Región fakulty"
-kable(list(arrange(ss_facultyRegion_n, desc(percent)), arrange(ss_fieldStudy_n, desc(percent))), "html", digits = 3, caption = "Región fakulty a skupiny študijných odborov") %>% kable_styling(bootstrap_options = "striped", full_width = T, font_size = 12, position = "left")
+kable(list(arrange(ss_facultyRegion_n, desc(percent)), arrange(ss_fieldStudy_n, desc(percent))), "html", digits = 3, caption = "Región fakulty a skupiny študijných odborov") %>% kable_paper(full_width = T, font_size = 12)
 ```
 
 Nižšie je možné vidieť skupiny odborov rozdelené podľa pohlavia (Graf \@ref(fig:fieldPlotMF)) a podľa ročníka (Graf \@ref(fig:fieldPlotYear)).
@@ -68,20 +84,54 @@ Primárnym výsledkom výskumu sú odhady populačných proporcií jednotlivých
 rq1.1_items_plot
 ```
 
-Prevalencia rodovo motivovaného obťažovania variuje od `r round(rq1.1_items_n$q7_perc[1], 1)`% do `r round(rq1.1_items_n$q1_perc[1], 1)`%, prevalencia foriem nechcenej sexuálnej pozornosti od `r round(rq1.1_items_n$q13_perc[1], 1)`% do `r round(rq1.1_items_n$q12_perc[1], 1)`%, a najmenej frekventovanou formou sexuálneho obťažovania je sexuálne násilie, kde sa prevalencia jednotlivých foriem pohybuje medzi `r round(rq1.1_items_n$q20_perc[1], 1)`% a `r round(rq1.1_items_n$q17_perc[1], 1)`%.
-
-
-
-Populačné odhady prevalencií separátne pre ženy a mužov je možné vidieť na grafe \@ref(fig:prevItemsG).
+Prevalencia rodovo motivovaného obťažovania variuje od `r round(rq1.1_items_n$q7_perc[1], 1)`% do `r round(rq1.1_items_n$q1_perc[1], 1)`%, prevalencia foriem nechcenej sexuálnej pozornosti od `r round(rq1.1_items_n$q13_perc[1], 1)`% do `r round(rq1.1_items_n$q12_perc[1], 1)`%, a najmenej frekventovanou formou sexuálneho obťažovania je sexuálne násilie, kde sa prevalencia jednotlivých foriem pohybuje medzi `r round(rq1.1_items_n$q20_perc[1], 1)`% a `r round(rq1.1_items_n$q17_perc[1], 1)`%. Celkovo `r round(rq1.2_cluster_n[4][1], 2)`% participantov reportovalo, že zažilo aspoň jednu z foriem rodovo motivovaného obťažovania, `r round(rq1.2_cluster_n[5][1], 2)`% nechcenú sexuálnu pozornosť a `r round(rq1.2_cluster_n[6][1], 2)`% sexuálny nátlak.
 
 ```{r prevItemsG, fig.cap="Prevalencia individuálnych foriem sexuálneho obťažovania podľa rodu"}
 rq1.1_itemsGender_plot
 ```
 
+Populačné odhady prevalencií pre jednotlivé formy, separátne pre ženy a mužov je možné vidieť na grafe \@ref(fig:prevItemsG) a prevalencie sexuálneho obťažovania pre klastre na grafe \@ref(fig:prevClust). Nižšie v tabuľke \@ref(tab:prevGenderTab) sú uvedené prevalencie pre ženy a mužov s 95% intervalmi spoľahlivosti z binomiálneho testu proporcií (založeného na prirodzených výžených počtoch participantov).
 
+```{r prevClust, fig.cap="Prevalencia klastrov sexuálneho obťažovania podľa pohlavia"}
+rq1.2_clusterGender_plot
+```
 
-```{r}
-kable(rq1.2_clusterGender_n, "html", digits = 3) %>%   kable_styling(bootstrap_options = "striped", full_width = F, font_size = 12, position = "left")
+```{r prevGenderTab}
+kable(list(rq1.2_female_ci, rq1.2_male_ci), "html", digits = 3, caption = "Prevalencie foriem a klastrov sexuálneho obťažovania podľa pohlavia") %>% kable_paper(full_width = F, font_size = 12)
+```
+
+Z grafu \@ref(fig:prevItemsG) je zrejmé, že naprieč formami sexuálneho obťažovania existuje v predmetnej vzorke variabilita v rozdieloch medzi ženami a mužmi. Relevantné však je, či pozorované rozdiely odzrkadľujú reálne existujúce, systematické rozdiely v populácii alebo náhodné fluktuácie. Za účelom odhadu relatívneho rizika a testovania, či je možné zodpovedajúce rozdiely očakávať v celej populácii študentov Slovenských vysokých škôl, bolo pre každú formu sexuálneho obťažovania vypočítané relatívne riziko spolu s 95% intervalmi spoľahlivosti a Bayesov faktor. Výsledky sú reportované v Tabuľke \@ref(tab:rrTable).
+
+Hodnoty relatívneho rizika väčšie ako 1 vyjadrujú väčšie riziko u žien, hodnoty menšie ako jeden väčšie riziko u mužov. Ak interval spoľahlivosti pretína hodnotu 1, nebol detekovaný štatisticky významný rozdiel v riziku danej formy. Hodnoty Bayesových faktorov na druhej strane predstavujú mieru empirických dôkazov v prospech rozdielu v prevalenciách u žien a mužov. *BF<sub>10</sub>* vyjadruje mieru dôkazov v prospech alternatívnej hypotézy (existencia rozdielu), *BF<sub>01</sub>* na druhej strane mieru dôkazov v prospech nulovej hypotézy (absencia rozdielu). Napríklad *BF<sub>10</sub>* = 2.55 tak znamená, že je 2.55 krát pravdepodobnejšie, že pozorovaný pomer rizík je reálny systematický efekt, zatiaľ čo *BF<sub>01</sub>* = 7.93 znamená takmer 8x vačšiu pravdepodobnosť, že v populácii neexistuje rozdiel v riziku danej formy sexuálneho obťažovania. 
+
+```{r rrTable}
+kable(rq1.2_clusterGender_table, "html", digits = 3, caption = "Relatívne riziko a Bayesove faktory pre rozdiely v prevalencii sexuálneho obťažovania podľa pohlavia") %>% kable_paper("hover", full_width = F, font_size = 12)
+```
+
+Štatisticky signifikantný rozdiel medzi pohlaviami v riziku výskytu danej formy sexuálneho obťažovania bol zaznamenaný v nasledujúcich formách (prezentované z pohľadu žien): forma q5 o 24% väčšie riziko no miera dôkazov v prospech existencie rozdielu je veľmi slabá (**BF<sub>01</sub>* = 1.17); q6 1.85x vačšie riziko a q7 o ~73% menšie riziko, pričom oba efekty sú veľmi robustné; q8 o 14% väčšie riziko no miera dôkazov v prospech rozdielu je mimoriadne slabá; q9 o 44% menšie riziko - veľmi silný efekt; q11 o 28% mensie riziko no miera dôkazov v prospech tvrdenia je mimoriadne slabá; v prípade formy q14 bolo zistené 2.29x vačšie riziko, pričom sa jedná o veľmi robustný efekt; q15 o 50% vačšie riziko no miera dôkazov je slabá (hypotéza existencie rozdielu je iba 3.73x pravdepodobnejšia ako nulová hypotéza), q16 o 38% menšie riziko no miera dôkazov je podobne slabá (*BF<sub>10</sub>* = 2.55). Pri ostatných individuálnych formách nebol štatisticky signifikantný rozdiel. Najmä pri formách sexuálneho nátlaku (q17 - q20) boli frekvencie reportovaných prípadov tak nízke, že pomer rizík nebol interpretovateľný a nebolo ani možné odhadnúť informatívny interval spoľahlivosti.
+
+Z hľadiska klastrov sexuálneho obťažovania nebol ani v jednom pozorovaný signifikantný rozdiel medzi pohlaviami. Hodnoty Bayesovho faktora v prospech nulovej hypotézy (*BF<sub>01</sub>*) pre dané tri klastre boli na úrovni 7.73, 6.42 a 3.89, čiže skôr bola detekovaná absencia rozdielov v riziku daného klastra u participantov.  
+
+## Rizikové faktory sexuálneho obťažovania
+Keďže v mnohých formách sexuálneho obťažovania boli zaznamenané výraznejšie prevalencie, v ďalšom kroku sme sa zamerali na skúmanie rizikových faktorov agregátnych foriem (klastrov) sexuálneho obťažovania. V Tabuľkách \@ref(tab:rfGMH), \@ref(tab:rfUSA), resp. \@ref(tab:rfSAB) sú reportované hodnoty relatívneho rizika a Bayesove faktory pre dichotomické rizikové faktory troch klastrov sexuálneho obťažovania. Ako je možné vidieť, hodnoty relatívneho rizika pre jednotlivé faktory pri veľkej väčšine faktorov blízke 1, resp. interval spoľahlivosti zahŕňa 1 (rovnaké riziko pre obe úrovne rizikového faktora). Signifikantné hodnoty relatívneho rizika boli zaznamenané iba v nasledujúcich prípadoch: vek vyšší ako 23 rokov bol asociovaný s mierne nižším rizikom rodovo motivovaného obťažovania (o 9%, *BF<sub>10</sub>* = 10.9), neheterosexuálna orientácia bola asociovaná s 35% vyšším rizikom nechcenej sexuálnej pozornosti (no *BF<sub>10</sub>* = 1.01, takže miera empirických dôkazov v prospech alternatívnej hypotézy prakticky absentuje). Po zohľadnení inflácie miery chyby I. typu v dôsledku viacnásobného testovania (korigovaním hladiny $\alpha$ Bonferroniho korekciou), ostal signifikantným iba efekt veku pri rodovo motivovanom obťažovaní.
+
+```{r rfGMH}
+kbl(rq2_gmh_or_table, "html", digits = 3, caption = "Rodovo motivované obťažovanie - rizikové faktory") %>% kable_paper("hover", full_width = F, font_size = 12)
 ```
 
 
+
+```{r rfUSA}
+kbl(rq2_usa_or_table, "html", digits = 3, caption = "Nechcená sexuálna pozornosť - rizikové faktory") %>% kable_paper("hover", full_width = F, font_size = 12)
+```
+
+
+
+```{r rfSAB}
+kbl(rq2_sab_or_table, "html", digits = 3, caption = "Sexuálny nátlak - rizikové faktory") %>% kable_paper("hover", full_width = F, font_size = 12)
+```
+
+Zároveň boli analyzované ďalšie 3 multinominálne rizikové faktory: rok štúdia, odbor štúdia a lokalita fakulty, separátne pre všetky tri klastre sexuálneho obťažovania. Bayesiánska analýza ukázala, že jediným robustným efektom je rozdielne riziko rodovo motivovaného obťažovania v závislosti od odboru štúdia (`r noquote(rq2_gmh_or_table_multinomial[2])`). V porovnaní s referenčnou skupinou študentov filozofických, humanitných, pedagogických, alebo teologických odborov bolo zistené vyššie riziko u študentov zdravotníckych odborov (o 32%), technických odborov (o 21%), prírodovedeckých odborov (o 18%), skupiny spoločenských, ekonomických alebo právnych odborov (o 13%) a skupiny mediálnych a umeleckých odborov (o 13%). 
+Pri ostatných kombináciách formiem sexuálneho obťažovania a rizikových faktorov sme nedetekovali efekt v prospech ktorého by existovalo dostatočné množstvo dôkazov a hodnoty Bayesových faktorov svedčili skôr o absencii efektov (*BF<sub>01</sub>* v rozmedzí od 2 do 20432).
+
+Ako súhrnnejšiu alternatívu sme analyzovali, či rizikové faktory dokážu predikovať závažnosť sexuálneho obťažovania. Táto premenná reflektuje na jednej strane najzávažnejšiu formu sexuálneho obťažovania, ktorú respondent zažil a na druhej strane jeho frekvenciu.^[Premenná bola kódovaná ako 0 pre participantov, ktorí nereportovali žiadnu formu sexuálneho obťažovania, 1 v prípade jednorázového rodovo motivovaného obťažovania, 2 v prípade opakovaného rodovo motivovaného obťažovania, 3 v prípade jednorázovej nechcenej sexuálnej pozornosti ..., a 6 v prípade opakovaného sexuálneho nátlaku.] Ako mierne významný rizikový faktor závažnosti sexuálneho obťažovania sa ukázala sexuálna orientácia, `r out(rq2_orientation_bf, rq2_orientation_anova)`. Vyšší ročník štúdia bol pozitívne asociovaný so závažnosťou sexuálneho obťažovania, no veľkoť efektu bola malá, *r* = `r round(rq2_studyLengthSummary$coefficients[2], 2)`, podobne ako miera dôkazov v prospech tohto efektu `r out(rq2_studyLengthBF, rq2_studyLengthAnova)`. Celkovo nebol detekovaný efekt regiónu na závažnosť sexuálneho obťažovania, `r out(rq2_region_bf, rq2_region_anova)`. Podobne nulový populačný efekt mal status príslušníka menšiny, `r out(rq2_minority_bf, rq2_minority_anova)`; viera v Boha, `r out(rq2_belief_bf, rq2_belief_anova)`; či používanie iného materinského jazyka ako slovenčiny, `r out(rq2_language_bf, rq2_language_anova)`.

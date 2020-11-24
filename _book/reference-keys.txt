@@ -14,3 +14,14 @@ prevalencia-foriem-sexuálneho-obťažovania
 fig:prevItems
 fig:prevItemsG
 vylúčenie-nedbanlivých-participantov
+fig:prevClust
+tab:pgetab
+tab:prevGenderTab
+tab:rrTable
+rizikové-faktory-sexuálneho-obťažovania
+tab:unnamed-chunk-2
+tab:unnamed-chunk-3
+tab:unnamed-chunk-4
+tab:rfGMH
+tab:rfUSA
+tab:rfSAB

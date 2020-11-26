@@ -1,6 +1,9 @@
 # Notes
 # exclude ked timeTaken prilis maly
 
+
+# Calculates risk ratio by unconditional maximum likelihood estimation (Wald), and small sample adjustment (small). Confidence intervals are calculated using normal approximation (Wald), and normal approximation with small sample adjustment (small), and bootstrap method (boot). median-unbiased estimation and exact confidence interval using the mid-p method (Rothman 1998, p. 251).
+
 # Script file to be sourced by the Rmarkdown manuscript
 rm(list = ls())
 
@@ -63,7 +66,7 @@ data <- data %>% map_at(., .at = vars(starts_with("misconcept")), .f =~recode(.,
                                                                         "Skôr súhlasím" = 3,
                                                                         "Úplne súhlasím" = 4)) %>% as.tibble()
 
-data <- data %>% map_at(., .at = vars(c(misconcept2, misconcept3, misconcept4, misconcept11)), .f =~ 4-.) %>% as.tibble() # dealing with the inverse scaling of items
+data <- data %>% map_at(., .at = vars(c(misconcept2, misconcept3, misconcept4, misconcept9, misconcept11)), .f =~ 4-.) %>% as.tibble() # dealing with the inverse scaling of items
 
 data <- data %>% mutate(satisfaction = rowSums(data %>% select(contains("disclosure_") & !contains(c("whyNo"))), na.rm = T))
 
@@ -181,23 +184,23 @@ data$irv <- data %>% select(att1:att19) %>% irv()
 data$mahadRaw <- data %>% select(att1:att19, misconcept1:misconcept11) %>% mahad(plot = F, flag = T, confidence = 1) %>% .$raw
 data$mahadFlagged <- data %>% select(att1:att19, misconcept1:misconcept11) %>% mahad(plot = F, flag = T, confidence = 1) %>% .$flagged
 
-randResp <- NA
-classification <- NA
-nsim <-  10
-for(j in 1:nsim){
-  items <- length(data[!is.na(data$irv),]$irv)
-  for(i in 1:items){
-    randResp[i] <- sd(sample(1:5, 19, replace = TRUE))
-  }
-
-  df <- data.frame(cbind(sds = c(data[!is.na(data$irv),]$irv, randResp),
-                         genuineResp = c(ifelse(data[!is.na(data$irv),]$irv < 1.3, 1, 0), rep(0, length(randResp)))))
-
-  model <- glm(genuineResp ~sds,family=binomial(link='logit'),data=df)
-  fittedProbs <- model %>% fitted.values()
-  predicted.classes <- ifelse(fittedProbs > 0.5, 1, 0)
-  classification[j] <- mean(predicted.classes == df$genuineResp)
-}
+# randResp <- NA
+# classification <- NA
+# nsim <-  100
+# for(j in 1:nsim){
+#   items <- length(data[!is.na(data$irv),]$irv)
+#   for(i in 1:items){
+#     randResp[i] <- sd(sample(1:5, 19, replace = TRUE))
+#   }
+#
+#   df <- data.frame(cbind(sds = c(data[!is.na(data$irv),]$irv, randResp),
+#                          genuineResp = c(ifelse(data[!is.na(data$irv),]$irv < 1.3, 1, 0), rep(0, length(randResp)))))
+#
+#   model <- glm(genuineResp ~sds,family=binomial(link='logit'),data=df)
+#   fittedProbs <- model %>% fitted.values()
+#   predicted.classes <- ifelse(fittedProbs > 0.5, 1, 0)
+#   classification[j] <- mean(predicted.classes == df$genuineResp)
+# }
 
 table(data$irv > 1.3)/length(data$irv)
 mean(classification)
@@ -441,8 +444,6 @@ rq2_sab_bf_multinomial <- rfDataMultinomial %>% map(~contingencyTableBF(round(wt
 
 rq2_sab_or_table_multinomial <- t(data.frame(t(sapply(rq2_sab_bf_multinomial,c))))
 
-
-
 ###
 
 # Regions
@@ -541,7 +542,27 @@ for(i in seqq){
 rq3_perpByItem[[i]] <- do.call(rbind.data.frame, data %>% select(contains("_who") & !contains("Other")) %>% map(~cbind("freq" = round(wtd.table(., weights = data$w, normwt = T), 0), "perc" = round(prop.table(wtd.table(., weights = data$w, normwt = T)), 2)))) %>%
   rownames_to_column("who") %>% filter(grepl(".1", who, fixed = TRUE)) %>% filter(str_detect(who, i))
 }
-rq3_perpetratorsByItem <- rq3_perpByItem %>% map(~arrange(., desc(freq))[1:2,])
+rq3_perpetratorsByItem_most <- rq3_perpByItem %>% map(~arrange(., desc(freq))[1,]) %$% data.frame(t(sapply(.,c)))
+rq3_perpetratorsByItem_2ndmost <- rq3_perpByItem %>% map(~arrange(., desc(freq))[2,]) %$% data.frame(t(sapply(.,c)))
+rq3_perpetratorsByItem_most <- rq3_perpetratorsByItem_most %>% mutate(who = str_replace_all(who, c(".*Student_M.1.*" = "Študent Muž",
+                                                                    ".*Teacher_M.1.*" = "Učiteľ Muž",
+                                                                    ".*Teacher_M.1.*" = "Učiteľ Muž",
+                                                                    ".*Teacher_F.1.*" = "Učiteľ Žena",
+                                                                    ".*Student_F.1.*" = "Študent Žena"))) %>% rename("1. najčastejší" = who,
+                                                                                                                     "N" = freq,
+                                                                                                                     "Percent" = perc)
+
+rq3_perpetratorsByItem_2ndmost <- rq3_perpetratorsByItem_2ndmost %>% mutate(who = str_replace_all(who, c(".*Student_M.1.*" = "Študent Muž",
+                                                                       ".*Teacher_M.1.*" = "Učiteľ Muž",
+                                                                       ".*Teacher_M.1.*" = "Učiteľ Muž",
+                                                                       ".*Teacher_F.1.*" = "Učiteľ Žena",
+                                                                       ".*Student_F.1.*" = "Študent Žena",
+                                                                       ".*Employee_F.1.*" = "Zamestnanec Žena"))) %>% rename("2. najčastejší" = who,
+                                                                                                                             "N" = freq,
+                                                                                                                             "Percent" = perc)
+
+rq3_perpOverallMost <- cbind(rq3_perpetratorsByItem_most, rq3_perpetratorsByItem_2ndmost)
+rownames(rq3_perpOverallMost) <- noquote(sprintf("q%d", 1:20))
 
 # Kto sú pachatelia SO v rámci jednotlivých foriem SO u dievčat
 rq3_perpByItem_female <- list()
@@ -549,7 +570,28 @@ for(i in seqq){
   rq3_perpByItem_female[[i]] <- do.call(rbind.data.frame, data[data$Rod == 1,] %>% select(contains("_who") & !contains("Other")) %>% map(~cbind("freq" = round(wtd.table(., weights = data[data$Rod == 1,]$w, normwt = T), 0), "perc" = round(prop.table(wtd.table(., weights = data[data$Rod == 1,]$w, normwt = T)), 2)))) %>%
     rownames_to_column("who") %>% filter(grepl(".1", who, fixed = TRUE)) %>% filter(str_detect(who, i))
 }
-rq3_perpetratorsByItem_female <- rq3_perpByItem_female %>% map(~arrange(., desc(freq))[1:2,])
+rq3_perpetratorsByItem_female_most <- rq3_perpByItem_female %>% map(~arrange(., desc(freq))[1,]) %$% data.frame(t(sapply(.,c))) %>%
+  mutate(who = str_replace_all(who, c(".*Student_M.1.*" = "Študent Muž",
+                                      ".*Teacher_M.1.*" = "Učiteľ Muž",
+                                      ".*Teacher_M.1.*" = "Učiteľ Muž",
+                                      ".*Teacher_F.1.*" = "Učiteľ Žena",
+                                      ".*Student_F.1.*" = "Študent Žena"))) %>% rename("1. najčastejší" = who,
+                                                                                       "N" = freq,
+                                                                                       "Percent" = perc)
+
+rq3_perpetratorsByItem_female_2ndmost <- rq3_perpByItem_female %>% map(~arrange(., desc(freq))[2,]) %$% data.frame(t(sapply(.,c))) %>%
+  mutate(who = str_replace_all(who, c(".*Student_M.1.*" = "Študent Muž",
+                                      ".*Teacher_M.1.*" = "Učiteľ Muž",
+                                      ".*Teacher_M.1.*" = "Učiteľ Muž",
+                                      ".*Teacher_F.1.*" = "Učiteľ Žena",
+                                      ".*Student_F.1.*" = "Študent Žena",
+                                      ".*Employee_F.1.*" = "Zamestnanec Žena",
+                                      ".*Employee_M.1.*" = "Zamestnanec Muž"))) %>% rename("2. najčastejší" = who,
+                                                                                            "N" = freq,
+                                                                                            "Percent" = perc)
+
+rq3_perpOverallMostFemale <- cbind(rq3_perpetratorsByItem_female_most, rq3_perpetratorsByItem_female_2ndmost)
+rownames(rq3_perpOverallMostFemale) <- noquote(sprintf("q%d", 1:20))
 
 # Kto sú pachatelia SO v rámci jednotlivých foriem SO u chlapcov
 rq3_perpByItem_male <- list()
@@ -557,7 +599,28 @@ for(i in seqq){
   rq3_perpByItem_male[[i]] <- do.call(rbind.data.frame, data[data$Rod == 0,] %>% select(contains("_who") & !contains("Other")) %>% map(~cbind("freq" = round(wtd.table(., weights = data[data$Rod == 0,]$w, normwt = T), 0), "perc" = round(prop.table(wtd.table(., weights = data[data$Rod == 0,]$w, normwt = T)), 2)))) %>%
     rownames_to_column("who") %>% filter(grepl(".1", who, fixed = TRUE)) %>% filter(str_detect(who, i))
 }
-rq3_perpetratorsByItem_male <- rq3_perpByItem_male %>% map(~arrange(., desc(freq))[1:2,])
+rq3_perpetratorsByItem_male_most <- rq3_perpByItem_male %>% map(~arrange(., desc(freq))[1,]) %$% data.frame(t(sapply(.,c))) %>%
+  mutate(who = str_replace_all(who, c(".*Student_M.1.*" = "Študent Muž",
+                                      ".*Teacher_M.1.*" = "Učiteľ Muž",
+                                      ".*Teacher_M.1.*" = "Učiteľ Muž",
+                                      ".*Teacher_F.1.*" = "Učiteľ Žena",
+                                      ".*Student_F.1.*" = "Študent Žena"))) %>% rename("1. najčastejší" = who,
+                                                                                       "N" = freq,
+                                                                                       "Percent" = perc)
+
+rq3_perpetratorsByItem_male_2ndmost <- rq3_perpByItem_male %>% map(~arrange(., desc(freq))[2,]) %$% data.frame(t(sapply(.,c))) %>%
+  mutate(who = str_replace_all(who, c(".*Student_M.1.*" = "Študent Muž",
+                                      ".*Teacher_M.1.*" = "Učiteľ Muž",
+                                      ".*Teacher_M.1.*" = "Učiteľ Muž",
+                                      ".*Teacher_F.1.*" = "Učiteľ Žena",
+                                      ".*Student_F.1.*" = "Študent Žena",
+                                      ".*Employee_F.1.*" = "Zamestnanec Žena",
+                                      ".*Employee_M.1.*" = "Zamestnanec Muž"))) %>% rename("2. najčastejší" = who,
+                                                                                           "N" = freq,
+                                                                                           "Percent" = perc)
+
+rq3_perpOverallMostMmale <- cbind(rq3_perpetratorsByItem_male_most, rq3_perpetratorsByItem_male_2ndmost)[-18,]
+rownames(rq3_perpOverallMostMmale) <- noquote(sprintf("q%d", 1:20))[-18]
 
 whos <- c("Teacher_M", "Teacher_F", "Student_M", "Student_F", "Employee_M", "Employee_F")
 rq3_perpetratorsOverall_n <- list()
@@ -602,7 +665,9 @@ for(n in 1:6){
 rq3_perpetratorsSAB_n[1] <- NULL
 
 perpertatorsTable <- round(rbind("GMH" = unlist(rq3_perpetratorsGMH_n)*100/sum(unlist(rq3_perpetratorsGMH_n)), "USA" = unlist(rq3_perpetratorsUSA_n)*100/sum(unlist(rq3_perpetratorsUSA_n)), "SAB" = unlist(rq3_perpetratorsSAB_n)*100/sum(unlist(rq3_perpetratorsSAB_n))), 2)
-colnames(perpertatorsTable) <- gsub(".count.freq", "", colnames(perpertatorsTable))
+colnames(perpertatorsTable) <- c("Učiteľ Muž",	"Učiteľ Žena",	"Študent Muž",	"Študent Žena",	"Zamestnanec Muž",	"Zamestnanec Žena")
+rownames(perpertatorsTable) <- c("Rodovo motivované obťažovanie", "Nechcená sexuálna pozornosť", "Sexuálny nátlak")
+
 
 # Pre dievčatá
 # GenderMotivHarr
@@ -636,7 +701,8 @@ for(n in 1:6){
 rq3_perpetratorsSAB_n_female[1] <- NULL
 
 perpertatorsTable_female <- round(rbind("GMH" = unlist(rq3_perpetratorsGMH_n_female)*100/sum(unlist(rq3_perpetratorsGMH_n_female)), "USA" = unlist(rq3_perpetratorsUSA_n_female)*100/sum(unlist(rq3_perpetratorsUSA_n_female)), "SAB" = unlist(rq3_perpetratorsSAB_n_female)*100/sum(unlist(rq3_perpetratorsSAB_n_female))), 2)
-colnames(perpertatorsTable_female) <- gsub(".count.freq", "", colnames(perpertatorsTable_female))
+colnames(perpertatorsTable_female) <- c("Učiteľ Muž",	"Učiteľ Žena",	"Študent Muž",	"Študent Žena",	"Zamestnanec Muž",	"Zamestnanec Žena")
+rownames(perpertatorsTable_female) <- c("Rodovo motivované obťažovanie", "Nechcená sexuálna pozornosť", "Sexuálny nátlak")
 
 # Pre chlapcov
 # GenderMotivHarr
@@ -670,7 +736,8 @@ for(n in 1:6){
 rq3_perpetratorsSAB_n_male[1] <- NULL
 
 perpertatorsTable_male <- round(rbind("GMH" = unlist(rq3_perpetratorsGMH_n_male)*100/sum(unlist(rq3_perpetratorsGMH_n_male)), "USA" = unlist(rq3_perpetratorsUSA_n_male)*100/sum(unlist(rq3_perpetratorsUSA_n_male)), "SAB" = unlist(rq3_perpetratorsSAB_n_male)*100/sum(unlist(rq3_perpetratorsSAB_n_male))), 2)
-colnames(perpertatorsTable_male) <- gsub(".count.freq", "", colnames(perpertatorsTable_male))
+colnames(perpertatorsTable_male) <- c("Učiteľ Muž",	"Učiteľ Žena",	"Študent Muž",	"Študent Žena",	"Zamestnanec Muž",	"Zamestnanec Žena")
+rownames(perpertatorsTable_male) <- c("Rodovo motivované obťažovanie", "Nechcená sexuálna pozornosť", "Sexuálny nátlak")
 
 # Sú ženy alebo muži náchylnejší páchať niektorú z foriem SO?
 # Aké osoby (učitelia, spolužiaci, atď.) najčastejšie páchajú aké druhy obťažovania?
@@ -710,19 +777,19 @@ abusesByPerpetratorGenderSAB <- matrix(c(
   abusesFemaleSAB, possibleAbusesOverall - abusesFemaleSAB), nrow = 2, ncol = 2, byrow = T, dimnames = list(c("Male", "Female"), c("Abuses", "Non-abuses")))
 
 # Computes odds ratios ($measure) and Bayes factors (Poisson BF) for: type of abuse by gender of the perpetrator overall
-rq3_abusesByPerpetratorGenderOverall_or <- riskratio.boot(abusesByPerpetratorGenderOverall, rev = "both", replicates = 1e5)
+rq3_abusesByPerpetratorGenderOverall_rr <- riskratio.boot(abusesByPerpetratorGenderOverall, rev = "both", replicates = 1e5)
 rq3_abusesByPerpetratorGenderOverall_bf <- contingencyTableBF(abusesByPerpetratorGenderOverall, sampleType = "poisson", priorConcentration = 1)
 
 # Computes odds ratios ($measure) and Bayes factors (Poisson BF) for: type of abuse by gender of the perpetrator for GMH
-rq3_abusesByPerpetratorGenderGMH_or <- riskratio.boot(abusesByPerpetratorGenderGMH, rev = "both", replicates = 1e5)
+rq3_abusesByPerpetratorGenderGMH_rr <- riskratio.boot(abusesByPerpetratorGenderGMH, rev = "both", replicates = 1e5)
 rq3_abusesByPerpetratorGenderGMH_bf <- contingencyTableBF(abusesByPerpetratorGenderGMH, sampleType = "poisson", priorConcentration = 1)
 
 # Computes odds ratios ($measure) and Bayes factors (Poisson BF) for: type of abuse by gender of the perpetrator for USA
-rq3_abusesByPerpetratorGenderUSA_or <- riskratio.boot(abusesByPerpetratorGenderUSA, rev = "both", replicates = 1e5, correction = TRUE)
+rq3_abusesByPerpetratorGenderUSA_rr <- riskratio.boot(abusesByPerpetratorGenderUSA, rev = "both", replicates = 1e5, correction = TRUE)
 rq3_abusesByPerpetratorGenderUSA_bf <- contingencyTableBF(abusesByPerpetratorGenderUSA, sampleType = "poisson", priorConcentration = 1)
 
 # Computes odds ratios ($measure) and Bayes factors (Poisson BF) for: type of abuse by gender of the perpetrator for SAB
-rq3_abusesByPerpetratorGenderSAB_or <- riskratio.boot(abusesByPerpetratorGenderSAB, rev = "both", replicates = 1e5, correction = TRUE)
+rq3_abusesByPerpetratorGenderSAB_rr <- riskratio.boot(abusesByPerpetratorGenderSAB, rev = "both", replicates = 1e5, correction = TRUE)
 rq3_abusesByPerpetratorGenderSAB_bf <- contingencyTableBF(abusesByPerpetratorGenderSAB, sampleType = "poisson", priorConcentration = 1)
 
 # RQ4 Where did it happen -------------------------------------------------------------------
@@ -1078,18 +1145,21 @@ rq8_attitudes_n <- data %>% select(starts_with("att") & !contains(c("unwanted"))
 
 rq8_attitudes_item_freqs <- data %>% select(starts_with("att") & !contains(c("unwanted"))) %>%
 map(~round(prop.table(wtd.table(., weights = data$w, normwt = T, na.rm = T))*100, 2))
-rq8_attitudes_item_freqs
+rq8_attitudes_item_freqs <- data.frame(t(sapply(rq8_attitudes_item_freqs,c)))
+names(rq8_attitudes_item_freqs) <- c("Úplne nesúhlasím",	"Skôr nesúhlasím",	"Neviem",	"Skôr súhlasím",	"Úplne súhlasím")
 
 # Pre dievčatá
 rq8_attitudes_item_freqs_females <- data[data$Rod == 1,] %>% select(starts_with("att") & !contains(c("unwanted"))) %>%
   map(~round(prop.table(wtd.table(., weights = data[data$Rod == 1,]$w, normwt = T, na.rm = T))*100, 2))
-rq8_attitudes_item_freqs_females
+
+rq8_attitudes_item_freqs_females <- data.frame(t(sapply(rq8_attitudes_item_freqs_females,c)))
+names(rq8_attitudes_item_freqs_females) <- c("Úplne nesúhlasím",	"Skôr nesúhlasím",	"Neviem",	"Skôr súhlasím",	"Úplne súhlasím")
 
 # Pre chlapcov
 rq8_attitudes_item_freqs_males <- data[data$Rod == 0,] %>% select(starts_with("att") & !contains(c("unwanted"))) %>%
   map(~round(prop.table(wtd.table(., weights = data[data$Rod == 0,]$w, normwt = T, na.rm = T))*100, 2))
-rq8_attitudes_item_freqs_males
-
+rq8_attitudes_item_freqs_males <- data.frame(t(sapply(rq8_attitudes_item_freqs_males,c)))
+names(rq8_attitudes_item_freqs_males) <- c("Úplne nesúhlasím",	"Skôr nesúhlasím",	"Neviem",	"Skôr súhlasím",	"Úplne súhlasím")
 
 rq8_attitudes_item_freqs_wNA <- data %>% select(starts_with("att") & !contains(c("unwanted"))) %>%
   map(~round(prop.table(wtd.table(., weights = data$w, normwt = T, na.rm = F, na.show = T))*100, 2))
@@ -1236,23 +1306,29 @@ rq9_fieldInformationAnova <- anova(rq9_fieldInformationMod)
 # Tvrdenia / stereotypy /  predsudky o sexuálnom obťažovaní
 data <- data %>% mutate(misconceptScore = rowSums(data %>% select(starts_with("misconcept")), na.rm = T))
 
-rq10_misconcept_item_freqs <- data %>% select(starts_with("misconcept")) %>%
+rq10_misconcept_item_freqs <- data %>% select(starts_with("misconcept")) %>% map_at(., .at = vars(c(misconcept2, misconcept3, misconcept4, misconcept9, misconcept11)), .f =~ 4-.) %>%
   map(~round(prop.table(wtd.table(., weights = data$w, normwt = T, na.rm = T))*100, 2))
-rq10_misconcept_item_freqs
+rq10_misconcept_item_freqs <- data.frame(t(sapply(rq10_misconcept_item_freqs[-12],c)))
+names(rq10_misconcept_item_freqs) <- c("Úplne nesúhlasím",	"Skôr nesúhlasím",	"Neviem",	"Skôr súhlasím",	"Úplne súhlasím")
 
 # Pre dievčatá
-rq10_misconcept_item_freqs_females <- data[data$Rod == 1,] %>% select(starts_with("misconcept")) %>%
+rq10_misconcept_item_freqs_females <- data[data$Rod == 1,] %>% select(starts_with("misconcept")) %>% map_at(., .at = vars(c(misconcept2, misconcept3, misconcept4, misconcept9, misconcept11)), .f =~ 4-.) %>%
   map(~round(prop.table(wtd.table(., weights = data[data$Rod == 1,]$w, normwt = T, na.rm = T))*100, 2))
-rq10_misconcept_item_freqs_females
+rq10_misconcept_item_freqs_females <- data.frame(t(sapply(rq10_misconcept_item_freqs_females[-12],c)))
+names(rq10_misconcept_item_freqs_females) <- c("Úplne nesúhlasím",	"Skôr nesúhlasím",	"Neviem",	"Skôr súhlasím",	"Úplne súhlasím")
 
 # Pre chlapcov
-rq10_misconcept_item_freqs_males  <- data[data$Rod == 0,] %>% select(starts_with("misconcept")) %>%
+rq10_misconcept_item_freqs_males  <- data[data$Rod == 0,] %>% select(starts_with("misconcept")) %>% map_at(., .at = vars(c(misconcept2, misconcept3, misconcept4, misconcept9, misconcept11)), .f =~ 4-.) %>%
   map(~round(prop.table(wtd.table(., weights = data[data$Rod == 0,]$w, normwt = T, na.rm = T))*100, 2))
 rq10_misconcept_item_freqs_males
+rq10_misconcept_item_freqs_males <- data.frame(t(sapply(rq10_misconcept_item_freqs_males[-12],c)))
+names(rq10_misconcept_item_freqs_males) <- c("Úplne nesúhlasím",	"Skôr nesúhlasím",	"Neviem",	"Skôr súhlasím",	"Úplne súhlasím")
 
-rq10_misconcept_item_freqs_wNA <- data %>% select(starts_with("misconcept")) %>%
+rq10_misconcept_item_freqs_wNA <- data %>% select(starts_with("misconcept")) %>% map_at(., .at = vars(c(misconcept2, misconcept3, misconcept4, misconcept9, misconcept11)), .f =~ 4-.) %>%
   map(~round(prop.table(wtd.table(., weights = data$w, normwt = T, na.rm = F, na.show = T))*100, 2))
 rq10_misconcept_item_freqs_wNA
+rq10_misconcept_item_freqs_wNA <- data.frame(t(sapply(rq10_misconcept_item_freqs_wNA[-12],c)))
+names(rq10_misconcept_item_freqs_wNA) <- c("Úplne nesúhlasím",	"Skôr nesúhlasím",	"Neviem",	"Skôr súhlasím",	"Úplne súhlasím")
 
 # V akej miere súhlasia respondenti/tky s jednotlivými tvrdeniami?
 # min score = 0, max score 55. The higher the score the higher the agreement with misconceptions

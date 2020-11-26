@@ -21,21 +21,22 @@ load("workspace.RDS")
 ```
 
 ```{r}
-out <- function(bayesFactor, anova){
-  noquote(paste("<I>F(</I>", anova$Df[1], ", ", anova$Df[2], ") = ",
-        round(anova$`F value`[1], 2),
-        ", <I>p</I> = ", round(anova$`Pr(>F)`[1], 2), ", ",
-        paste(ifelse(extractBF(bayesFactor)$bf > 1, "<I>BF<sub>10</sub></I> = ", "<I>BF<sub>01</sub></I> = "), round(ifelse(extractBF(bayesFactor)$bf > 1, extractBF(bayesFactor)$bf, 1/extractBF(bayesFactor)$bf), 2), sep = "")
+out <- function(bfObject, anovaObject){
+  noquote(paste("<I>F(</I>", anovaObject$Df[1], ", ", anovaObject$Df[2], ") = ",
+        round(anovaObject$`F value`[1], 2),
+        ", <I>p</I> = ", round(anovaObject$`Pr(>F)`[1], 2), ", ",
+        paste(ifelse(extractBF(bfObject)$bf > 1, "<I>BF<sub>10</sub></I> = ", "<I>BF<sub>01</sub></I> = "), round(ifelse(extractBF(bfObject)$bf > 1, extractBF(bfObject)$bf, 1/extractBF(bfObject)$bf), 2), sep = "")
         , sep = ""))
 }
 ```
 
+```{r}
+rr <- function(rrObject, bfObject){
+  noquote(paste("<I>RR</I>", " = ", round(rrObject$measure[2], 2), ", 95%CI (", round(rrObject$measure[c(4)], 2), ", ", round(rrObject$measure[c(6)], 2), "), <I>p</I>", " = ", ifelse(rrObject$p.value[2] < .001, paste("<I>p</I>", " < .001"), round(rrObject$p.value[2], 3)), ", ",  paste(ifelse(extractBF(bfObject)$bf > 1, "<I>BF<sub>10</sub></I> = ", "<I>BF<sub>01</sub></I> = "), round(ifelse(extractBF(bfObject)$bf > 1, extractBF(bfObject)$bf, 1/extractBF(bfObject)$bf), 2)), sep = ""))
+}
+```
+
 # Popis výskumnej vzorky
-
-Calculates risk ratio by unconditional maximum likelihood estimation (Wald), and small sample adjustment (small). Confidence intervals are calculated using normal approximation (Wald), and normal approximation with small sample adjustment (small), and bootstrap method (boot). median-unbiased estimation and exact confidence interval using the mid-p method (Rothman 1998, p. 251).
-
-
-
 
 ## Demografické charakteristiky
 Výskumná vzorka pozostávala z `r ss_total_n` participantov, študentov slovenských vysokých škôl. Priemerný vek participantov bol `r round(mean(data$age, na.rm = T), 2)` rokov (*SD* = `r round(sd(data$age, na.rm = T), 2)`). Z hľadiska pohlavia, vzorku tvorilo `r round(ss_gender_n[1,3], 0)`% žien, `r round(ss_gender_n[2,3], 0)`% mužov a menej než 1% transrodových osôb (`r round(ss_gender_n[4,3], 0)`% participantov rod neuviedlo). Graf \@ref(fig:ageplot) zobrazuje distribúciu veku podľa rodu (ako binárnej premennej). 
@@ -135,3 +136,30 @@ Zároveň boli analyzované ďalšie 3 multinominálne rizikové faktory: rok š
 Pri ostatných kombináciách formiem sexuálneho obťažovania a rizikových faktorov sme nedetekovali efekt v prospech ktorého by existovalo dostatočné množstvo dôkazov a hodnoty Bayesových faktorov svedčili skôr o absencii efektov (*BF<sub>01</sub>* v rozmedzí od 2 do 20432).
 
 Ako súhrnnejšiu alternatívu sme analyzovali, či rizikové faktory dokážu predikovať závažnosť sexuálneho obťažovania. Táto premenná reflektuje na jednej strane najzávažnejšiu formu sexuálneho obťažovania, ktorú respondent zažil a na druhej strane jeho frekvenciu.^[Premenná bola kódovaná ako 0 pre participantov, ktorí nereportovali žiadnu formu sexuálneho obťažovania, 1 v prípade jednorázového rodovo motivovaného obťažovania, 2 v prípade opakovaného rodovo motivovaného obťažovania, 3 v prípade jednorázovej nechcenej sexuálnej pozornosti ..., a 6 v prípade opakovaného sexuálneho nátlaku.] Ako mierne významný rizikový faktor závažnosti sexuálneho obťažovania sa ukázala sexuálna orientácia, `r out(rq2_orientation_bf, rq2_orientation_anova)`. Vyšší ročník štúdia bol pozitívne asociovaný so závažnosťou sexuálneho obťažovania, no veľkoť efektu bola malá, *r* = `r round(rq2_studyLengthSummary$coefficients[2], 2)`, podobne ako miera dôkazov v prospech tohto efektu `r out(rq2_studyLengthBF, rq2_studyLengthAnova)`. Celkovo nebol detekovaný efekt regiónu na závažnosť sexuálneho obťažovania, `r out(rq2_region_bf, rq2_region_anova)`. Podobne nulový populačný efekt mal status príslušníka menšiny, `r out(rq2_minority_bf, rq2_minority_anova)`; viera v Boha, `r out(rq2_belief_bf, rq2_belief_anova)`; či používanie iného materinského jazyka ako slovenčiny, `r out(rq2_language_bf, rq2_language_anova)`.
+
+## Páchatelia sexuálneho obťažovania
+
+```{r}
+kbl(rq3_perpOverallMost, "html", digits = 3, caption = "Najčastejší páchatelia celkovo - individuálne formy", row.names = T) %>% kable_paper("hover", full_width = F, font_size = 12)
+```
+
+```{r}
+kbl(rq3_perpOverallMostFemale, "html", digits = 3, caption = "Najčastejší páchatelia u žien - individuálne formy", row.names = T) %>% kable_paper("hover", full_width = F, font_size = 12)
+```
+
+```{r}
+kbl(rq3_perpOverallMostMmale, "html", digits = 3, caption = "Najčastejší páchatelia u mužov - individuálne formy", row.names = T) %>% kable_paper("hover", full_width = F, font_size = 12)
+```
+
+```{r}
+kbl(perpertatorsTable, "html", digits = 3, caption = "Najčastejší páchatelia celkovo - klastre") %>% kable_paper("hover", full_width = F, font_size = 12)
+```
+
+```{r}
+kbl(perpertatorsTable_female, "html", digits = 3, caption = "Najčastejší páchatelia u žien - klastre") %>% kable_paper("hover", full_width = F, font_size = 12)
+```
+
+```{r}
+kbl(perpertatorsTable_male, "html", digits = 3, caption = "Najčastejší páchatelia u mužov - klastre") %>% kable_paper("hover", full_width = F, font_size = 12)
+```
+

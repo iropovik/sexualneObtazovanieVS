@@ -1,6 +1,7 @@
 book_filename: "_index"
 highlight: tango
 delete_merged_file: true
+output_dir: "docs"
 language:
   label:
     fig: "Graf "

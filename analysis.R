@@ -23,7 +23,7 @@ cbPalette <- c("#E69F00", "#999999", "#56B4E9", "#009E73", "#F0E442", "#0072B2",
 rScale <- sqrt(2)/4
 
 # read in the data
-data <- read_delim("data/data.csv", delim = ",", skip_empty_rows = T)
+data <- read_delim("data/dataAnonymized.csv", delim = ",", skip_empty_rows = T)
 # View(data)
 
 # some initial data recoding

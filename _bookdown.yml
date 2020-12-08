@@ -1,0 +1,10 @@
+book_filename: "_index"
+highlight: tango
+delete_merged_file: true
+language:
+  label:
+    fig: "Graf "
+    tab: "Tabuľka "
+  ui:
+    edit: "Edit"
+    chapter_name: ""

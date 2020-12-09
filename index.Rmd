@@ -4,7 +4,7 @@ author: "Ivan Ropovik"
 site: bookdown::bookdown_site
 documentclass: book
 output:
-  bookdown::gitbook: default
+  bookdown::gitbook
   #bookdown::pdf_book: default
 ---
 
@@ -127,7 +127,7 @@ rq1.2_clusterGender_plot
 ```
 
 ```{r prevGenderTab}
-kable(list(rq1.2_female_ci, rq1.2_male_ci), "html", digits = 3, caption = "Prevalencie foriem a klastrov sexuálneho obťažovania podľa pohlavia") %>% kable_paper(full_width = F, font_size = 12)
+kable(cbind(rq1.2_female_ci, rq1.2_male_ci), "html", digits = 3, caption = "Prevalencie foriem a klastrov sexuálneho obťažovania podľa pohlavia") %>% kable_paper("hover", full_width = F, font_size = 12)
 ```
 
 Z grafu \@ref(fig:prevItemsG) je zrejmé, že naprieč formami sexuálneho obťažovania existuje v predmetnej vzorke variabilita v rozdieloch medzi ženami a mužmi. Relevantné však je, či pozorované rozdiely odzrkadľujú reálne existujúce, systematické rozdiely v populácii alebo náhodné fluktuácie. Za účelom odhadu relatívneho rizika a testovania, či je možné zodpovedajúce rozdiely očakávať v celej populácii študentov Slovenských vysokých škôl, bolo pre každú formu sexuálneho obťažovania vypočítané relatívne riziko spolu s 95% intervalmi spoľahlivosti a Bayesov faktor. Výsledky sú reportované v Tabuľke \@ref(tab:rrTable).
@@ -135,7 +135,7 @@ Z grafu \@ref(fig:prevItemsG) je zrejmé, že naprieč formami sexuálneho obťa
 Hodnoty relatívneho rizika väčšie ako 1 vyjadrujú väčšie riziko u žien, hodnoty menšie ako jeden väčšie riziko u mužov. Ak interval spoľahlivosti pretína hodnotu 1, nebol detekovaný štatisticky významný rozdiel v riziku danej formy. Hodnoty Bayesových faktorov na druhej strane predstavujú mieru empirických dôkazov v prospech rozdielu v prevalenciách u žien a mužov. *BF<sub>10</sub>* vyjadruje mieru dôkazov v prospech alternatívnej hypotézy (existencia rozdielu), *BF<sub>01</sub>* na druhej strane mieru dôkazov v prospech nulovej hypotézy (absencia rozdielu). Napríklad *BF<sub>10</sub>* = 2.55 tak znamená, že je 2.55 krát pravdepodobnejšie, že pozorovaný pomer rizík je reálny systematický efekt, zatiaľ čo *BF<sub>01</sub>* = 7.93 znamená takmer 8x vačšiu pravdepodobnosť, že v populácii neexistuje rozdiel v riziku danej formy sexuálneho obťažovania. 
 
 ```{r rrTable}
-kable(rq1.2_clusterGender_table, "html", digits = 3, caption = "Relatívne riziko a Bayesove faktory pre rozdiely v prevalencii sexuálneho obťažovania podľa pohlavia") %>% kable_paper("hover", full_width = F, font_size = 12)
+kbl(rq1.2_clusterGender_table, "html", digits = 3, caption = "Relatívne riziko a Bayesove faktory pre rozdiely v prevalencii sexuálneho obťažovania podľa pohlavia") %>% kable_paper("hover", full_width = F, font_size = 12)
 ```
 
 Štatisticky signifikantný rozdiel medzi pohlaviami v riziku výskytu danej formy sexuálneho obťažovania bol zaznamenaný v nasledujúcich formách (prezentované z pohľadu žien): forma q5 o 24% väčšie riziko no miera dôkazov v prospech existencie rozdielu je veľmi slabá (*BF<sub>01</sub>* = 1.17); q6 1.85x vačšie riziko a q7 o ~73% menšie riziko, pričom oba efekty sú veľmi robustné; q8 o 14% väčšie riziko no miera dôkazov v prospech rozdielu je mimoriadne slabá; q9 o 44% menšie riziko - veľmi silný efekt; q11 o 28% mensie riziko no miera dôkazov v prospech tvrdenia je mimoriadne slabá; v prípade formy q14 bolo zistené 2.29x vačšie riziko, pričom sa jedná o veľmi robustný efekt; q15 o 50% vačšie riziko no miera dôkazov je slabá (hypotéza existencie rozdielu je iba 3.73x pravdepodobnejšia ako nulová hypotéza), q16 o 38% menšie riziko no miera dôkazov je podobne slabá (*BF<sub>10</sub>* = 2.55). Pri ostatných individuálnych formách nebol štatisticky signifikantný rozdiel. Najmä pri formách sexuálneho nátlaku (q17 - q20) boli frekvencie reportovaných prípadov tak nízke, že pomer rizík nebol interpretovateľný a nebolo ani možné odhadnúť informatívny interval spoľahlivosti.

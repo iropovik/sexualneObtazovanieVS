@@ -1,7 +1,7 @@
 bookdown::gitbook:
+  table_css: false
   dev: svglite
   css: css/style.css
-  split_by: section
   config:
     toc:
       collapse: none

@@ -6,7 +6,11 @@ documentclass: book
 output:
   bookdown::gitbook
   #bookdown::pdf_book: default
+github-repo: iropovik/sexualneObtazovanieVS
+description: "Národne reprezentatívny výskum sexuálneho obťažovania na slovenských vysokých školách"
+url: 'https\://iropovik.github.io/sexualneObtazovanieVS/'
 ---
+
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = F)

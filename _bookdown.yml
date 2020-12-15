@@ -8,4 +8,4 @@ language:
     tab: "Tabuľka "
   ui:
     edit: "Edit"
-    chapter_name: ""
+    chapter_name: "Časť "

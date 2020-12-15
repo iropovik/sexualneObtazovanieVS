@@ -1,7 +1,11 @@
 # Notes
 
+# debit <- function(m,N) {
+#   result <- sqrt((N/(N-1))*(m*(1-m)))
+#   print(result)
+# }
+
 # doplnit formulacie otazok z wordu s otazkami
-# napisat, ze pri binomial logisticka regresii bolo BF zalozene na BIC aproximacii
 
 # Calculates risk ratio by unconditional maximum likelihood estimation (Wald), and small sample adjustment (small). Confidence intervals are calculated using normal approximation (Wald), and normal approximation with small sample adjustment (small), and bootstrap method (boot). median-unbiased estimation and exact confidence interval using the mid-p method (Rothman 1998, p. 251).
 
@@ -84,9 +88,9 @@ ss_region_n <- data %>%
             percent = round(100*n()/nrow(.), 2)) %>% arrange(n) %>%
   na.omit()
 
-ss_region_plot <- ggplotly(ggplot(ss_region_n, aes(x = region, y = n)) + geom_bar(stat = "identity",  alpha = .6, fill = cbPalette[1])  +
+ss_region_plot <- ggplot(ss_region_n, aes(x = region, y = n)) + geom_bar(stat = "identity",  alpha = .6, fill = cbPalette[1])  +
            labs(title = "Región", x = "", y = "Počet participantov") + scale_fill_manual(cbPalette[1]) +
-           coord_flip() + scale_x_discrete(limits = ss_region_n$region))
+           coord_flip() + scale_x_discrete(limits = ss_region_n$region)
 
 # region of the faculty
 ss_facultyRegion_n <- data %>%
@@ -101,17 +105,17 @@ ss_fieldStudy_n <- data %>%
   summarise(n = n(),
             percent = round(100*n()/nrow(.), 2)) %>% arrange(n)
 
-ss_fieldStudy_plot <- ggplotly(data %>% filter(Rod %in% c(0, 1)) %>% mutate(Rod = fct_rev(Rod)) %>%
+ss_fieldStudy_plot <- data %>% filter(Rod %in% c(0, 1)) %>% mutate(Rod = fct_rev(Rod)) %>%
            ggplot(aes(`fieldStudy`, fill = Rod)) + geom_histogram(stat = "count", alpha = .6, binwidth=.5, bins = length(data$`fieldStudy`)) +
            labs(title = "fieldStudy", x = "", y = "Počet participantov", fill = "Pohlavie") + coord_flip() + scale_fill_manual(values=c(cbPalette[1], cbPalette[2])) +
-           scale_x_discrete(limits = ss_fieldStudy_n$Odbor))
+           scale_x_discrete(limits = ss_fieldStudy_n$Odbor, labels = rev(c("spoločenský\nekonomický\nprávny","technický","filozofický\nhumanitný\npedagogický\nteologický", "zdravotnícky", "prírodovedecký", "mediálny\numelecký")))
 
 # age
 ageRange <- 17:30
-ss_age_plot <- ggplotly(data %>% filter(age %in% ageRange & Rod %in% c(0, 1)) %>% mutate(Rod = fct_rev(Rod)) %>%
+ss_age_plot <- data %>% filter(age %in% ageRange & Rod %in% c(0, 1)) %>% mutate(Rod = fct_rev(Rod)) %>%
                       ggplot(aes(age, fill = Rod)) + geom_histogram(binwidth=.5, bins = length(ageRange), position = position_stack(), alpha = .6) +
                       scale_x_continuous(name = "Vek", breaks=seq(17,30,1)) + labs(title = "Vek podľa pohlavia", y = "Počet", fill = "Pohlavie") +
-                      scale_fill_manual(values=c(cbPalette[1], cbPalette[2])))
+                      scale_fill_manual(values=c(cbPalette[1], cbPalette[2]))
 
 # age groups
 ss_ageGroups_n <- data %>%
@@ -146,10 +150,10 @@ ss_sexOrien_n <- data %>%
 
 # year of study
 data$`Rok štúdia` <- as.factor(as.numeric(gsub("([0-9]+).*$", "\\1", data$yearStudy)))
-ss_yearStudy_plot <- ggplotly(data %>% filter(`Rok štúdia` %in% 1:7 & Rod %in% c(0, 1)) %>%
+ss_yearStudy_plot <- data %>% filter(`Rok štúdia` %in% 1:7 & Rod %in% c(0, 1)) %>%
                       ggplot(aes(`Rok štúdia`, fill = fct_rev(Rod))) + geom_bar(stat = "count", position = "stack", alpha = .6) +
                       scale_x_discrete(name = "Rok štúdia") + labs(title = "Rok štúdia", y = "Počet", fill = "Pohlavie") +
-                      scale_fill_manual(values=c(cbPalette[1], cbPalette[2])))
+                      scale_fill_manual(values=c(cbPalette[1], cbPalette[2]))
 
 # field of study by year
 ss_fieldStudyYear_n <- data %>%
@@ -157,10 +161,10 @@ ss_fieldStudyYear_n <- data %>%
   summarise(n = n(),
             percent = round(100*n()/nrow(.), 2))
 
-ss_fieldStudyYear_plot <- ggplotly(data %>% filter(`Rok štúdia` %in% 1:7 & Rod %in% c(0, 1)) %>%
+ss_fieldStudyYear_plot <- data %>% filter(`Rok štúdia` %in% 1:7 & Rod %in% c(0, 1)) %>%
            ggplot(aes(`fieldStudy`, fill = `Rok štúdia`)) + geom_bar(stat = "count", position = position_stack(), alpha = .6) +
            scale_x_discrete(name = "Odbor", limits = ss_fieldStudy_n$Odbor) + labs(title = "Rok štúdia v rámci odborov", y = "Počet", fill = "Ročník") +
-           scale_fill_manual(values=cbPalette) + coord_flip())
+           scale_fill_manual(values=cbPalette) + coord_flip()
 
 # field of study by region
 ss_fieldStudyRegion_n <- data %>%
@@ -241,6 +245,28 @@ data$`Región fakulty` <- data$facultyRegion
 data$`Odbor štúdia`<- data$fieldStudy
 
 # RQ1 Prevalence rates---------------------------------------------------------------------
+
+forms <- data.frame(cbind("Položka" <- sprintf("q%d", 1:20), "Formulácia" = c("..niekto rozprával príbehy alebo vtipy so sexuálnym podtónom (napr. na vyučovacej hodine/počas výkonu praxe/súkromne v kabinete)?",
+"..niekto mal nemiestne sexuálne poznámky (napr. na vyučovacej hodine/počas výkonu praxe/súkromne v kabinete)?",
+"..niekto mal útočné poznámky (napr. na vyučovacej hodine/počas výkonu praxe/súkromne v kabinete)?",
+"..niekto mal sexistické poznámky znevažujúce mužov alebo ženy (napr. ženy sú dobré len do postele, muži premýšľajú penisom)?",
+"..vás niekto znevýhodňoval na základe vášho pohlavia/rodu (napr. zhoršil hodnotenie, ignoroval vás, alebo zhadzoval pretože ste žena alebo muž)?",
+"..vás niekto zvýhodňoval na základe vášho pohlavia/rodu (napr. zlepšil hodnotenie, venoval vám viac pozornosti, pretože ste muž alebo žena)?",
+"..niekto používal (ukazoval) zjavné sexuálne materiály, aj keď sa to netýkalo výučby?",
+"..niekto komentoval váš vzhľad (napr. hodnotil vaše telo alebo oblečenie)?",
+"..sa niekto pokúsil diskutovať s vami o sexe, keď sa to netýkalo výučby (napr. o vašom sexuálnom živote)?",
+"..vám niekto prejavoval neželanú sexuálnu pozornosť (napr. snaha o zblíženie)?",
+"..vám niekto posielal nevyžiadané obrázky/fotky so sexuálnym podtónom?",
+"..niekto na vás zízal sexuálne žiadostivo (napr. žmurkal alebo čumel)?",
+"..sa s vami niekto pokúšal nadviazať sexuálny vzťah napriek tomu, že ste túto osobu odmietali?",
+"..niekto opakoval žiadosti o stretnutie napriek predchádzajúcemu odmietnutiu (napr. žiadosti o drink/večeru)?",
+"..sa vás niekto dotýkal spôsobom, ktorý vo vás vyvolával nepríjemné pocity (napr. dal vám ruku cez plece, potľapkal vás po ramene, zadku)?",
+"..sa vás niekto pokúsil sexuálne dotýkať alebo hladiť (napr. hladenie krku, zadku)?",
+"..vám niekto naznačoval výhody za sexuálne zblíženie?",
+"..vám niekto naznačoval ohrozenie, ak sa s tou osobou sexuálne nezblížite (napr. spomenul, že skúškové obdobie nemusí dopadnúť dobre)?",
+"..niekto vyvolával dojem, že sa mu/jej musíte sexuálne podriadiť, ak chcete, aby sa s vami dobre zaobchádzalo (napr. vyžadoval sexuálne zblíženie za úspešné absolvovanie skúšky)?",
+"..ste zažili následky v prípade, ak ste sa niekomu odmietli sexuálne podriadiť?")))
+
 # RQ1 Aký je celkový výskyt všetkých foriem sexuálneho obťažovania
 data <- data %>% mutate_at(vars(starts_with("q") & !contains("_")), funs(recode(.,"Nikdy sa mi to nestalo" = 0, "Stalo sa mi to raz" = 1, "Stalo sa mi to opakovane" = 2)))
 
@@ -254,9 +280,9 @@ rq1.1_items_n <- data %>%
 rq1.1_items_plotData <- as_tibble(cbind(item = names(rq1.1_items_n), t(rq1.1_items_n))) %>% filter(!grepl("_n", item, fixed = TRUE)) %>%
   mutate(perc = as.numeric(V2), item = str_remove(item, "_perc"), cluster = c(rep("GMH", 8), rep("USA", 8), rep("SAB", 4)), V2 = NULL) %>% arrange(perc)
 
-rq1.1_items_plot <- ggplotly(rq1.1_items_plotData %>% ggplot(aes(x = item, y = perc, fill = cluster)) + geom_bar(stat = "identity",  alpha = .6) +
+rq1.1_items_plot <- rq1.1_items_plotData %>% ggplot(aes(x = item, y = perc, fill = cluster)) + geom_bar(stat = "identity",  alpha = .6) +
            labs(title = "Forma sexuálneho obťažovania", x = "", y = "Percento participantov") + scale_fill_manual("legend", values = c("GMH" = cbPalette[1], "USA" = cbPalette[2], "SAB" = cbPalette[3])) +
-           coord_flip() + scale_x_discrete(limits = rq1.1_items_plotData$item))
+           coord_flip() + scale_x_discrete(limits = rq1.1_items_plotData$item)
 
 # individual forms by gender
 # frequency tables (n's and %) for all individual types of abuse by gender.
@@ -270,22 +296,22 @@ rq1.1_itemsGender_n <- data %>%
 rq1.1_itemsGender_plotData <- as_tibble(cbind(item = names(rq1.1_itemsGender_n), t(rq1.1_itemsGender_n)))[-1,] %>% filter(!grepl("_n", item, fixed = TRUE)) %>%
   mutate(male = as.numeric(V2), female = as.numeric(V3), item = str_remove(item, "_perc"), V2 = NULL, V3 = NULL) %>% pivot_longer(cols = c(male, female), names_to = "gender", values_to = "perc")
 
-rq1.1_itemsGender_plot <- ggplotly(rq1.1_itemsGender_plotData %>% ggplot(aes(x = item, y = perc, fill = gender)) + geom_bar(stat = "identity",  alpha = .6, position = "dodge") +
+rq1.1_itemsGender_plot <- rq1.1_itemsGender_plotData %>% ggplot(aes(x = item, y = perc, fill = gender)) + geom_bar(stat = "identity",  alpha = .6, position = "dodge") +
                                labs(title = "Forma sexuálneho obťažovania podľa pohlavia", x = "", y = "Percento participantov") + scale_fill_manual("legend", values = c("female" = cbPalette[1], "male" = cbPalette[2])) +
-                               coord_flip() + scale_x_discrete(limits = rev(rq1.1_itemsGender_plotData$item)))
+                               coord_flip() + scale_x_discrete(limits = rev(rq1.1_itemsGender_plotData$item))
 
 ### Frequencies by cluster
 # RQ1.2 Aký je výskyt SO v prvom klastri otázok (rodové obťažovanie), (otázky 2-9)? Aký je výskyt SO v druhom klastri otázok (nechcená sexuálna pozornosť), (otázky 10 - 17)? Aký je výskyt SO v treťom klastri otázok (sexuálne donútenie/násilie), (otázky 18 - 21)?
 # aggregate freuqencies
 data <- data %>% mutate(
   `Rodovo motivované obťažovanie` = ifelse(rowSums(cbind(q1, q2, q3, q4, q5, q6, q7, q8), na.rm = T) >= 1, ifelse(rowSums(cbind(q1, q2, q3, q4, q5, q6, q7, q8), na.rm = T) >= 2, 2, 1), 0),
-  `Nechcená sexuálna pozornosť` = ifelse(rowSums(cbind(q9, q10, q11, q12, q13, q14, q15, q16), na.rm = T) >= 1, ifelse(rowSums(cbind(q9, q10, q11, q12, q13, q14, q15, q16), na.rm = T) >= 2, 2, 1), 0),
+  `Neželaná sexuálna pozornosť` = ifelse(rowSums(cbind(q9, q10, q11, q12, q13, q14, q15, q16), na.rm = T) >= 1, ifelse(rowSums(cbind(q9, q10, q11, q12, q13, q14, q15, q16), na.rm = T) >= 2, 2, 1), 0),
   `Sexuálny nátlak` = ifelse(rowSums(cbind(q17, q18, q19, q20), na.rm = T) >= 1, ifelse(rowSums(cbind(q17, q18, q19, q20), na.rm = T) >= 2, 2, 1), 0),
-  harrassed = factor(ifelse(rowSums(cbind(`Rodovo motivované obťažovanie`, `Nechcená sexuálna pozornosť`, `Sexuálny nátlak`)) > 0, 1, 0)),
+  harrassed = factor(ifelse(rowSums(cbind(`Rodovo motivované obťažovanie`, `Neželaná sexuálna pozornosť`, `Sexuálny nátlak`)) > 0, 1, 0)),
   harrassedSeverity = case_when(`Sexuálny nátlak` == 2 ~ 6,
                                 `Sexuálny nátlak` == 1 ~ 5,
-                                `Nechcená sexuálna pozornosť` == 2 ~ 4,
-                                `Nechcená sexuálna pozornosť` == 1 ~ 3,
+                                `Neželaná sexuálna pozornosť` == 2 ~ 4,
+                                `Neželaná sexuálna pozornosť` == 1 ~ 3,
                                 `Rodovo motivované obťažovanie` == 2 ~ 2,
                                 `Rodovo motivované obťažovanie` == 1 ~ 1),
   harrassedSeverity = ifelse(is.na(harrassedSeverity), 0, harrassedSeverity)
@@ -294,18 +320,18 @@ data <- data %>% mutate(
 ###
 # frequency table (n's and %) for aggregate categories of abuse across the board
 rq1.2_cluster_n <- data %>%
-  summarise_at(vars(`Rodovo motivované obťažovanie`, `Nechcená sexuálna pozornosť`, `Sexuálny nátlak`),
+  summarise_at(vars(`Rodovo motivované obťažovanie`, `Neželaná sexuálna pozornosť`, `Sexuálny nátlak`),
                funs(n = round(svytotal(as.logical(.), design, na.rm = T), 0),
                     perc = round(svytotal(as.logical(.), design, na.rm = T), 3)*100/sum(w)))
 
 # frequency tables (n's and %) for aggregate categories of abuse, showing percentages for one-time and repeated abuses
-rq1.2_cluster_exposure <- data %>% select(`Rodovo motivované obťažovanie`, `Nechcená sexuálna pozornosť`, `Sexuálny nátlak`) %>% map(., ~round(prop.table(wtd.table(., weights = data$w)), 2))
+rq1.2_cluster_exposure <- data %>% select(`Rodovo motivované obťažovanie`, `Neželaná sexuálna pozornosť`, `Sexuálny nátlak`) %>% map(., ~round(prop.table(wtd.table(., weights = data$w)), 2))
 
 # frequency tables (n's and %) for aggregate categories of abuse by gender.
 # dropping other than female, male
 rq1.2_clusterGender_n <- data %>%
   group_by(factor(Rod)) %>%
-  summarise_at(vars(`Rodovo motivované obťažovanie`, `Nechcená sexuálna pozornosť`, `Sexuálny nátlak`),
+  summarise_at(vars(`Rodovo motivované obťažovanie`, `Neželaná sexuálna pozornosť`, `Sexuálny nátlak`),
                funs(n = round(weighted.mean(as.logical(.), w, na.rm = T)*sum(w), 0),
                     perc = weighted.mean(as.logical(.), w, na.rm = T)*100)) %>%
   na.omit()
@@ -313,33 +339,33 @@ rq1.2_clusterGender_n <- data %>%
 rq1.2_clusterGender_plotData <- as_tibble(cbind(item = names(rq1.2_clusterGender_n), t(rq1.2_clusterGender_n)))[-1,] %>% filter(!grepl("_n", item, fixed = TRUE)) %>%
   mutate(male = as.numeric(V2), female = as.numeric(V3), item = str_remove(item, "_perc"), V2 = NULL, V3 = NULL) %>% pivot_longer(cols = c(male, female), names_to = "gender", values_to = "perc")
 
-rq1.2_clusterGender_plot <- ggplotly(rq1.2_clusterGender_plotData %>% mutate(gender = fct_recode(gender, "Muži" = "male", "Ženy" = "female")) %>%
+rq1.2_clusterGender_plot <- rq1.2_clusterGender_plotData %>% mutate(gender = fct_recode(gender, "Muži" = "male", "Ženy" = "female")) %>%
                                      ggplot(aes(x = item, y = perc, fill = gender)) + geom_bar(stat = "identity",  alpha = .6, position = "dodge") +
                                      labs(title = "Klastre sexuálneho obťažovania podľa pohlavia", x = "", y = "Počet participantov") + scale_fill_manual("Pohlavie", values = c("Ženy" = cbPalette[1], "Muži" = cbPalette[2])) +
-                                     coord_flip() + scale_x_discrete(limits = rev(rq1.2_clusterGender_plotData$item), labels = c(`Rodovo motivované obťažovanie` = "Rodovo motivované\nobťažovanie", `Nechcená sexuálna pozornosť` = "Nechcená sexuálna\npozornosť", `Sexuálny nátlak` = "Sexuálne\nnásilie")))
+                                     coord_flip() + scale_x_discrete(limits = rev(rq1.2_clusterGender_plotData$item), labels = c(`Rodovo motivované obťažovanie` = "Rodovo motivované\nobťažovanie", `Neželaná sexuálna pozornosť` = "Neželaná sexuálna\npozornosť", `Sexuálny nátlak` = "Sexuálne\nnásilie"))
 
 # Computes the weighted proportions (prevalence rates) and CIs of CSA forms in girls
-rq1.2_female_ci <- data[data$Rod == 1,] %>%  select(starts_with("q") & !contains("_"), `Rodovo motivované obťažovanie`, `Nechcená sexuálna pozornosť`, `Sexuálny nátlak`) %>% map(~as.integer(wtd.table(as.logical(.), weights = data[data$Rod ==1,]$w, normwt = T))) %>%
+rq1.2_female_ci <- data[data$Rod == 1,] %>%  select(starts_with("q") & !contains("_"), `Rodovo motivované obťažovanie`, `Neželaná sexuálna pozornosť`, `Sexuálny nátlak`) %>% map(~as.integer(wtd.table(as.logical(.), weights = data[data$Rod ==1,]$w, normwt = T))) %>%
   map(~binom.exact(.[2], n = .[1] + .[2])[3:5]*100) %>% map(~round(., 2)) %>% rbindlist(., use.names=TRUE, idcol="Forma SO u dievčat")
 names(rq1.2_female_ci)[2:4] <- c("Prevalencia v %", "CI spodný", "CI horný")
 rq1.2_female_ci
 
 # Computes the weighted proportions (prevalence rates) and CIs of CSA forms in boys
-rq1.2_male_ci <- data[data$Rod == 0,] %>%  select(starts_with("q") & !contains("_"), `Rodovo motivované obťažovanie`, `Nechcená sexuálna pozornosť`, `Sexuálny nátlak`) %>% map(~as.integer(wtd.table(as.logical(.), weights = data[data$Rod == 0,]$w, normwt = T))) %>%
+rq1.2_male_ci <- data[data$Rod == 0,] %>%  select(starts_with("q") & !contains("_"), `Rodovo motivované obťažovanie`, `Neželaná sexuálna pozornosť`, `Sexuálny nátlak`) %>% map(~as.integer(wtd.table(as.logical(.), weights = data[data$Rod == 0,]$w, normwt = T))) %>%
   map(~binom.exact(.[2], n = .[1] + .[2])[3:5]*100) %>% map(~round(., 2)) %>% rbindlist(., use.names=TRUE, idcol="Forma SO u chlapcov")
 names(rq1.2_male_ci)[2:4] <- c("Prevalencia v %", "CI spodný", "CI horný")
 rq1.2_male_ci
 
 # Computes odds ratios ($measure) for: type of abuse by gender contingency tables.
-rq1.2_clusterGender_or  <- data %>% mutate(`Rodovo motivované obťažovanie` = as.logical(`Rodovo motivované obťažovanie`), `Nechcená sexuálna pozornosť` = as.logical(`Nechcená sexuálna pozornosť`), `Sexuálny nátlak` = as.logical(`Sexuálny nátlak`)) %>%
-  select(starts_with("q") & !contains("_"), `Rodovo motivované obťažovanie`, `Nechcená sexuálna pozornosť`, `Sexuálny nátlak`) %>%
+rq1.2_clusterGender_or  <- data %>% mutate(`Rodovo motivované obťažovanie` = as.logical(`Rodovo motivované obťažovanie`), `Neželaná sexuálna pozornosť` = as.logical(`Neželaná sexuálna pozornosť`), `Sexuálny nátlak` = as.logical(`Sexuálny nátlak`)) %>%
+  select(starts_with("q") & !contains("_"), `Rodovo motivované obťažovanie`, `Neželaná sexuálna pozornosť`, `Sexuálny nátlak`) %>%
   map(~riskratio.boot(round(wtd.table(data$Rod, as.logical(.), weights = data$w, normwt = T), 0), replicates = 1e5)) %>% map(~.$measure[c(2,4,6)])
 rq1.2_clusterGender_or <- data.frame(t(sapply(rq1.2_clusterGender_or,c)))
 names(rq1.2_clusterGender_or) <- c("Relatívne riziko", "CI spodný", "CI horný")
 
 # Computes and adds Bayes factors (Poisson BF)  for: type of abuse by gender contingency tables.
-rq1.2_clusterGender_bf <- data %>% mutate(`Rodovo motivované obťažovanie` = as.logical(`Rodovo motivované obťažovanie`), `Nechcená sexuálna pozornosť` = as.logical(`Nechcená sexuálna pozornosť`), `Sexuálny nátlak` = as.logical(`Sexuálny nátlak`)) %>%
-  select(starts_with("q") & !contains("_"), `Rodovo motivované obťažovanie`, `Nechcená sexuálna pozornosť`, `Sexuálny nátlak`) %>%
+rq1.2_clusterGender_bf <- data %>% mutate(`Rodovo motivované obťažovanie` = as.logical(`Rodovo motivované obťažovanie`), `Neželaná sexuálna pozornosť` = as.logical(`Neželaná sexuálna pozornosť`), `Sexuálny nátlak` = as.logical(`Sexuálny nátlak`)) %>%
+  select(starts_with("q") & !contains("_"), `Rodovo motivované obťažovanie`, `Neželaná sexuálna pozornosť`, `Sexuálny nátlak`) %>%
   map(~contingencyTableBF(round(wtd.table(data$Rod, as.logical(.), weights = data$w, normwt = T), 0), sampleType = "poisson", priorConcentration = 1)) %>%
   map(~paste(ifelse(extractBF(.)$bf > 1, "BF10 = ", "BF01 = "), round(ifelse(extractBF(.)$bf > 1, as.numeric(format(extractBF(.)$bf, digits = 3, nsmall = 3)), 1/extractBF(.)$bf), 2), sep = ""))
 
@@ -370,8 +396,8 @@ rq2_gmh_or <- rfData %>% map(~riskratio.boot(round(wtd.table(., as.logical(data$
 rq2_gmh_or <- data.frame(t(sapply(rq2_gmh_or,c)))
 names(rq2_gmh_or) <- c("Relatívne riziko", "CI spodný", "CI horný")
 
-# Computes odds ratios ($measure) for `Nechcená sexuálna pozornosť`
-rq2_usa_or <- rfData %>% map(~riskratio.boot(round(wtd.table(., as.logical(data$`Nechcená sexuálna pozornosť`), weights = data$w, normwt = T), 0), replicates = 1e5)) %>%
+# Computes odds ratios ($measure) for `Neželaná sexuálna pozornosť`
+rq2_usa_or <- rfData %>% map(~riskratio.boot(round(wtd.table(., as.logical(data$`Neželaná sexuálna pozornosť`), weights = data$w, normwt = T), 0), replicates = 1e5)) %>%
   map(~.$measure[c(2,4,6)])
 rq2_usa_or <- data.frame(t(sapply(rq2_usa_or,c)))
 names(rq2_usa_or) <- c("Relatívne riziko", "CI spodný", "CI horný")
@@ -390,8 +416,8 @@ rq2_gmh_bf <- rfData %>% map(~contingencyTableBF(round(wtd.table(., as.logical(d
 rq2_gmh_or_table <- cbind(round(rq2_gmh_or, 2), "Bayesov faktor" = t(data.frame(t(sapply(rq2_gmh_bf,c)))))
 
 # Bayes factors (Poisson BF10, BF01)  for: participant risk factors
-# by `Nechcená sexuálna pozornosť` contingency tables
-rq2_usa_bf <- rfData %>% map(~contingencyTableBF(round(wtd.table(., as.logical(data$`Nechcená sexuálna pozornosť`), weights = data$w, normwt = T), 0), sampleType = "poisson", priorConcentration = 1)) %>%
+# by `Neželaná sexuálna pozornosť` contingency tables
+rq2_usa_bf <- rfData %>% map(~contingencyTableBF(round(wtd.table(., as.logical(data$`Neželaná sexuálna pozornosť`), weights = data$w, normwt = T), 0), sampleType = "poisson", priorConcentration = 1)) %>%
   map(~paste(ifelse(extractBF(.)$bf > 1, "BF10 = ", "BF01 = "), round(ifelse(extractBF(.)$bf > 1, as.numeric(format(extractBF(.)$bf, digits=3, nsmall=3)), 1/extractBF(.)$bf), 2), sep = ""))
 
 rq2_usa_or_table <- cbind(round(rq2_usa_or, 2), "Bayesov faktor" = t(data.frame(t(sapply(rq2_usa_bf,c)))))
@@ -411,8 +437,8 @@ rq2_props_ci <- rfDataMultinomial %>% map(~binom.exact(round(wtd.table(., weight
 rq2_gmh_or_multinomial <- rfDataMultinomial %>% map(~riskratio.boot(round(wtd.table(., as.logical(data$`Rodovo motivované obťažovanie`), weights = data$w, normwt = T), 0), replicates = 1e5)) %>%
   map(~.$measure)
 
-# Computes odds ratios ($measure) for `Nechcená sexuálna pozornosť`
-rq2_usa_or_multinomial <- rfDataMultinomial %>% map(~riskratio.boot(round(wtd.table(., as.logical(data$`Nechcená sexuálna pozornosť`), weights = data$w, normwt = T), 0), replicates = 1e5)) %>%
+# Computes odds ratios ($measure) for `Neželaná sexuálna pozornosť`
+rq2_usa_or_multinomial <- rfDataMultinomial %>% map(~riskratio.boot(round(wtd.table(., as.logical(data$`Neželaná sexuálna pozornosť`), weights = data$w, normwt = T), 0), replicates = 1e5)) %>%
   map(~.$measure)
 
 # Computes odds ratios ($measure) for `Sexuálny nátlak`
@@ -427,8 +453,8 @@ rq2_gmh_bf_multinomial <- rfDataMultinomial %>% map(~contingencyTableBF(round(wt
 rq2_gmh_or_table_multinomial <- t(data.frame(t(sapply(rq2_gmh_bf_multinomial,c))))
 
 # Bayes factors (Poisson BF10, BF01)  for: participant risk factors
-# by `Nechcená sexuálna pozornosť` contingency tables
-rq2_usa_bf_multinomial <- rfDataMultinomial %>% map(~contingencyTableBF(round(wtd.table(., as.logical(data$`Nechcená sexuálna pozornosť`), weights = data$w, normwt = T), 0), sampleType = "poisson", priorConcentration = 1)) %>%
+# by `Neželaná sexuálna pozornosť` contingency tables
+rq2_usa_bf_multinomial <- rfDataMultinomial %>% map(~contingencyTableBF(round(wtd.table(., as.logical(data$`Neželaná sexuálna pozornosť`), weights = data$w, normwt = T), 0), sampleType = "poisson", priorConcentration = 1)) %>%
   map(~paste(ifelse(extractBF(.)$bf > 1, "BF10 = ", "BF01 = "), round(ifelse(extractBF(.)$bf > 1, as.numeric(format(extractBF(.)$bf, digits=3, nsmall=3)), 1/extractBF(.)$bf), 2), sep = ""))
 
 rq2_usa_or_table_multinomial <- t(data.frame(t(sapply(rq2_usa_bf_multinomial,c))))
@@ -445,11 +471,11 @@ rq2_sab_or_table_multinomial <- t(data.frame(t(sapply(rq2_sab_bf_multinomial,c))
 # Regions
 
 # Computes odds ratios ($measure) for: type of abuse by region
-rq2_region_or <- data %>% mutate(`Rodovo motivované obťažovanie` = as.logical(`Rodovo motivované obťažovanie`), `Nechcená sexuálna pozornosť` = as.logical(`Nechcená sexuálna pozornosť`), `Sexuálny nátlak` = as.logical(`Sexuálny nátlak`)) %>% select(`Rodovo motivované obťažovanie`, `Nechcená sexuálna pozornosť`, `Sexuálny nátlak`, harrassed) %>%
+rq2_region_or <- data %>% mutate(`Rodovo motivované obťažovanie` = as.logical(`Rodovo motivované obťažovanie`), `Neželaná sexuálna pozornosť` = as.logical(`Neželaná sexuálna pozornosť`), `Sexuálny nátlak` = as.logical(`Sexuálny nátlak`)) %>% select(`Rodovo motivované obťažovanie`, `Neželaná sexuálna pozornosť`, `Sexuálny nátlak`, harrassed) %>%
   map(~riskratio.boot(round(wtd.table(data$`Región fakulty`, ., weights = data$w, normwt = T), 0), rev = "rows", replicates = 1e5))
 
 # Computes Bayes factors (Poisson BF)  for: type of abuse by region
-rq2_region_bf <- data %>% mutate(`Rodovo motivované obťažovanie` = as.logical(`Rodovo motivované obťažovanie`), `Nechcená sexuálna pozornosť` = as.logical(`Nechcená sexuálna pozornosť`), `Sexuálny nátlak` = as.logical(`Sexuálny nátlak`)) %>% select(`Rodovo motivované obťažovanie`, `Nechcená sexuálna pozornosť`, `Sexuálny nátlak`, harrassed) %>%
+rq2_region_bf <- data %>% mutate(`Rodovo motivované obťažovanie` = as.logical(`Rodovo motivované obťažovanie`), `Neželaná sexuálna pozornosť` = as.logical(`Neželaná sexuálna pozornosť`), `Sexuálny nátlak` = as.logical(`Sexuálny nátlak`)) %>% select(`Rodovo motivované obťažovanie`, `Neželaná sexuálna pozornosť`, `Sexuálny nátlak`, harrassed) %>%
   map(~contingencyTableBF(round(wtd.table(data$`Región fakulty`, ., weights = data$w, normwt = T), 0), sampleType = "poisson", priorConcentration = 1))
 
 rq2_region_mod <- lm(harrassedSeverity ~ `Región fakulty`, weights = data$w, data)
@@ -467,11 +493,11 @@ rq2_studyLengthAnova <- Anova(rq2_studyLengthMod)
 
 # Language
 # Computes odds ratios ($measure) for: type of abuse by language.
-rq2_language_or <- data %>% mutate(`Rodovo motivované obťažovanie` = as.logical(`Rodovo motivované obťažovanie`), `Nechcená sexuálna pozornosť` = as.logical(`Nechcená sexuálna pozornosť`), `Sexuálny nátlak` = as.logical(`Sexuálny nátlak`)) %>% select(`Rodovo motivované obťažovanie`, `Nechcená sexuálna pozornosť`, `Sexuálny nátlak`, harrassed) %>%
+rq2_language_or <- data %>% mutate(`Rodovo motivované obťažovanie` = as.logical(`Rodovo motivované obťažovanie`), `Neželaná sexuálna pozornosť` = as.logical(`Neželaná sexuálna pozornosť`), `Sexuálny nátlak` = as.logical(`Sexuálny nátlak`)) %>% select(`Rodovo motivované obťažovanie`, `Neželaná sexuálna pozornosť`, `Sexuálny nátlak`, harrassed) %>%
   map(~riskratio.boot(round(wtd.table(data$`Iný materinský jazyk`, ., weights = data$w, normwt = T), 0), replicates = 1e5))
 
 # Computes Bayes factors (Poisson BF)  for: type of abuse by language
-rq2_language_bf <- data %>% mutate(`Rodovo motivované obťažovanie` = as.logical(`Rodovo motivované obťažovanie`), `Nechcená sexuálna pozornosť` = as.logical(`Nechcená sexuálna pozornosť`), `Sexuálny nátlak` = as.logical(`Sexuálny nátlak`)) %>% select(`Rodovo motivované obťažovanie`, `Nechcená sexuálna pozornosť`, `Sexuálny nátlak`, harrassed) %>%
+rq2_language_bf <- data %>% mutate(`Rodovo motivované obťažovanie` = as.logical(`Rodovo motivované obťažovanie`), `Neželaná sexuálna pozornosť` = as.logical(`Neželaná sexuálna pozornosť`), `Sexuálny nátlak` = as.logical(`Sexuálny nátlak`)) %>% select(`Rodovo motivované obťažovanie`, `Neželaná sexuálna pozornosť`, `Sexuálny nátlak`, harrassed) %>%
   map(~contingencyTableBF(round(wtd.table(data$`Iný materinský jazyk`, ., weights = data$w, normwt = T), 0), sampleType = "poisson", priorConcentration = 1))
 
 rq2_language_mod <- lm(harrassedSeverity ~ `Iný materinský jazyk`, weights = data$w , data)
@@ -482,11 +508,11 @@ rq2_language_anova <- Anova(rq2_language_mod)
 # Religious belief
 
 # Computes odds ratios ($measure) for: type of abuse by religious belief
-rq2_belief_or <- data %>% mutate(`Rodovo motivované obťažovanie` = as.logical(`Rodovo motivované obťažovanie`), `Nechcená sexuálna pozornosť` = as.logical(`Nechcená sexuálna pozornosť`), `Sexuálny nátlak` = as.logical(`Sexuálny nátlak`)) %>% select(`Rodovo motivované obťažovanie`, `Nechcená sexuálna pozornosť`, `Sexuálny nátlak`, harrassed) %>%
+rq2_belief_or <- data %>% mutate(`Rodovo motivované obťažovanie` = as.logical(`Rodovo motivované obťažovanie`), `Neželaná sexuálna pozornosť` = as.logical(`Neželaná sexuálna pozornosť`), `Sexuálny nátlak` = as.logical(`Sexuálny nátlak`)) %>% select(`Rodovo motivované obťažovanie`, `Neželaná sexuálna pozornosť`, `Sexuálny nátlak`, harrassed) %>%
   map(~riskratio.boot(round(wtd.table(data$Veriaci, ., weights = data$w, normwt = T), 0), replicates = 1e5))
 
 # Computes Bayes factors (Poisson BF)  for: type of abuse by religious belief
-rq2_belief_bf <- data %>% mutate(`Rodovo motivované obťažovanie` = as.logical(`Rodovo motivované obťažovanie`), `Nechcená sexuálna pozornosť` = as.logical(`Nechcená sexuálna pozornosť`), `Sexuálny nátlak` = as.logical(`Sexuálny nátlak`)) %>% select(`Rodovo motivované obťažovanie`, `Nechcená sexuálna pozornosť`, `Sexuálny nátlak`, harrassed) %>%
+rq2_belief_bf <- data %>% mutate(`Rodovo motivované obťažovanie` = as.logical(`Rodovo motivované obťažovanie`), `Neželaná sexuálna pozornosť` = as.logical(`Neželaná sexuálna pozornosť`), `Sexuálny nátlak` = as.logical(`Sexuálny nátlak`)) %>% select(`Rodovo motivované obťažovanie`, `Neželaná sexuálna pozornosť`, `Sexuálny nátlak`, harrassed) %>%
   map(~contingencyTableBF(round(wtd.table(data$Veriaci, ., weights = data$w, normwt = T), 0), sampleType = "poisson", priorConcentration = 1))
 
 rq2_belief_mod <- lm(harrassedSeverity ~ Veriaci, weights = data$w , data)
@@ -496,11 +522,11 @@ rq2_belief_anova <- Anova(rq2_belief_mod)
 
 # Minority
 # Computes odds ratios ($measure) for: type of abuse by Minorita status
-rq2_minority_or <- data %>% mutate(`Rodovo motivované obťažovanie` = as.logical(`Rodovo motivované obťažovanie`), `Nechcená sexuálna pozornosť` = as.logical(`Nechcená sexuálna pozornosť`), `Sexuálny nátlak` = as.logical(`Sexuálny nátlak`)) %>% select(`Rodovo motivované obťažovanie`, `Nechcená sexuálna pozornosť`, `Sexuálny nátlak`, harrassed) %>%
+rq2_minority_or <- data %>% mutate(`Rodovo motivované obťažovanie` = as.logical(`Rodovo motivované obťažovanie`), `Neželaná sexuálna pozornosť` = as.logical(`Neželaná sexuálna pozornosť`), `Sexuálny nátlak` = as.logical(`Sexuálny nátlak`)) %>% select(`Rodovo motivované obťažovanie`, `Neželaná sexuálna pozornosť`, `Sexuálny nátlak`, harrassed) %>%
   map(~riskratio.boot(round(wtd.table(data$Minorita, ., weights = data$w, normwt = T), 0), replicates = 1e5))
 
 # Computes Bayes factors (Poisson BF)  for: type of abuse by Minorita status
-rq2_minority_bf <- data %>% mutate(`Rodovo motivované obťažovanie` = as.logical(`Rodovo motivované obťažovanie`), `Nechcená sexuálna pozornosť` = as.logical(`Nechcená sexuálna pozornosť`), `Sexuálny nátlak` = as.logical(`Sexuálny nátlak`)) %>% select(`Rodovo motivované obťažovanie`, `Nechcená sexuálna pozornosť`, `Sexuálny nátlak`, harrassed) %>%
+rq2_minority_bf <- data %>% mutate(`Rodovo motivované obťažovanie` = as.logical(`Rodovo motivované obťažovanie`), `Neželaná sexuálna pozornosť` = as.logical(`Neželaná sexuálna pozornosť`), `Sexuálny nátlak` = as.logical(`Sexuálny nátlak`)) %>% select(`Rodovo motivované obťažovanie`, `Neželaná sexuálna pozornosť`, `Sexuálny nátlak`, harrassed) %>%
   map(~contingencyTableBF(round(wtd.table(data$Minorita, ., weights = data$w, normwt = T), 0), sampleType = "poisson", priorConcentration = 1))
 
 rq2_minority_mod <- lm(harrassedSeverity ~ Minorita, weights = data$w , data)
@@ -510,11 +536,11 @@ rq2_minority_anova <- Anova(rq2_minority_mod)
 
 # Sexual orientation
 # Computes odds ratios ($measure) for: type of abuse by sexual orientation
-rq2_orientation_or <- data %>% mutate(`Rodovo motivované obťažovanie` = as.logical(`Rodovo motivované obťažovanie`), `Nechcená sexuálna pozornosť` = as.logical(`Nechcená sexuálna pozornosť`), `Sexuálny nátlak` = as.logical(`Sexuálny nátlak`)) %>% select(`Rodovo motivované obťažovanie`, `Nechcená sexuálna pozornosť`, `Sexuálny nátlak`, harrassed) %>%
+rq2_orientation_or <- data %>% mutate(`Rodovo motivované obťažovanie` = as.logical(`Rodovo motivované obťažovanie`), `Neželaná sexuálna pozornosť` = as.logical(`Neželaná sexuálna pozornosť`), `Sexuálny nátlak` = as.logical(`Sexuálny nátlak`)) %>% select(`Rodovo motivované obťažovanie`, `Neželaná sexuálna pozornosť`, `Sexuálny nátlak`, harrassed) %>%
   map(~riskratio.boot(round(wtd.table(data$Neheterosexuál, ., weights = data$w, normwt = T), 0), replicates = 1e5))
 
 # Computes Bayes factors (Poisson BF)  for: type of abuse by sexual orientation
-rq2_orientation_bf <- data %>% mutate(`Rodovo motivované obťažovanie` = as.logical(`Rodovo motivované obťažovanie`), `Nechcená sexuálna pozornosť` = as.logical(`Nechcená sexuálna pozornosť`), `Sexuálny nátlak` = as.logical(`Sexuálny nátlak`)) %>% select(`Rodovo motivované obťažovanie`, `Nechcená sexuálna pozornosť`, `Sexuálny nátlak`, harrassed) %>%
+rq2_orientation_bf <- data %>% mutate(`Rodovo motivované obťažovanie` = as.logical(`Rodovo motivované obťažovanie`), `Neželaná sexuálna pozornosť` = as.logical(`Neželaná sexuálna pozornosť`), `Sexuálny nátlak` = as.logical(`Sexuálny nátlak`)) %>% select(`Rodovo motivované obťažovanie`, `Neželaná sexuálna pozornosť`, `Sexuálny nátlak`, harrassed) %>%
   map(~contingencyTableBF(round(wtd.table(data$Neheterosexuál, ., weights = data$w, normwt = T), 0), sampleType = "poisson", priorConcentration = 1))
 
 rq2_orientation_mod <- lm(harrassedSeverity ~ Neheterosexuál, weights = data$w , data)
@@ -665,7 +691,7 @@ rq3_perpetratorsSAB_n[1] <- NULL
 
 perpertatorsTable <- round(rbind("GMH" = unlist(rq3_perpetratorsGMH_n)*100/sum(unlist(rq3_perpetratorsGMH_n)), "USA" = unlist(rq3_perpetratorsUSA_n)*100/sum(unlist(rq3_perpetratorsUSA_n)), "SAB" = unlist(rq3_perpetratorsSAB_n)*100/sum(unlist(rq3_perpetratorsSAB_n))), 2)
 colnames(perpertatorsTable) <- c("Učiteľ Muž",	"Učiteľ Žena",	"Študent Muž",	"Študent Žena",	"Zamestnanec Muž",	"Zamestnanec Žena")
-rownames(perpertatorsTable) <- c("Rodovo motivované obťažovanie", "Nechcená sexuálna pozornosť", "Sexuálny nátlak")
+rownames(perpertatorsTable) <- c("Rodovo motivované obťažovanie", "Neželaná sexuálna pozornosť", "Sexuálny nátlak")
 
 
 # Pre dievčatá
@@ -701,7 +727,7 @@ rq3_perpetratorsSAB_n_female[1] <- NULL
 
 perpertatorsTable_female <- round(rbind("GMH" = unlist(rq3_perpetratorsGMH_n_female)*100/sum(unlist(rq3_perpetratorsGMH_n_female)), "USA" = unlist(rq3_perpetratorsUSA_n_female)*100/sum(unlist(rq3_perpetratorsUSA_n_female)), "SAB" = unlist(rq3_perpetratorsSAB_n_female)*100/sum(unlist(rq3_perpetratorsSAB_n_female))), 2)
 colnames(perpertatorsTable_female) <- c("Učiteľ Muž",	"Učiteľ Žena",	"Študent Muž",	"Študent Žena",	"Zamestnanec Muž",	"Zamestnanec Žena")
-rownames(perpertatorsTable_female) <- c("Rodovo motivované obťažovanie", "Nechcená sexuálna pozornosť", "Sexuálny nátlak")
+rownames(perpertatorsTable_female) <- c("Rodovo motivované obťažovanie", "Neželaná sexuálna pozornosť", "Sexuálny nátlak")
 
 # Pre chlapcov
 # GenderMotivHarr
@@ -736,7 +762,7 @@ rq3_perpetratorsSAB_n_male[1] <- NULL
 
 perpertatorsTable_male <- round(rbind("GMH" = unlist(rq3_perpetratorsGMH_n_male)*100/sum(unlist(rq3_perpetratorsGMH_n_male)), "USA" = unlist(rq3_perpetratorsUSA_n_male)*100/sum(unlist(rq3_perpetratorsUSA_n_male)), "SAB" = unlist(rq3_perpetratorsSAB_n_male)*100/sum(unlist(rq3_perpetratorsSAB_n_male))), 2)
 colnames(perpertatorsTable_male) <- c("Učiteľ Muž",	"Učiteľ Žena",	"Študent Muž",	"Študent Žena",	"Zamestnanec Muž",	"Zamestnanec Žena")
-rownames(perpertatorsTable_male) <- c("Rodovo motivované obťažovanie", "Nechcená sexuálna pozornosť", "Sexuálny nátlak")
+rownames(perpertatorsTable_male) <- c("Rodovo motivované obťažovanie", "Neželaná sexuálna pozornosť", "Sexuálny nátlak")
 
 # Sú ženy alebo muži náchylnejší páchať niektorú z foriem SO?
 # Aké osoby (učitelia, spolužiaci, atď.) najčastejšie páchajú aké druhy obťažovania?
@@ -878,7 +904,7 @@ rq4_whereSAB_n[1] <- NULL
 
 whereTable <- round(rbind("GMH" = unlist(rq4_whereGMH_n)*100/sum(unlist(rq4_whereGMH_n)), "USA" = unlist(rq4_whereUSA_n)*100/sum(unlist(rq4_whereUSA_n)), "SAB" = unlist(rq4_whereSAB_n)*100/sum(unlist(rq4_whereSAB_n))), 2)
 colnames(whereTable) <- c("Výučba", "Prestávka", "Internát", "Laboratórium", "Prax", "Online", "Neviem")
-rownames(whereTable) <- c("Rodovo motivované obťažovanie", "Nechcená sexuálna pozornosť", "Sexuálny nátlak")
+rownames(whereTable) <- c("Rodovo motivované obťažovanie", "Neželaná sexuálna pozornosť", "Sexuálny nátlak")
 
 
 # RQ5 Abuse Impacts -----------------------------------------------------------
@@ -958,9 +984,9 @@ data$gmhTeacherFreq <- data %>% transmute(gmhTeacher = ifelse(as.numeric(`Rodovo
 data$gmhStudentFreq <- data %>% transmute(gmhStudent = ifelse(as.numeric(`Rodovo motivované obťažovanie`) > 0, data %>% select(contains("_whoStudent") & !contains("Other")) %>% rowSums(., na.rm = T), NA))
 data$gmhEmployeeFreq <- data %>% transmute(gmhEmployee = ifelse(as.numeric(`Rodovo motivované obťažovanie`) > 0, data %>% select(contains("_whoEmployee") & !contains("Other")) %>% rowSums(., na.rm = T), NA))
 #
-data$usaTeacherFreq <- data %>% transmute(gmhTeacher = ifelse(as.numeric(`Nechcená sexuálna pozornosť`) > 0, data %>% select(contains("_whoTeacher") & !contains("Other")) %>% rowSums(., na.rm = T), NA))
-data$usaStudentFreq <- data %>% transmute(gmhStudent = ifelse(as.numeric(`Nechcená sexuálna pozornosť`) > 0, data %>% select(contains("_whoStudent") & !contains("Other")) %>% rowSums(., na.rm = T), NA))
-data$usaEmployeeFreq <- data %>% transmute(gmhEmployee = ifelse(as.numeric(`Nechcená sexuálna pozornosť`) > 0, data %>% select(contains("_whoEmployee") & !contains("Other")) %>% rowSums(., na.rm = T), NA))
+data$usaTeacherFreq <- data %>% transmute(gmhTeacher = ifelse(as.numeric(`Neželaná sexuálna pozornosť`) > 0, data %>% select(contains("_whoTeacher") & !contains("Other")) %>% rowSums(., na.rm = T), NA))
+data$usaStudentFreq <- data %>% transmute(gmhStudent = ifelse(as.numeric(`Neželaná sexuálna pozornosť`) > 0, data %>% select(contains("_whoStudent") & !contains("Other")) %>% rowSums(., na.rm = T), NA))
+data$usaEmployeeFreq <- data %>% transmute(gmhEmployee = ifelse(as.numeric(`Neželaná sexuálna pozornosť`) > 0, data %>% select(contains("_whoEmployee") & !contains("Other")) %>% rowSums(., na.rm = T), NA))
 #
 data$sabTeacherFreq <- data %>% transmute(gmhTeacher = ifelse(as.numeric(`Sexuálny nátlak`) > 0, data %>% select(contains("_whoTeacher") & !contains("Other")) %>% rowSums(., na.rm = T), NA))
 data$sabStudentFreq <- data %>% transmute(gmhStudent = ifelse(as.numeric(`Sexuálny nátlak`) > 0, data %>% select(contains("_whoStudent") & !contains("Other")) %>% rowSums(., na.rm = T), NA))
@@ -973,7 +999,7 @@ data$mostFreqAbuserGMH <- data %>% select(gmhTeacherFreq, gmhStudentFreq, gmhEmp
   colnames(.)[ifelse(data$`Rodovo motivované obťažovanie` == 0, NA, max.col(., ties.method="random"))]  %>% str_remove("gmh") %>% str_remove("Freq")
 # USA
 data$mostFreqAbuserUSA <- data %>% select(usaTeacherFreq, usaStudentFreq, usaEmployeeFreq) %$%
-  colnames(.)[ifelse(data$`Nechcená sexuálna pozornosť` == 0, NA, max.col(., ties.method="random"))]  %>% str_remove("usa") %>% str_remove("Freq")
+  colnames(.)[ifelse(data$`Neželaná sexuálna pozornosť` == 0, NA, max.col(., ties.method="random"))]  %>% str_remove("usa") %>% str_remove("Freq")
 # SAB
 data$mostFreqAbuserSAB <- data %>% select(sabTeacherFreq, sabStudentFreq, sabEmployeeFreq) %$%
   colnames(.)[ifelse(data$`Sexuálny nátlak` == 0, NA, max.col(., ties.method="random"))]  %>% str_remove("sab") %>% str_remove("Freq")
@@ -1141,9 +1167,9 @@ data$gmhTeacherFreq <- data %>% transmute(gmhTeacher = ifelse(as.numeric(`Rodovo
 data$gmhStudentFreq <- data %>% transmute(gmhStudent = ifelse(as.numeric(`Rodovo motivované obťažovanie`) > 0, data %>% select(contains("_whoStudent") & !contains("Other")) %>% rowSums(., na.rm = T), NA))
 data$gmhEmployeeFreq <- data %>% transmute(gmhEmployee = ifelse(as.numeric(`Rodovo motivované obťažovanie`) > 0, data %>% select(contains("_whoEmployee") & !contains("Other")) %>% rowSums(., na.rm = T), NA))
 #
-data$usaTeacherFreq <- data %>% transmute(gmhTeacher = ifelse(as.numeric(`Nechcená sexuálna pozornosť`) > 0, data %>% select(contains("_whoTeacher") & !contains("Other")) %>% rowSums(., na.rm = T), NA))
-data$usaStudentFreq <- data %>% transmute(gmhStudent = ifelse(as.numeric(`Nechcená sexuálna pozornosť`) > 0, data %>% select(contains("_whoStudent") & !contains("Other")) %>% rowSums(., na.rm = T), NA))
-data$usaEmployeeFreq <- data %>% transmute(gmhEmployee = ifelse(as.numeric(`Nechcená sexuálna pozornosť`) > 0, data %>% select(contains("_whoEmployee") & !contains("Other")) %>% rowSums(., na.rm = T), NA))
+data$usaTeacherFreq <- data %>% transmute(gmhTeacher = ifelse(as.numeric(`Neželaná sexuálna pozornosť`) > 0, data %>% select(contains("_whoTeacher") & !contains("Other")) %>% rowSums(., na.rm = T), NA))
+data$usaStudentFreq <- data %>% transmute(gmhStudent = ifelse(as.numeric(`Neželaná sexuálna pozornosť`) > 0, data %>% select(contains("_whoStudent") & !contains("Other")) %>% rowSums(., na.rm = T), NA))
+data$usaEmployeeFreq <- data %>% transmute(gmhEmployee = ifelse(as.numeric(`Neželaná sexuálna pozornosť`) > 0, data %>% select(contains("_whoEmployee") & !contains("Other")) %>% rowSums(., na.rm = T), NA))
 #
 data$sabTeacherFreq <- data %>% transmute(gmhTeacher = ifelse(as.numeric(`Sexuálny nátlak`) > 0, data %>% select(contains("_whoTeacher") & !contains("Other")) %>% rowSums(., na.rm = T), NA))
 data$sabStudentFreq <- data %>% transmute(gmhStudent = ifelse(as.numeric(`Sexuálny nátlak`) > 0, data %>% select(contains("_whoStudent") & !contains("Other")) %>% rowSums(., na.rm = T), NA))
@@ -1156,7 +1182,7 @@ data$mostFreqAbuserGMH <- data %>% select(gmhTeacherFreq, gmhStudentFreq, gmhEmp
   colnames(.)[ifelse(data$`Rodovo motivované obťažovanie` == 0, NA, max.col(., ties.method="random"))]  %>% str_remove("gmh") %>% str_remove("Freq")
 # USA
 data$mostFreqAbuserUSA <- data %>% select(usaTeacherFreq, usaStudentFreq, usaEmployeeFreq) %$%
-  colnames(.)[ifelse(data$`Nechcená sexuálna pozornosť` == 0, NA, max.col(., ties.method="random"))]  %>% str_remove("usa") %>% str_remove("Freq")
+  colnames(.)[ifelse(data$`Neželaná sexuálna pozornosť` == 0, NA, max.col(., ties.method="random"))]  %>% str_remove("usa") %>% str_remove("Freq")
 # SAB
 data$mostFreqAbuserSAB <- data %>% select(sabTeacherFreq, sabStudentFreq, sabEmployeeFreq) %$%
   colnames(.)[ifelse(data$`Sexuálny nátlak` == 0, NA, max.col(., ties.method="random"))]  %>% str_remove("sab") %>% str_remove("Freq")
@@ -1190,9 +1216,9 @@ rq8_attitudes_n <- data %>%
 rq8_attitudes_n_plotData <- as_tibble(cbind(item = names(rq8_attitudes_n), t(rq8_attitudes_n)))[-1,] %>% filter(!grepl("_n", item, fixed = TRUE)) %>%
   mutate(Chlapci = as.numeric(V2), Dievčatá = as.numeric(V3), item = as.numeric(1:19), V2 = NULL, V3 = NULL) %>% pivot_longer(cols = c(Chlapci, Dievčatá), names_to = "Rod", values_to = "perc")
 
-rq8_attitudes_plot <- ggplotly(rq8_attitudes_n_plotData %>% ggplot(aes(x = reorder(item, -item), y = perc, fill = Rod)) + geom_bar(stat = "identity",  alpha = .6, position = "dodge") +
+rq8_attitudes_plot <- rq8_attitudes_n_plotData %>% ggplot(aes(x = reorder(item, -item), y = perc, fill = Rod)) + geom_bar(stat = "identity",  alpha = .6, position = "dodge") +
                                      labs(x = "Prejavy obťažujúceho správania", y = "Priemerná miera súhlasu") + scale_fill_manual("Legenda", values = c("Dievčatá" = cbPalette[1], "Chlapci" = cbPalette[2])) +
-                                     coord_flip() + scale_x_discrete(labels = rev(noquote(sprintf("Situácia %d", 1:19)))) + scale_y_continuous(limits = c(0, 100)))
+                                     coord_flip() + scale_x_discrete(labels = rev(noquote(sprintf("Situácia %d", 1:19)))) + scale_y_continuous(limits = c(0, 100))
 rq8_attitudes_plot
 attitudesList <- c("Rozprával príbehy alebo vtipy so sexuálnym podtónom (napr. na hodine/počas praxe/súkromne v kabinete).",
                    "Mal nemiestne sexuálne poznámky (napr. na hodine/počas praxe/súkromne v kabinete).",
@@ -1264,11 +1290,11 @@ rq8_fieldSensitivityAnova <- Anova(rq8_fieldSensitivityMod)
 
 rq8_fieldSensitivity_means <- data %>% group_by(`Odbor štúdia`) %>% summarise(meanSensitivity = weighted_mean(sensitivityToHarrasment, w),
                                                                           sdSensitivity = weighted_sd(sensitivityToHarrasment, w))
-colnames(rq8_fieldSensitivity_means) <- c("Odbor štúdia", "<I>M</I>", "<I>SD</I>")
+colnames(rq8_fieldSensitivity_means) <- c("Odbor štúdia", "M", "SD")
 sensRegTable <- round(rq8_fieldSensitivitySummary$coefficients, 2)
 rownames(sensRegTable) <- noquote(rq8_fieldSensitivity_means$`Odbor štúdia`)
 rownames(sensRegTable)[1] <- noquote("Intercept (filozofický, humanitný, pedagogický, teologický)")
-colnames(sensRegTable) <- c("Regresný odhad", "<I>SE</I>", "<I>t</I> štatistika", "<I>p</I>-hodnota")
+colnames(sensRegTable) <- c("Beta", "SE", "t-štatistika", "p-hodnota")
 
 
 # Existujú rozdiely v závislosti od regiónov, z ktorých respondenti/tky pochádzajú?
@@ -1339,11 +1365,19 @@ rq8_genderLegalAwarenessAnova <- Anova(rq8_genderLegalAwarenessMod)
 rq8_genderLegalAwareness_means <- data %>% group_by(Rod) %>% summarise(meanLegalAwareness = weighted_mean(legalAwareness, w),
                                                                                 sdLegalAwareness = weighted_sd(legalAwareness, w))
 
+
+
 # Existujú rozdiely v závislosti od regiónov, z ktorých respondenti/tky pochádzajú?
 rq8_regionLegalAwarenessMod <- lm(legalAwareness ~ `Región fakulty`, weights = w, data)
 rq8_regionLegalAwarenessBF <- anovaBF(legalAwareness ~ `Región fakulty`, data[!is.na(data$`Región fakulty`) & !is.na(data$legalAwareness),], rscaleEffects = rScale)
 rq8_regionLegalAwarenessSummary <- summary(rq8_regionLegalAwarenessMod)
 rq8_regionLegalAwarenessAnova <- Anova(rq8_regionLegalAwarenessMod)
+
+# Existujú rozdiely v závislosti od regiónov, z ktorých respondenti/tky pochádzajú?
+rq8_fieldLegalAwarenessMod <- lm(legalAwareness ~ `Odbor štúdia`, weights = w, data)
+rq8_fieldLegalAwarenessBF <- lmBF(legalAwareness ~ `Odbor štúdia`, data[!is.na(data$`Odbor štúdia`) & !is.na(data$legalAwareness),], rscaleEffects = rScale)
+rq8_fieldLegalAwarenessSummary <- summary(rq8_fieldLegalAwarenessMod)
+rq8_fieldLegalAwarenessAnova <- Anova(rq8_fieldLegalAwarenessMod)
 
 # Existuje súvis medzi tým, čo respondenti/tky považujú za SO a tým, či majú tendenciou hľadať pomoc, ak sa s niektorou z foriem SO osobne stretli?
 # controlling for harrassedSeverity
@@ -1393,9 +1427,9 @@ rq10_misconcept_n <- data %>%
 rq10_misconcept_n_plotData <- as_tibble(cbind(item = names(rq10_misconcept_n), t(rq10_misconcept_n)))[-1,] %>% filter(!grepl("_n", item, fixed = TRUE)) %>%
   mutate(Chlapci = as.numeric(V2), Dievčatá = as.numeric(V3), item = as.numeric(1:11), V2 = NULL, V3 = NULL) %>% pivot_longer(cols = c(Chlapci, Dievčatá), names_to = "Rod", values_to = "perc")
 
-rq10_misconcept_plot <- ggplotly(rq10_misconcept_n_plotData %>% ggplot(aes(x = reorder(item, -item), y = perc, fill = Rod)) + geom_bar(stat = "identity",  alpha = .6, position = "dodge") +
+rq10_misconcept_plot <- rq10_misconcept_n_plotData %>% ggplot(aes(x = reorder(item, -item), y = perc, fill = Rod)) + geom_bar(stat = "identity",  alpha = .6, position = "dodge") +
                                      labs(x = "Miskoncepty o sexuálnom obťažovaní", y = "Priemerná miera súhlasu") + scale_fill_manual("Legenda", values = c("Dievčatá" = cbPalette[1], "Chlapci" = cbPalette[2])) +
-                                     coord_flip() + scale_x_discrete(labels = rev(noquote(sprintf("Miskoncept %d", 1:11)))) + scale_y_continuous(limits = c(0, 100)))
+                                     coord_flip() + scale_x_discrete(labels = rev(noquote(sprintf("Miskoncept %d", 1:11)))) + scale_y_continuous(limits = c(0, 100))
 
 misconceptsList <- c("Ženy si často vymýšľajú obvinenia zo sexuálneho obťažovania.",
                      "Vyučujúci / vyučujúce by nemali mať romantické vzťahy so svojimi študentmi / študentkami.",

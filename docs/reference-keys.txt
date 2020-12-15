@@ -1,6 +1,7 @@
 fig:ageplot
 tab:regionTab
 tab:regFieldTab
+tab:fieldStudyTab
 fig:fieldPlotMF
 fig:fieldPlotYear
 fig:prevItems
@@ -21,7 +22,7 @@ tab:attList
 fig:attPlot
 tab:sensField
 tab:sensFieldReg
-tab:unnamed-chunk-4
+tab:unnamed-chunk-6
 tab:miscList
 fig:miscPlot
 tab:miscF
@@ -50,3 +51,8 @@ poskytnutie-informácii-vysokou-školou
 vnímanie-sexuálneho-obťažovania
 stereotypy-o-sexuálnom-obťažovaní
 referencie
+tab:formsList
+tab:prevGenderClustTab
+tab:prevTabFemale
+tab:prevTabMale
+právne-povedomie-a-informácie

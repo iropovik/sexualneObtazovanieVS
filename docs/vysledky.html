@@ -24,7 +24,7 @@
 <meta name="author" content="Ivan Ropovik" />
 
 
-<meta name="date" content="2020-12-15" />
+<meta name="date" content="2020-12-16" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -56,6 +56,12 @@
 <link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
 <link href="libs/bsTable-3.3.7/bootstrapTable.min.css" rel="stylesheet" />
 <script src="libs/bsTable-3.3.7/bootstrapTable.js"></script>
+<script src="libs/htmlwidgets-1.5.3/htmlwidgets.js"></script>
+<script src="libs/d3-3.5.3/./d3.min.js"></script>
+<link href="libs/d3heatmapcore-0.0.0/heatmapcore.css" rel="stylesheet" />
+<script src="libs/d3heatmapcore-0.0.0/heatmapcore.js"></script>
+<script src="libs/d3-tip-0.6.6/index.js"></script>
+<script src="libs/d3heatmap-binding-0.6.1.3/d3heatmap.js"></script>
 
 
 
@@ -324,6 +330,7 @@ Graf 3.1: Prevalencia individuálnych foriem sexuálneho obťažovania
 Graf 3.2: Prevalencia individuálnych foriem sexuálneho obťažovania podľa rodu
 </p>
 </div>
+<p>Celkovo výrazne vyššie percento obetí pritom uvádzalo, že boli vystavení sexuálnemu obťažovaniu skôr opakovane, než jednorázovo, až 86% obetí rodovo motivovaného obťažovania (86% žien a 87% mužov), 78% obetí neželanej sexuálnej pozornosti (73% žien a 85% mužov), a 50% obetí sexuálneho nátlaku (33% žien a 67% mužov).</p>
 <p>Populačné odhady prevalencií pre jednotlivé formy, separátne pre ženy a mužov je možné vidieť na grafe <a href="vysledky.html#fig:prevItemsG">3.2</a> a prevalencie sexuálneho obťažovania pre klastre na grafe <a href="vysledky.html#fig:prevClust">3.3</a>. Nižšie v tabuľkách <a href="vysledky.html#tab:prevTabFemale">3.2</a> a <a href="vysledky.html#tab:prevTabMale">3.3</a> sú uvedené prevalencie pre ženy, respektíve pre mužov s 95% intervalmi spoľahlivosti z binomiálneho testu proporcií (založeného na prirodzených vážených počtoch participantov).</p>
 <div class="figure" style="text-align: center"><span id="fig:prevClust"></span>
 <img src="_index_files/figure-html/prevClust-1.png" alt="Prevalencia klastrov sexuálneho obťažovania podľa pohlavia" width="80%"  />
@@ -1210,7 +1217,7 @@ q10
 0.78
 </td>
 <td style="text-align:right;">
-1.30
+1.31
 </td>
 <td style="text-align:left;">
 BF01 = 10.83
@@ -1224,7 +1231,7 @@ q11
 0.72
 </td>
 <td style="text-align:right;">
-0.52
+0.53
 </td>
 <td style="text-align:right;">
 0.98
@@ -1244,7 +1251,7 @@ q12
 0.99
 </td>
 <td style="text-align:right;">
-1.50
+1.49
 </td>
 <td style="text-align:left;">
 BF01 = 1.72
@@ -1261,7 +1268,7 @@ q13
 0.69
 </td>
 <td style="text-align:right;">
-1.59
+1.58
 </td>
 <td style="text-align:left;">
 BF01 = 15.62
@@ -1431,7 +1438,7 @@ Sexuálny nátlak
 0.29
 </td>
 <td style="text-align:right;">
-1.04
+1.03
 </td>
 <td style="text-align:left;">
 BF01 = 3.84
@@ -1654,7 +1661,7 @@ Vek viac ako 23
 0.90
 </td>
 <td style="text-align:right;">
-0.81
+0.80
 </td>
 <td style="text-align:right;">
 1.01
@@ -1733,7 +1740,7 @@ Rod
 0.29
 </td>
 <td style="text-align:right;">
-1.03
+1.04
 </td>
 <td style="text-align:left;">
 BF01 = 3.84
@@ -1767,7 +1774,7 @@ Minorita
 0.39
 </td>
 <td style="text-align:right;">
-2.72
+2.71
 </td>
 <td style="text-align:left;">
 BF01 = 26.54
@@ -1784,7 +1791,7 @@ Vek viac ako 23
 0.49
 </td>
 <td style="text-align:right;">
-1.70
+1.69
 </td>
 <td style="text-align:left;">
 BF01 = 21
@@ -1798,7 +1805,7 @@ Veriaci
 1.71
 </td>
 <td style="text-align:right;">
-0.86
+0.85
 </td>
 <td style="text-align:right;">
 5.32
@@ -2134,6 +2141,7 @@ Sexuálny nátlak
 </tr>
 </tbody>
 </table>
+<p>Z pomedzi rôznych druhov prostredia sme separátne analyzovali online prostredie. Jednoznačne najčastejším páchateľom sexuálneho obťažovania vo všetkých 3 klastroch sú študenti alebo študentky. V porovnaní s druhou najfrekventovanejšou skupinou, učiteľmi, sú študenti 5.6 krát častejším páchatelom rodovo motivovaného obťažovania, 7.6 krát častejším páchatelom neželanej sexuálnej pozornosti a až 11 krát častejším páchatelom sexuálneho násilia.</p>
 </div>
 <div id="miesto-sexuálneho-obťažovania" class="section level2" number="3.4">
 <h2><span class="header-section-number">3.4</span> Miesto sexuálneho obťažovania</h2>
@@ -2367,7 +2375,7 @@ Sexuálny nátlak
 <div id="subjektívne-dôsledky-sexuálneho-obťažovania" class="section level2" number="3.5">
 <h2><span class="header-section-number">3.5</span> Subjektívne dôsledky sexuálneho obťažovania</h2>
 <p>V dôsledku sexuálneho obťažovania, obete udávali nasledujúce subjektívne vnímané psychické alebo psychosomatické problémy. Spomedzi skupiny obetí sexuálneho obťažovania, najvačšie percento študentov zažívalo pocity zraniteľnosti, stratu sebaistoty, alebo sa u nich vyvinula subjektívna úzkosť. Niektorí študenti taktiež uvádzali problémy s koncentráciou alebo pocity bezmocnosti, depresívne stavy, vzťahové problémy, ťažkosti s učením alebo spánkom, a poruchy príjmu potravy. Detailnejšie dáta rozdelené podľa rodu sú uvedené v Tabuľke <a href="vysledky.html#tab:suffer">3.13</a>. Celkovo sa však študenti z hľadiska pohlavia nelíšili v závažnosti (a zároveň rozsahu) uvádzaných dôsledkov, <I>F(</I>1, 1157) = 2.55, <I>p</I> = 0.11, <I>BF<sub>01</sub></I> = 5.42, <I>g</I> = 0.09.</p>
-<p>Dáta ale indikujú, že rozsah uvádzaných dôsledkov je asociovaný so závažnosťou zažitého sexuálneho obťažovania. Napriek tomu, že veľkosť daného efektu je skôr striedma <em>r</em> = 0.13, <em>p</em> &lt; .001, efekt je empiricky značne robustný, <I>BF<sub>10</sub></I> = 24384. Dá sa teda predpokladať, že obete sexuálneho obťažovania majú častejšie následky na mentálnom zdraví. Na druhej strane však rozsah uvádzaných dôsledkov nebol podmienený tým, kto bol u daného participanta najčastejším páchateľom najzávažnejšej formy sexuálneho obťažovania, <I>F(</I>2, 1175) = 0.05, <I>p</I> = 0.95, <I>BF<sub>01</sub></I> = 14.15, <I>g</I> = 0.01. Zároveň, nebol zistený vzťah medzi závažnosťou uvádzaných dôsledkov a (1) príslušnosťou k niektorej menšine, <I>F(</I>1, 1176) = 0, <I>p</I> = 0.99, <I>BF<sub>01</sub></I> = 9.55, <I>g</I> = 0, alebo (2), vierovyznaním <I>F(</I>1, 1176) = 1.87, <I>p</I> = 0.17, <I>BF<sub>01</sub></I> = 12.12, <I>g</I> = 0.08.</p>
+<p>Dáta ale indikujú, že rozsah uvádzaných dôsledkov je asociovaný so závažnosťou zažitého sexuálneho obťažovania. Napriek tomu, že veľkosť daného efektu je skôr striedma <em>r</em> = 0.13, <em>p</em> &lt; .001, efekt je empiricky značne robustný, <I>BF<sub>10</sub></I> = 24384. Dá sa teda predpokladať, že obete sexuálneho obťažovania majú častejšie následky na mentálnom zdraví. Na druhej strane však rozsah uvádzaných dôsledkov nebol podmienený tým, kto bol u daného participanta najčastejším páchateľom najzávažnejšej formy sexuálneho obťažovania, <I>F(</I>2, 1175) = 0.43, <I>p</I> = 0.65, <I>BF<sub>01</sub></I> = 10.37, <I>g</I> = 0.04. Zároveň, nebol zistený vzťah medzi závažnosťou uvádzaných dôsledkov a (1) príslušnosťou k niektorej menšine, <I>F(</I>1, 1176) = 0, <I>p</I> = 0.99, <I>BF<sub>01</sub></I> = 9.55, <I>g</I> = 0, alebo (2), vierovyznaním <I>F(</I>1, 1176) = 1.87, <I>p</I> = 0.17, <I>BF<sub>01</sub></I> = 12.12, <I>g</I> = 0.08.</p>
 <table class=" lightable-paper lightable-hover table" style="font-family: &quot;Arial Narrow&quot;, arial, helvetica, sans-serif; margin-left: auto; margin-right: auto; font-size: 12px; width: auto !important; margin-left: auto; margin-right: auto;">
 <caption style="font-size: initial !important;">
 <span id="tab:suffer">Tabuľka 3.13: </span>Subjektívne dôsledky sexuálneho obťažovania
@@ -2702,11 +2710,11 @@ Poruchy príjmu potravy
 <p>Z celkového počtu obetí sexuálneho obťažovania, 31% participantov hľadalo pomoc alebo radu (z toho 22% žien a 9% mužov). U žien bola tendencia zdôveriť sa s udalosťou sexuálneho obťažovania viac než o polovicu silnejšia, než u mužov, <I>RR</I> = 1.55, 95%CI (1.29, 1.89), <I>p</I> &lt; .001, <I>BF<sub>10</sub></I> = 13429.72. Obete sexuálneho obťažovania sa so svojim zážitkom najčastejšie zdôverili inému študentovi (78%), priateľovi (65%), členovi rodiny (50%), či partnerovi (45%).</p>
 <p>Tendencia hľadania pomoci nemala súvis s vierovyznaním obete, <I>RR</I> = 0.97, 95%CI (0.81, 1.18), <I>p</I> = 0.761, <I>BF<sub>01</sub></I> = 7.36. Ďalšie logistické regresie naviac ukázali, že tendencia hľadania pomoci nebola predikovaná odborom štúdia, <em>BF<sub>01</sub></em> = 1002, ani regiónom pôvodu participanta-obete, <em>BF<sub>01</sub></em> = 4.25. Nakoniec sme vytvorili index senzitivity na sexuálne obťažovanie<a href="#fn10" class="footnote-ref" id="fnref10"><sup>10</sup></a> a testovali, či participanti s vyššou mierou senzitivity na sexuálne obťažovanie budú mať vyššiu tendenciu vyhľadať pomoc/radu, čo sa aj v súčasnej vzorke pomerne jednoznačne potvrdilo, <em>BF<sub>10</sub></em> = 1565.3.</p>
 <p>V prípade, že participant nevyhľadal pomoc v súvislosti so skúsenosťou obťažujúceho správania, mal možnosť označiť dôvod tohto rozhodnutia. Medzi najčastejšie dôvody, pre ktoré sa obete rozhodli nevyhľadať pomoc patrili nasledujúce: participant to nepovažoval za dostatočne vážny incident (27%), bol schopný vyriešiť si to sám (19%), nevedel (13%), nemyslel si, že to pomôže (4%), nechcel, aby to o tom niekto vedel (2%), cítil hanbu alebo poníženie (1%), alebo sa obával, že by mu nik neveril (1%).</p>
-<p>Z celkového počtu 1181 participantov vykazujúcich niektorú z foriem sexuálneho obťažovania, iba 1% obetí (<em>N</em> = 12) uviedlo, že ako následok prejavu sexuálneho obťažovania bolo spustené oficiálne konanie voči osobe, ktorá sa obťažujúceho správania dopustila. V 85% takto nahlásených prípadov sexuálneho obťažovania išlo o opakované prejavy, z toho 18% tvorilo rodovo motivované obťažovanie, 36% neželaná sexuálna pozornosť a 45% opakovaný sexuálny nátlak. Zároveň je možné formálne konštatovať súvis medzi závažnosťou obťažujúceho správania a spustením oficiálneho konania, <em>BF<sub>10</sub></em> = 569. Celkovo je však oficiálne riešenie sexuálneho obťažovania relatívne raritným javom.</p>
+<p>Z celkového počtu 1178 participantov vykazujúcich niektorú z foriem sexuálneho obťažovania, iba 1% obetí (<em>N</em> = 12) uviedlo, že ako následok prejavu sexuálneho obťažovania bolo spustené oficiálne konanie voči osobe, ktorá sa obťažujúceho správania dopustila. V 85% takto nahlásených prípadov sexuálneho obťažovania išlo o opakované prejavy, z toho 18% tvorilo rodovo motivované obťažovanie, 36% neželaná sexuálna pozornosť a 45% opakovaný sexuálny nátlak. Zároveň je možné formálne konštatovať súvis medzi závažnosťou obťažujúceho správania a spustením oficiálneho konania, <em>BF<sub>10</sub></em> = 569. Celkovo je však oficiálne riešenie sexuálneho obťažovania relatívne raritným javom.</p>
 </div>
 <div id="právne-povedomie-a-informácie" class="section level2" number="3.7">
 <h2><span class="header-section-number">3.7</span> Právne povedomie a informácie</h2>
-<p>Celkovo 69% študentov si bolo vedomých, že sexuálne obťažovanie je súčasťou zákona (65% u žien a 74% u mužov). Podobná proporcia, 71% participantov vedelo, že existuje možnosť obrátiť sa ohľadom sexuálneho obťažovania na súd (70% u žien a 73% u mužov). Z hľadiska celkového právneho povedomia<a href="#fn11" class="footnote-ref" id="fnref11"><sup>11</sup></a>, muži teda vykazovali signifikantne vyšší priemer, <I>F(</I>1, 1442) = 11.11, <I>p</I> &lt; .001, <I>BF<sub>10</sub></I> = 75.81, <I>g</I> = 0.18.</p>
+<p>Celkovo 69% študentov si bolo vedomých, že sexuálne obťažovanie je súčasťou zákona (65% u žien a 74% u mužov). Podobná proporcia, 71% participantov vedelo, že existuje možnosť obrátiť sa ohľadom sexuálneho obťažovania na súd (70% u žien a 73% u mužov). Z hľadiska celkového právneho povedomia<a href="#fn11" class="footnote-ref" id="fnref11"><sup>11</sup></a>, muži teda vykazovali signifikantne vyšší priemer, <I>F(</I>1, 1442) = 11.11, <I>p</I> &lt; .001, <I>BF<sub>10</sub></I> = 75.81, <I>g</I> = 0.18. Z hľadiska celkového právneho povedomia o sexuálnom obťažovaní neboli detekované žiadne signifikantné rozdiely z hľadiska regiónu pôvodu študenta, <I>F(</I>2, 1463) = 1.18, <I>p</I> = 0.31, <I>BF<sub>01</sub></I> = 22.06, <I>g</I> = 0.06, či z hľadiska odboru štúdia, <I>F(</I>5, 1460) = 1.99, <I>p</I> = 0.08, <I>BF<sub>01</sub></I> = 40.2, <I>g</I> = 0.07.</p>
 <p>Participanti výskumu mali zároveň možnosť uviesť mieru súhlasu s tvrdením, že im ich vysoká škola dostatok informácií o problematike obťažujúceho správania. Celkovo 12% participantov vyjadrilo súhlas s týmto tvrdením - muži v signifikantne väčšej miere (17%) ako ženy (9%), <I>F(</I>1, 1378) = 29.62, <I>p</I> &lt; .001, <I>BF<sub>10</sub></I> = 14117.3, <I>g</I> = 0.29. Z hľadiska regiónov, študenti na západnom a východnom Slovensku vyjadrovali nižšiu oboznámenosť zo strany vysokej školy, <I>F(</I>2, 1393) = 7.93, <I>p</I> &lt; .001, <I>BF<sub>10</sub></I> = 59.27, <I>g</I> = 0.15. Medzi odbormi však v tomto aspekte nebol zistený žiaden rozdiel, <I>F(</I>5, 1390) = 1.45, <I>p</I> = 0.2, <I>BF<sub>01</sub></I> = 23.51, <I>g</I> = 0.06.</p>
 </div>
 <div id="vnímanie-sexuálneho-obťažovania" class="section level2" number="3.8">
@@ -2880,14 +2888,29 @@ Vyvolával dojem, že sa mu/jej študenti/študentky musia podriadiť ak chcú, 
 </tr>
 </tbody>
 </table>
-<p>Ako možno vidieť z grafu <a href="vysledky.html#fig:attPlot">3.4</a>, participanti vo veľkej väčšine vnímali predložené situácie ako prejavy obťažujúceho správania. Až na 1 položku vykazovali ženy vo vzorke vyššiu mieru vnímania daných prejavov ako obťažujúcich. Rozdiely však boli vo väčšine položiek triviálne a napriek tomu, že efekt rodu bol signifikantný (<I>F(</I>1, 1442) = 8.93, <I>p</I> = 0, <I>BF<sub>01</sub></I> = 2.93, <I>g</I> = 0.16), súčasné dáta formálne nepredstavujú dostatočný empirický dôkaz v prospech rodových rozdielov z hľadiska celkovej senzitivity na sexuálne obťažovanie. Zároveň sa nepreukázal vzťah medzi senzitivitou na sexuálne obťažovanie a závažnosťou obťažovania, ktorému bol participant vystavený, <em>r</em> = -0.04, <em>p</em> = 0.1, <I>BF<sub>01</sub></I> = 9.45 a ani statusom obete, <I>F(</I>1, 1464) = 0.25, <I>p</I> = 0.61, <I>BF<sub>01</sub></I> = 13.4, <I>g</I> = 0.03.</p>
+<p>Ako možno vidieť z grafu <a href="vysledky.html#fig:attPlot">3.4</a>, participanti vo veľkej väčšine vnímali predložené situácie ako prejavy obťažujúceho správania. Až na 1 položku vykazovali ženy vo vzorke vyššiu mieru vnímania daných prejavov ako obťažujúcich. Rozdiely však boli vo väčšine položiek triviálne a napriek tomu, že efekt rodu bol signifikantný (<I>F(</I>1, 1442) = 8.93, <I>p</I> = 0, <I>BF<sub>01</sub></I> = 2.93, <I>g</I> = 0.16), súčasné dáta formálne nepredstavujú dostatočný empirický dôkaz v prospech rodových rozdielov z hľadiska celkovej senzitivity na sexuálne obťažovanie.</p>
 <div class="figure" style="text-align: center"><span id="fig:attPlot"></span>
 <img src="_index_files/figure-html/attPlot-1.png" alt="Miera vnímania sexuálneho obťažovania" width="80%"  />
 <p class="caption">
 Graf 3.4: Miera vnímania sexuálneho obťažovania
 </p>
 </div>
-<p>Medzi participantami študujúcimi iné odbory však boli detekované rozdiely, <I>F(</I>5, 1460) = 5.25, <I>p</I> &lt; .001, <I>BF<sub>10</sub></I> = 61.89, <I>g</I> = 0.12. V tabuľke <a href="vysledky.html#tab:sensField">3.15</a> je možné vidieť priemery (vyššia hodnota značí vyššiu mieru senzitivity) a smerodajné odchýlky senzitivity na sexuálne obťažovanie naprieč všetkými odbormi. Ako je vidieť v tabuľke regresných koeficinetov <a href="vysledky.html#tab:sensFieldReg">3.16</a>, kde odbor “filozofický, humanitný, pedagogický, teologický” predstavuje referenčnú skupinu, študenti prírodovedných, technických a zdravotníckych odborov vykazujú v porovnaní so spoločensko-humanitnými odbormi signifikantne nižšiu senzitivitu na sexuálne obťažovanie<a href="#fn12" class="footnote-ref" id="fnref12"><sup>12</sup></a> filozofických, humanitných, pedagogických, a teologických odborov.] Výrazne nižší priemer v porovnaní s referenčnou skupinou bol aj v mediálnych a umeleckých odboroch, no v danom prípade je možné predpokladať nižšiu štatistickú silu na detekciu signifikantného rozdielu z dôvodu malej početnosti participantov tohto odboru vo vzorke.</p>
+<p>Nižšie je zároveň možné vidieť tzv. heatmaps grafy pre obe pohlavia. Heatmaps zobrazujú frekvencie ako farby, pričom tmavšie farby vyjadrujú vyššiu senzitivitu na jednotlivé formy sexuálneho obťažovania a svetlejšie farby naopak nižšiu mieru senzitivity na sexuálne obťažovanie. Lepšie tak vizualizujú populačnú štruktúru vnímania sexuálneho obťažovania. Z grafov je zrejmé, že štruktúra postojov k sexuálnemu obťažovaniu je u žien (Graf <a href="vysledky.html#fig:attHeatF">3.5</a>) a mužov (Graf <a href="vysledky.html#fig:attHeatM">3.6</a>) v zásade podobná.</p>
+<div class="figure" style="text-align: center"><span id="fig:attHeatF"></span>
+<div id="htmlwidget-bdb3303ebfa07c7b2523" style="width:80%;height:480px;" class="d3heatmap html-widget"></div>
+<script type="application/json" data-for="htmlwidget-bdb3303ebfa07c7b2523">{"x":{"rows":null,"cols":null,"matrix":{"data":["9.93","44.59","10.25","27.27","7.96","3.63","8.67","7.91","43.68","36.12","3.99","6.3","9.38","33.01","47.32","3.73","6.29","7.49","31.59","50.9","2.96","5.46","4.84","22.76","63.98","2.63","4.35","5.53","26.59","60.9","4.14","3.15","5.81","22.14","64.76","2.38","5.57","7.27","33.89","50.88","4.01","1.69","2.48","16.38","75.44","3.19","1.32","1.17","10.27","84.05","4.58","0.29","0.72","3.65","90.77","3.5","1.7","5.64","18.71","70.46","4.01","0.19","1.13","4.88","89.79","4.21","1.09","1.81","16.23","76.65","3.64","1.68","2.34","13.97","78.37","3.94","0.36","1.21","3.8","90.7","3.94","0.17","1.64","3.35","90.9","3.79","0.32","0.99","2.7","92.19","3.92","0.64","1.08","2.72","91.64"],"dim":[19,5],"rows":["Situácia 1","Situácia 2","Situácia 3","Situácia 4","Situácia 5","Situácia 6","Situácia 7","Situácia 8","Situácia 9","Situácia 10","Situácia 11","Situácia 12","Situácia 13","Situácia 14","Situácia 15","Situácia 16","Situácia 17","Situácia 18","Situácia 19"],"cols":["Úplne nesúhlasím","Skôr nesúhlasím","Neviem","Skôr súhlasím","Úplne súhlasím"]},"image":"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABMAAAAFCAYAAACn39dKAAABSElEQVQYlT3ITyhDcQDA8e9v29szktwWcmDJQQ6Kg/KnlFrRtnZxkFyV227LhpEcRC5zcXBz8eeiOSkm2pKlOKhJDiKEnvXM7L3fz4F8jh+hjsfURk+G8aMurKUcrtl+VGUV4ukRnC6O+05oqv+iLhVGmCbqw8CYOieddTJ8MYgwTSh/U5w7Q2zSokZOulHFIsLhQKZvWZl5J5Lphe8SWBZy65pk0mTysBOcLlTxE5W9Zzn2SuTSjygUoPSFMLqb1cGpk+B+G0LXUdKG/DMLEw9E91rBpYEAXgrMjd4R2/aBRwcUlMokQnmmDzpA03BUT7UTWPWy6L9CGR9QtqCxhui2j8TQNUgbobnBW0tsrY6F8A0AaG6o8hBfb2B+IId6fUPIVEghJZQtEqE88V0fVOhg2WDbJIJ54js+qHCDlL8X+DtdA6X+7wcOLY9gNRikAwAAAABJRU5ErkJggg==","theme":null,"options":{"xaxis_height":80,"yaxis_width":120,"xaxis_font_size":9.52,"yaxis_font_size":10.5,"brush_color":"#0000FF","show_grid":true,"anim_duration":1000}},"evals":[],"jsHooks":[]}</script>
+<p class="caption">
+Graf 3.5: Štruktúra postojov k sexuálnemu obťažovaniu u žien - Heatmap graf
+</p>
+</div>
+<div class="figure" style="text-align: center"><span id="fig:attHeatM"></span>
+<div id="htmlwidget-45913ec2287a1907c461" style="width:80%;height:480px;" class="d3heatmap html-widget"></div>
+<script type="application/json" data-for="htmlwidget-45913ec2287a1907c461">{"x":{"rows":null,"cols":null,"matrix":{"data":["26.39","42.19","9.44","17.23","4.74","10.72","21.94","10.4","38.88","18.06","7.94","8.58","10.09","33.43","39.96","6.98","15.53","10.24","35.61","31.63","4.63","6.44","8.67","19.12","61.14","4.17","5.52","7.99","23.13","59.2","10.79","8.63","8.37","28.99","43.23","7.13","13.49","13.49","33.84","32.05","6.37","6.44","6.12","26.58","54.5","8.19","3.4","4.1","18.44","65.87","7.86","2.46","2.54","8","79.13","7.76","5.39","5.51","29.67","51.66","6.99","3.85","3.15","6.77","79.23","6.38","5.01","4.92","18.55","65.14","7.63","2.84","3.3","19.9","66.33","7.44","3.4","2.09","7.62","79.45","6.26","2.05","2.26","7.68","81.75","7.31","2","1.66","6.28","82.75","7.67","1.06","1.95","8","81.32"],"dim":[19,5],"rows":["Situácia 1","Situácia 2","Situácia 3","Situácia 4","Situácia 5","Situácia 6","Situácia 7","Situácia 8","Situácia 9","Situácia 10","Situácia 11","Situácia 12","Situácia 13","Situácia 14","Situácia 15","Situácia 16","Situácia 17","Situácia 18","Situácia 19"],"cols":["Úplne nesúhlasím","Skôr nesúhlasím","Neviem","Skôr súhlasím","Úplne súhlasím"]},"image":"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABMAAAAFCAYAAACn39dKAAABX0lEQVQYlSXOO2hTYRiA4feLDslJIxGkFa1DPLWDl6EQ6FAv1e5CSGOGOjiaRaSD2sEIpx2aoSBOBR10EoxEUNChJVmEtFAMiIvWUzAx4I1Sj03+xjT/16HrMz2ymzqjL191ya5eQj9tIFfG0eAX+nwFmRpj8dxbbj4ehORppLcLxtCcKuM3w1xcv46uVRE3werYElI/NqgnXkxAp4PuGHR9k8Ltn8xUz0O3i7bb6PsGD+e2mK4koS8GIrTvlHlThuy3G+jnGgDyIXZS+8I9TpXGAQUJYZ/WWHxiyL0eRuKHwVrsxwaFWz+4V3ThUBQAghZexudBJQnRKKGR5QkSow7PLlTR33/QYAtJu+RKQ3hXv6DGgLWEzh7n7qOjzGd8+N9BHAcZOML9hX4Kl9fQ+nfEvkspBw5CsI036ZMvDYET2V/+M3gZn3zRhVgERGDb4KW/7ls8BrYHf1vMXttgD/ZYjd8wfftnAAAAAElFTkSuQmCC","theme":null,"options":{"xaxis_height":80,"yaxis_width":120,"xaxis_font_size":9.52,"yaxis_font_size":10.5,"brush_color":"#0000FF","show_grid":true,"anim_duration":1000}},"evals":[],"jsHooks":[]}</script>
+<p class="caption">
+Graf 3.6: Štruktúra postojov k sexuálnemu obťažovaniu u mužov - Heatmap graf
+</p>
+</div>
+<p>Zároveň sa nepreukázal vzťah medzi senzitivitou na sexuálne obťažovanie a závažnosťou obťažovania, ktorému bol participant vystavený, <em>r</em> = -0.04, <em>p</em> = 0.1, <I>BF<sub>01</sub></I> = 9.45 a ani statusom obete, <I>F(</I>1, 1464) = 0.25, <I>p</I> = 0.61, <I>BF<sub>01</sub></I> = 13.4, <I>g</I> = 0.03. Medzi participantami študujúcimi iné odbory však boli detekované rozdiely, <I>F(</I>5, 1460) = 5.25, <I>p</I> &lt; .001, <I>BF<sub>10</sub></I> = 61.89, <I>g</I> = 0.12. V tabuľke <a href="vysledky.html#tab:sensField">3.15</a> je možné vidieť priemery (vyššia hodnota značí vyššiu mieru senzitivity) a smerodajné odchýlky senzitivity na sexuálne obťažovanie naprieč všetkými odbormi. Ako je vidieť v tabuľke regresných koeficinetov <a href="vysledky.html#tab:sensFieldReg">3.16</a>, kde odbor “filozofický, humanitný, pedagogický, teologický” predstavuje referenčnú skupinu, študenti prírodovedných, technických a zdravotníckych odborov vykazujú v porovnaní so spoločensko-humanitnými odbormi signifikantne nižšiu senzitivitu na sexuálne obťažovanie<a href="#fn12" class="footnote-ref" id="fnref12"><sup>12</sup></a> filozofických, humanitných, pedagogických, a teologických odborov.] Výrazne nižší priemer v porovnaní s referenčnou skupinou bol aj v mediálnych a umeleckých odboroch, no v danom prípade je možné predpokladať nižšiu štatistickú silu na detekciu signifikantného rozdielu z dôvodu malej početnosti participantov tohto odboru vo vzorke.</p>
 <table class=" lightable-paper lightable-hover table" style="font-family: &quot;Arial Narrow&quot;, arial, helvetica, sans-serif; margin-left: auto; margin-right: auto; font-size: 12px; width: auto !important; margin-left: auto; margin-right: auto;">
 <caption style="font-size: initial !important;">
 <span id="tab:sensField">Tabuľka 3.15: </span>Senzitivita na sexuálne obťažovanie - deskriptívne charakteristiky
@@ -3101,7 +3124,7 @@ zdravotnícky
 </tr>
 </tbody>
 </table>
-<p>Následne sme testovali, či existuje súvis medzi tým, čo participanti považujú za SO a tým, či majú tendenciou hľadať pomoc, ak sa s niektorou z foriem sexuálneho obťažovania osobne stretli? Táto substantívna otázka bola testovaná regresným modelom kontrolujúcim závažnosť sexuálneho obťažovania. Regresný model<a href="#fn13" class="footnote-ref" id="fnref13"><sup>13</sup></a> dokázal robustným spôsobom predikovať senzitivitu voči sexuálnemu obťažovaniu. Aj po zohľadnení závažnosti zažitého sexuálneho obťažovania teda existuje asociácia medzi senzitivitu voči obťažovaniu a tendenciou zdôveriť sa, <I>F(</I>1, 1) = 579.14, <I>p</I> &lt; .001, <I>BF<sub>10</sub></I> = 485.04, <I>g</I> = 1.49.</p>
+<p>Následne sme testovali, či existuje súvis medzi tým, čo participanti považujú za SO a tým, či majú tendenciou hľadať pomoc, ak sa s niektorou z foriem sexuálneho obťažovania osobne stretli? Táto substantívna otázka bola testovaná regresným modelom kontrolujúcim závažnosť sexuálneho obťažovania. Regresný model<a href="#fn13" class="footnote-ref" id="fnref13"><sup>13</sup></a> dokázal robustným spôsobom predikovať senzitivitu voči sexuálnemu obťažovaniu. Aj po zohľadnení závažnosti zažitého sexuálneho obťažovania teda existuje asociácia medzi senzitivitu voči obťažovaniu a tendenciou zdôveriť sa, <I>F(</I>1, 1) = 579.14, <I>p</I> &lt; .001, <I>BF<sub>10</sub></I> = 520.76, <I>g</I> = 1.49.</p>
 <table class=" lightable-paper lightable-hover table" style="font-family: &quot;Arial Narrow&quot;, arial, helvetica, sans-serif; margin-left: auto; margin-right: auto; font-size: 12px; width: auto !important; margin-left: auto; margin-right: auto;">
 <caption style="font-size: initial !important;">
 <span id="tab:unnamed-chunk-6">Tabuľka 3.17: </span>Senzitivita na sexuálne obťažovanie a zdôverenie sa
@@ -3263,14 +3286,23 @@ Vedenie školy by malo prijať opatrenia na predchádzanie sexuálneho obťažov
 </tr>
 </tbody>
 </table>
-<p>Na grafe <a href="vysledky.html#fig:miscPlot">3.5</a> je zobrazená priemerná miera súhlasu s miskonceptmi o sexuálnom obťažovaní separátne pre ženy a mužov. Priemerné miery súhlasu s danými tvrdeniami pomerne konzistentne indikujú mierne vyššiu mieru miskoncepcií o sexuálnom obťažovaní v aktuálnej vzorke mužov. V celkovej miere súhlasu s miskonceptami<a href="#fn14" class="footnote-ref" id="fnref14"><sup>14</sup></a> však medzi pohlaviami nebol zistený štatisticky signifikantný rozdiel, <I>F(</I>1, 1442) = 3.11, <I>p</I> = 0.08, <I>BF<sub>01</sub></I> = 3.6, <I>g</I> = 0.09. Jediný štatisticky signifikantný rozdiel v miere akceptácie miskonceptov bol zistený v závislosti od regiónu, z ktorého participantami pochádzali, no miera dôkazov v prospech tohto efektu prakticky absentovala, <I>F(</I>2, 1463) = 3.77, <I>p</I> = 0.02, <I>BF<sub>01</sub></I> = 74.91, <I>g</I> = 0.1.</p>
+<p>Na grafe <a href="vysledky.html#fig:miscPlot">3.7</a> je zobrazená priemerná miera súhlasu s miskonceptmi o sexuálnom obťažovaní separátne pre ženy a mužov. Priemerné miery súhlasu s danými tvrdeniami pomerne konzistentne indikujú mierne vyššiu mieru miskoncepcií o sexuálnom obťažovaní v aktuálnej vzorke mužov. V celkovej miere súhlasu s miskonceptami<a href="#fn14" class="footnote-ref" id="fnref14"><sup>14</sup></a> však medzi pohlaviami nebol zistený štatisticky signifikantný rozdiel, <I>F(</I>1, 1442) = 3.11, <I>p</I> = 0.08, <I>BF<sub>01</sub></I> = 3.6, <I>g</I> = 0.09. Jediný štatisticky signifikantný rozdiel v miere akceptácie miskonceptov bol zistený v závislosti od regiónu, z ktorého participantami pochádzali, no miera dôkazov v prospech tohto efektu prakticky absentovala, <I>F(</I>2, 1463) = 3.77, <I>p</I> = 0.02, <I>BF<sub>01</sub></I> = 74.91, <I>g</I> = 0.1.</p>
 <div class="figure" style="text-align: center"><span id="fig:miscPlot"></span>
 <img src="_index_files/figure-html/miscPlot-1.png" alt="Miera súhlasu s miskonceptmi o sexuálnom obťažovaní" width="80%"  />
 <p class="caption">
-Graf 3.5: Miera súhlasu s miskonceptmi o sexuálnom obťažovaní
+Graf 3.7: Miera súhlasu s miskonceptmi o sexuálnom obťažovaní
 </p>
 </div>
-<p>Exaktné distribúcie odpovedí na položky merajúce miskoncepty o sexuálnom obťažovaní jednotlivo pre ženy a mužov sú zobrazené v Tabuľkách <a href="vysledky.html#tab:miscF">3.19</a>, resp. <a href="vysledky.html#tab:miscM">3.20</a>.</p>
+<p>Exaktné distribúcie odpovedí na položky merajúce miskoncepty o sexuálnom obťažovaní jednotlivo pre ženy a mužov sú zobrazené na Grafe <a href="#fig:miscHeatF"><strong>??</strong></a> a Tabuľke <a href="vysledky.html#tab:miscF">3.19</a>, resp. Grafe <a href="vysledky.html#fig:miscHeatM">3.8</a> a Tabuľke <a href="vysledky.html#tab:miscM">3.20</a>. Ako je zrejmé z grafov, štruktúra miskonceptov u oboch pohlaví je v zásade podobná.</p>
+<div id="htmlwidget-a77eb72c7880ec38deca" style="width:80%;height:480px;" class="d3heatmap html-widget"></div>
+<script type="application/json" data-for="htmlwidget-a77eb72c7880ec38deca">{"x":{"rows":null,"cols":null,"matrix":{"data":["13.07","49.58","23.37","11.75","2.22","3.21","13.39","15.77","34.03","33.6","3.26","9.3","13.28","24.07","50.09","0.34","0.71","2.4","15.02","81.54","58.27","27.27","7.68","5.33","1.45","43.78","26.37","18.29","8.01","3.55","20.9","20.78","12.51","35.25","10.56","21.37","27.28","15.35","29.43","6.57","2.27","12.29","16.84","27.35","41.25","66.07","26.24","5.04","1.71","0.94","2.42","2.24","9.7","35.17","50.47"],"dim":[11,5],"rows":["Miskoncept 1","Miskoncept 2","Miskoncept 3","Miskoncept 4","Miskoncept 5","Miskoncept 6","Miskoncept 7","Miskoncept 8","Miskoncept 9","Miskoncept 10","Miskoncept 11"],"cols":["Úplne nesúhlasím","Skôr nesúhlasím","Neviem","Skôr súhlasím","Úplne súhlasím"]},"image":"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAsAAAAFCAYAAACTphZWAAAAyElEQVQImQXBMStEcQAA8N//vefuukFeZzuDzpWkjs3kFuUDGJVdWVhkRFmVQVE+wg0MksFC+QBIvek2IRbDKd27v98vxPfTWO6cSXe7TC2SzzEa8v3CcCA+3JEQ1vYkqhPS403KUrl1QlojqzO5QEgdrvd9HRU8Xgjxpxdldaq50f62ZHVWbLaExjy1hti/ASGfkcTLc34/xaInWWkz3aF4Iq2QVoS8LdRyXu9l8WPguXWgc91laYPKuNBcpvwDxuribc/o6s0/ceY9iXS3eZ8AAAAASUVORK5CYII=","theme":null,"options":{"xaxis_height":80,"yaxis_width":120,"xaxis_font_size":9.52,"yaxis_font_size":10.5,"brush_color":"#0000FF","show_grid":true,"anim_duration":1000}},"evals":[],"jsHooks":[]}</script>
+<div class="figure" style="text-align: center"><span id="fig:miscHeatM"></span>
+<div id="htmlwidget-be683e8ea7d27acecb34" style="width:80%;height:480px;" class="d3heatmap html-widget"></div>
+<script type="application/json" data-for="htmlwidget-be683e8ea7d27acecb34">{"x":{"rows":null,"cols":null,"matrix":{"data":["3.02","25.81","38.08","25.4","7.69","5.17","13.96","14.2","40.03","26.64","2.93","13.91","12.43","35.08","35.65","0.13","1.89","7.22","26.84","63.92","39.8","36.98","14.5","6.11","2.61","24.11","32.98","22.65","11.94","8.33","7.12","13.31","13.99","39.47","26.11","9.58","17.76","17.15","39.82","15.69","3.7","13.07","17.11","37.45","28.67","48.63","35.73","9.51","4.76","1.37","1.24","6.3","21.17","39.23","32.05"],"dim":[11,5],"rows":["Miskoncept 1","Miskoncept 2","Miskoncept 3","Miskoncept 4","Miskoncept 5","Miskoncept 6","Miskoncept 7","Miskoncept 8","Miskoncept 9","Miskoncept 10","Miskoncept 11"],"cols":["Úplne nesúhlasím","Skôr nesúhlasím","Neviem","Skôr súhlasím","Úplne súhlasím"]},"image":"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAsAAAAFCAYAAACTphZWAAAA00lEQVQImQXBMUtCYRiG4fs5hqcgIjtmiZytJcGpxUZ1dXOpfkCzQ9ggSoOTSFtjf8AtByFoVppCcAhBiFIHESEoCNLv9bpkfy9mnRbWnaFiCuUvIboH8wFgrMttvIsQlSp4zHoom4MjH+vPIZYG/wBiJ1i/R6OzwrW/cOUb5MZ1UzwD2wH2fI8Nl+gsidLnsBNAJArfH+BWRGrTxZ38MTo+hK1/dBrimq8oF6J4Bpbv2M8Ca3WReyzYZ3VEeJXAu72G3ST4ASD4ncDbE+uHAcruswGuvEeGwUomswAAAABJRU5ErkJggg==","theme":null,"options":{"xaxis_height":80,"yaxis_width":120,"xaxis_font_size":9.52,"yaxis_font_size":10.5,"brush_color":"#0000FF","show_grid":true,"anim_duration":1000}},"evals":[],"jsHooks":[]}</script>
+<p class="caption">
+Graf 3.8: Štruktúra miskoncepcií u mužov - Heatmap graf
+</p>
+</div>
 <table class=" lightable-paper lightable-hover table" style="font-family: &quot;Arial Narrow&quot;, arial, helvetica, sans-serif; margin-left: auto; margin-right: auto; font-size: 12px; width: auto !important; margin-left: auto; margin-right: auto;">
 <caption style="font-size: initial !important;">
 <span id="tab:miscF">Tabuľka 3.19: </span>Distribúcia odpovedí u žien
@@ -3767,7 +3799,7 @@ Miskoncept 11
 </tr>
 </tbody>
 </table>
-<p>Rovnako nebola zistená systematická asociácia medzi celkovou mierou akceptácie miskonceptov a vekom participantov, <I>F(</I>1, 1444) = 0.21, <I>p</I> = 0.64, <I>BF<sub>01</sub></I> = 4.97, <I>g</I> = 0.02, ich odborom štúdia, <I>F(</I>5, 1460) = 1.86, <I>p</I> = 0.1, <I>BF<sub>01</sub></I> = 241.18, <I>g</I> = 0.07, či ich vierovyznaním, <I>F(</I>1, 1464) = 3.84, <I>p</I> = 0.05, <I>BF<sub>01</sub></I> = 5.57, <I>g</I> = 0.1. Zároveň bolo testované, či osoby, ktoré majú viac skúseností so sexuálnym obťažovaním zvyknú aj viac situácií vyhodnocovať ako obťažujúce správanie. U obetí obťažovania však nebola detekovaná výrazne nižšia miera akceptácie miskonceptov, <I>F(</I>1, 1464) = 2.04, <I>p</I> = 0.15, <I>BF<sub>01</sub></I> = 2.97, <I>g</I> = 0.07. Rozdiel v miere akceptácie miskonceptov nebol ani medzi obeťami, ktoré sa zdôverili a tými, čo sa nezdôverili, <I>F(</I>1, 1) = 847.97, <I>p</I> &lt; .001, <I>BF<sub>01</sub></I> = 128.65, <I>g</I> = 1.8.</p>
+<p>V aktuálnom výskume nebola zistená systematická asociácia medzi celkovou mierou akceptácie miskonceptov a vekom participantov, <I>F(</I>1, 1444) = 0.21, <I>p</I> = 0.64, <I>BF<sub>01</sub></I> = 4.97, <I>g</I> = 0.02, ich odborom štúdia, <I>F(</I>5, 1460) = 1.86, <I>p</I> = 0.1, <I>BF<sub>01</sub></I> = 241.18, <I>g</I> = 0.07, či ich vierovyznaním, <I>F(</I>1, 1464) = 3.84, <I>p</I> = 0.05, <I>BF<sub>01</sub></I> = 5.57, <I>g</I> = 0.1. Zároveň bolo testované, či osoby, ktoré majú viac skúseností so sexuálnym obťažovaním zvyknú aj viac situácií vyhodnocovať ako obťažujúce správanie. U obetí obťažovania však nebola detekovaná výrazne nižšia miera akceptácie miskonceptov, <I>F(</I>1, 1464) = 2.04, <I>p</I> = 0.15, <I>BF<sub>01</sub></I> = 2.97, <I>g</I> = 0.07. Rozdiel v miere akceptácie miskonceptov nebol ani medzi obeťami, ktoré sa zdôverili a tými, čo sa nezdôverili, <I>F(</I>1, 1) = 847.97, <I>p</I> &lt; .001, <I>BF<sub>01</sub></I> = 130.01, <I>g</I> = 1.8.</p>
 <div style="page-break-after: always;"></div>
 </div>
 </div>

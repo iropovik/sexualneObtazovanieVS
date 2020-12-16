@@ -41,13 +41,13 @@ header-includes:
 ```
 
 ```{r include=FALSE, warning=FALSE}
-library(knitr)
-library(kableExtra)
-library(tidyverse)
-library(BayesFactor)
-library(esc)
-library(d3heatmap)
-library(plotly)
+# install required R libraries if not installed already
+list.of.packages <- c("knitr", "kableExtra", "tidyverse", "BayesFactor", "esc", "d3heatmap", "plotly")
+new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
+if(length(new.packages)) install.packages(new.packages)
+
+# load required libraries
+lapply(list.of.packages, require, quietly = TRUE, warn.conflicts = FALSE, character.only = TRUE)
 ```
 
 ```{r}
@@ -94,7 +94,7 @@ Vzhľadom na objem analýz, resp. počet testovaných hypotéz, sú v tejto spr�
 Z dôvodu nízkej početnosti v niektorých kategoriách kategorických premenných boli pre účely prezentovania dát a testovania hypotéz nasledujúce premenné redukované nasledujúco (indikované v hranatých zátvorkách): rod [žena, muž], minorita [áno/nie], vierovyznanie [veriaci, neveriaci], sexuálna orientácia [heterosexuál/ka, non-heterosexuál/ka]. 
 
 ### Software
-Všetky analýzy boli realizované v R, verzii 4.0.3. s využitím nasledujúcich balíkov: epitools (Aragón, 2012), BayesFactor (Morey & Rouder, 2015), dplyr (Wickham & Francois, 2016), car (Fox & Weisberg, 2011) a stringr (Wickham, 2015) **DOPLNIŤ ("car", "tidyverse", "psych", "epitools", "plotly", "survey", "sjstats", "questionr", "BayesFactor", "magrittr", "careless", "data.table")**. Všetky grafy využívajú color-blind-friendly paletu farieb.
+Všetky analýzy boli realizované v R, verzii 4.0.3. s využitím nasledujúcich balíkov: tidyverse (Wickham et al., 2019), epitools (Aragón, 2012), BayesFactor (Morey & Rouder, 2015), psych (Revelle, 2020), car (Fox & Weisberg, 2011), plotly (Sievert, 2020), survey (Lumley, 2010), sjstats (Lüdecke, 2020), questionr (Barnier, Briatte, & Larmarange, 2020), careless (Yentes & Wilhelm, 2018) a data.table (Dowle & Srinivasan, 2020). Všetky grafy využívajú color-blind-friendly paletu farieb.
 
 \newpage
 
@@ -281,6 +281,7 @@ Nižšie je zároveň možné vidieť tzv. heatmaps grafy pre obe pohlavia. Heat
 d3heatmap(as.matrix(rq8_attitudes_item_freqs_females), dendrogram = "none", cexRow = .68, cexCol = .75, colors = "YlOrRd", anim_duration = 1000, scale = "row", labRow = noquote(sprintf("Situácia %d", 1:19)))
 ```
 
+
 ```{r attHeatM, fig.cap="Štruktúra postojov k sexuálnemu obťažovaniu u mužov - Heatmap graf"}
 d3heatmap(as.matrix(rq8_attitudes_item_freqs_males), dendrogram = "none", cexRow = .68, cexCol = .75, colors = "YlOrRd", anim_duration = 1000, scale = "row", labRow = noquote(sprintf("Situácia %d", 1:19)))
 ```
@@ -316,15 +317,17 @@ Na grafe \@ref(fig:miscPlot) je zobrazená priemerná miera súhlasu s miskoncep
 ggplotly(rq10_misconcept_plot)
 ```
 
-Exaktné distribúcie odpovedí na položky merajúce miskoncepty o sexuálnom obťažovaní jednotlivo pre ženy a mužov sú zobrazené na Grafe \@ref(fig:mischeatf) a Tabuľke \@ref(tab:miscF), resp. Grafe \@ref(fig:mischeatm) a Tabuľke \@ref(tab:miscM). Ako je zrejmé z grafov, štruktúra miskonceptov u oboch pohlaví je v zásade podobná.
+Exaktné distribúcie odpovedí na položky merajúce miskoncepty o sexuálnom obťažovaní jednotlivo pre ženy a mužov sú zobrazené na Grafe \@ref(fig:miscHeatF) a Tabuľke \@ref(tab:miscF), resp. Grafe \@ref(fig:miscHeatM) a Tabuľke \@ref(tab:miscM). Ako je zrejmé z grafov, štruktúra miskonceptov u oboch pohlaví je v zásade podobná.
 
-```{r mischeatf, fig.cap="Štruktúra miskoncepcií u žien - Heatmap graf"}
+```{r miscHeatF, fig.cap="Štruktúra miskoncepcií u žien - Heatmap graf"}
 d3heatmap(as.matrix(rq10_misconcept_item_freqs_females), dendrogram = "none", cexRow = .68, cexCol = .75, colors = "YlOrRd", anim_duration = 1000)
 ```
 
-```{r mischeatm, fig.cap="Štruktúra miskoncepcií u mužov - Heatmap graf"}
+
+```{r miscHeatM, fig.cap="Štruktúra miskoncepcií u mužov - Heatmap graf"}
 d3heatmap(as.matrix(rq10_misconcept_item_freqs_males), dendrogram = "none", cexRow = .68, cexCol = .75, colors = "YlOrRd", anim_duration = 1000)
 ```
+
 
 ```{r miscF}
 kbl(rq10_misconcept_item_freqs_females, digits = 3, caption = "Distribúcia odpovedí u žien", booktabs = T) %>% kable_paper("hover") %>% kable_styling(latex_options = c("striped", "scale_down", "HOLD_position"), full_width = F, font_size = 12)
@@ -340,15 +343,35 @@ V aktuálnom výskume nebola zistená systematická asociácia medzi celkovou mi
 
 # Referencie
 
+Aragon, T. J. (2020). epitools: Epidemiology Tools. R package version 0.5-10.1.
+https://CRAN.R-project.org/package=epitools
+
+Barnier, J., Briatte, F., & Larmarange, J. (2020). questionr: Functions to Make Surveys Processing Easier. R package version 0.7.3.   https://CRAN.R-project.org/package=questionr
+
+Dowle, M. & Srinivasan, A. (2020). data.table: Extension of `data.frame`. R package version 1.13.2. https://CRAN.R-project.org/package=data.table
+
 Gunel, E., & Dickey, J. (1974). Bayes factors for independence in contingency tables. Biometrika, 61(3), 545–557. doi:10.1093/biomet/61.3.545
 
 Jamil, T., Ly, A., Morey, R. D., Love, J., Marsman, M., & Wagenmakers, E.-J. (2016). Default “Gunel and Dickey” Bayes factors for contingency tables. Behavior Research Methods, 49(2), 638–652. doi:10.3758/s13428-016-0739-8
 
 Jeffreys, H. (1961). Theory of probability. Oxford University Press: Oxford UK.
 
+Lumley, T. (2010). Complex Surveys: A Guide to Analysis Using R. John Wiley and Sons.
+
+Lüdecke D. (2020). sjstats: Statistical Functions for Regression Models (Version
+0.18.0)_. doi: 10.5281/zenodo.1284472 https://doi.org/10.5281/zenodo.1284472
+
 Meade, A. W., & Craig, S. B. (2012). Identifying careless responses in survey data. Psychological Methods, 17(3), 437–455. doi:10.1037/a0028085
+
+Revelle, W. (2020) psych: Procedures for Personality and Psychological Research, Northwestern University, Evanston, Illinois, USA, https://CRAN.R-project.org/package=psych Version = 2.0.9.
 
 Rothman, K. J., & Greenland, S. (1998). Modern Epidemiology. Lippincott-Raven Publishers
 
-Wagenmakers, E.-J. (2007). A practical solution to the pervasive problems ofp values. Psychonomic Bulletin & Review, 14(5), 779–804. doi:10.3758/bf03194105
+Sievert, C. (2020). Interactive Web-Based Data Visualization with R, plotly, and shiny. Chapman and Hall/CRC Florida
 
+Wagenmakers, E.-J. (2007). A practical solution to the pervasive problems of p-values. Psychonomic Bulletin & Review, 14(5), 779–804. doi:10.3758/bf03194105
+
+Wickham et al., (2019). Welcome to the tidyverse. Journal of Open Source Software, 4(43), 1686, https://doi.org/10.21105/joss.01686
+
+Yentes R.D., & Wilhelm, F. (2018). careless: Procedures for computing indices of careless responding.R package version 1.1.3.
+  

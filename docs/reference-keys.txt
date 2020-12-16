@@ -58,3 +58,4 @@ stereotypy-o-sexuálnom-obťažovaní
 referencie
 fig:mischeatm
 fig:mischeatf
+fig:miscHeatF

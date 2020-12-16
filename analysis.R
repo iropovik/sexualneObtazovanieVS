@@ -326,6 +326,21 @@ rq1.2_cluster_n <- data %>%
 
 # frequency tables (n's and %) for aggregate categories of abuse, showing percentages for one-time and repeated abuses
 rq1.2_cluster_exposure <- data %>% select(`Rodovo motivované obťažovanie`, `Neželaná sexuálna pozornosť`, `Sexuálny nátlak`) %>% map(., ~round(prop.table(wtd.table(., weights = data$w)), 2))
+rq1.2_cluster_exposureF <- data[data$Rod == 1,] %>% select(`Rodovo motivované obťažovanie`, `Neželaná sexuálna pozornosť`, `Sexuálny nátlak`) %>% map(., ~round(prop.table(wtd.table(., weights = data[data$Rod == 1,]$w)), 2))
+rq1.2_cluster_exposureM <- data[data$Rod == 0,] %>% select(`Rodovo motivované obťažovanie`, `Neželaná sexuálna pozornosť`, `Sexuálny nátlak`) %>% map(., ~round(prop.table(wtd.table(., weights = data[data$Rod == 0,]$w)), 2))
+repExpGMH <- round(rq1.2_cluster_exposure$`Rodovo motivované obťažovanie`[3]/sum(rq1.2_cluster_exposure$`Rodovo motivované obťažovanie`[c(2,3)]), 2)*100
+repExpGMHf <- round(rq1.2_cluster_exposureF$`Rodovo motivované obťažovanie`[3]/sum(rq1.2_cluster_exposureF$`Rodovo motivované obťažovanie`[c(2,3)]), 2)*100
+repExpGMHm <- round(rq1.2_cluster_exposureM$`Rodovo motivované obťažovanie`[3]/sum(rq1.2_cluster_exposureM$`Rodovo motivované obťažovanie`[c(2,3)]), 2)*100
+
+# females
+repExpUSA <- round(rq1.2_cluster_exposure$`Neželaná sexuálna pozornosť`[3]/sum(rq1.2_cluster_exposure$`Neželaná sexuálna pozornosť`[c(2,3)]), 2)*100
+repExpUSAf <- round(rq1.2_cluster_exposureF$`Neželaná sexuálna pozornosť`[3]/sum(rq1.2_cluster_exposureF$`Neželaná sexuálna pozornosť`[c(2,3)]), 2)*100
+repExpUSAm <- round(rq1.2_cluster_exposureM$`Neželaná sexuálna pozornosť`[3]/sum(rq1.2_cluster_exposureM$`Neželaná sexuálna pozornosť`[c(2,3)]), 2)*100
+
+# males
+repExpSAB <- round(rq1.2_cluster_exposure$`Sexuálny nátlak`[3]/sum(rq1.2_cluster_exposure$`Sexuálny nátlak`[c(2,3)]), 2)*100
+repExpSABf <- round(rq1.2_cluster_exposureF$`Sexuálny nátlak`[3]/sum(rq1.2_cluster_exposureF$`Sexuálny nátlak`[c(2,3)]), 2)*100
+repExpSABm <- round(rq1.2_cluster_exposureM$`Sexuálny nátlak`[3]/sum(rq1.2_cluster_exposureM$`Sexuálny nátlak`[c(2,3)]), 2)*100
 
 # frequency tables (n's and %) for aggregate categories of abuse by gender.
 # dropping other than female, male
@@ -557,9 +572,6 @@ rq2_orientation_anova <- Anova(rq2_orientation_mod)
 rq3_perpetratorsItems_n <- do.call(rbind.data.frame, data %>% select(contains("_who") & !contains("Other")) %>% map(~cbind("freq" = round(wtd.table(., weights = data$w, normwt = T), 0), "perc" = prop.table(round(wtd.table(., weights = data$w, normwt = T), 0))))) %>%
   rownames_to_column("who")
 
-data %>% select(contains("_who") & !contains("Other")) %>% map(~table(.))
-
-
 # Kto sú pachatelia SO v rámci jednotlivých foriem SO
 seqq <- paste0("q", 1:20, "_")
 rq3_perpByItem <- list()
@@ -692,7 +704,6 @@ rq3_perpetratorsSAB_n[1] <- NULL
 perpertatorsTable <- round(rbind("GMH" = unlist(rq3_perpetratorsGMH_n)*100/sum(unlist(rq3_perpetratorsGMH_n)), "USA" = unlist(rq3_perpetratorsUSA_n)*100/sum(unlist(rq3_perpetratorsUSA_n)), "SAB" = unlist(rq3_perpetratorsSAB_n)*100/sum(unlist(rq3_perpetratorsSAB_n))), 2)
 colnames(perpertatorsTable) <- c("Učiteľ Muž",	"Učiteľ Žena",	"Študent Muž",	"Študent Žena",	"Zamestnanec Muž",	"Zamestnanec Žena")
 rownames(perpertatorsTable) <- c("Rodovo motivované obťažovanie", "Neželaná sexuálna pozornosť", "Sexuálny nátlak")
-
 
 # Pre dievčatá
 # GenderMotivHarr
@@ -1008,7 +1019,11 @@ data$mostFreqAbuserSAB <- data %>% select(sabTeacherFreq, sabStudentFreq, sabEmp
 data$perpetratorMostSevere <- data %$% ifelse(!is.na(mostFreqAbuserSAB), mostFreqAbuserSAB, ifelse(!is.na(mostFreqAbuserUSA), mostFreqAbuserUSA, ifelse(!is.na(mostFreqAbuserGMH), mostFreqAbuserGMH, NA)))
 perpetratorMostFrequent <- table(data$perpetratorMostSevere)
 
-data %>% select(contains("_whoTeacher") & !contains("Other"))
+# Most frequent abuser online
+data$harrassedOnline <- data %>% select(contains("whereOnline")) %>% rowSums(na.rm = T) %>% as.logical()
+perpOnline <- data %>% filter(harrassedOnline == T) %$% list(round(wtd.table(.$mostFreqAbuserGMH, weights = data[data$harrassedOnline == T,]$w, normwt = T), 0),
+                                                             round(wtd.table(.$mostFreqAbuserUSA, weights = data[data$harrassedOnline == T,]$w, normwt = T), 0),
+                                                             round(wtd.table(.$mostFreqAbuserSAB, weights = data[data$harrassedOnline == T,]$w, normwt = T), 0))
 
 rq5_severPerpMod <- lm(impactSeverity ~ perpetratorMostSevere, weights = data$w, data)
 rq5_severPerpBF <- lmBF(impactSeverity ~ perpetratorMostSevere, data[!is.na(data$perpetratorMostSevere),], rscaleEffects = rScale)
@@ -1251,7 +1266,7 @@ names(rq8_attitudes_item_freqs) <- c("Úplne nesúhlasím",	"Skôr nesúhlasím"
 rq8_attitudes_item_freqs_females <- data[data$Rod == 1,] %>% select(starts_with("att") & !contains(c("unwanted"))) %>%
   map(~round(prop.table(wtd.table(., weights = data[data$Rod == 1,]$w, normwt = T, na.rm = T))*100, 2))
 
-rq8_attitudes_item_freqs_females <- data.frame(t(sapply(rq8_attitudes_item_freqs_females,c)))
+rq8_attitudes_item_freqs_females <- data.frame(t(sapply(rq8_attitudes_item_freqs_females, c)))
 names(rq8_attitudes_item_freqs_females) <- c("Úplne nesúhlasím",	"Skôr nesúhlasím",	"Neviem",	"Skôr súhlasím",	"Úplne súhlasím")
 
 # Pre chlapcov

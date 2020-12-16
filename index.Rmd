@@ -316,13 +316,13 @@ Na grafe \@ref(fig:miscPlot) je zobrazená priemerná miera súhlasu s miskoncep
 ggplotly(rq10_misconcept_plot)
 ```
 
-Exaktné distribúcie odpovedí na položky merajúce miskoncepty o sexuálnom obťažovaní jednotlivo pre ženy a mužov sú zobrazené na Grafe \@ref(fig:miscHeatF) a Tabuľke \@ref(tab:miscF), resp. Grafe \@ref(fig:miscHeatM) a Tabuľke \@ref(tab:miscM). Ako je zrejmé z grafov, štruktúra miskonceptov u oboch pohlaví je v zásade podobná.
+Exaktné distribúcie odpovedí na položky merajúce miskoncepty o sexuálnom obťažovaní jednotlivo pre ženy a mužov sú zobrazené na Grafe \@ref(fig:mischeatf) a Tabuľke \@ref(tab:miscF), resp. Grafe \@ref(fig:mischeatm) a Tabuľke \@ref(tab:miscM). Ako je zrejmé z grafov, štruktúra miskonceptov u oboch pohlaví je v zásade podobná.
 
-```{r miscHeatF, fig.asp="Štruktúra miskoncepcií u žien - Heatmap graf"}
+```{r mischeatf, fig.cap="Štruktúra miskoncepcií u žien - Heatmap graf"}
 d3heatmap(as.matrix(rq10_misconcept_item_freqs_females), dendrogram = "none", cexRow = .68, cexCol = .75, colors = "YlOrRd", anim_duration = 1000)
 ```
 
-```{r miscHeatM, fig.cap="Štruktúra miskoncepcií u mužov - Heatmap graf"}
+```{r mischeatm, fig.cap="Štruktúra miskoncepcií u mužov - Heatmap graf"}
 d3heatmap(as.matrix(rq10_misconcept_item_freqs_males), dendrogram = "none", cexRow = .68, cexCol = .75, colors = "YlOrRd", anim_duration = 1000)
 ```
 

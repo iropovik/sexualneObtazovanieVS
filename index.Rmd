@@ -286,6 +286,7 @@ d3heatmap(as.matrix(rq8_attitudes_item_freqs_females), dendrogram = "none", cexR
 ```
 
 
+
 ```{r attHeatM, fig.cap="Štruktúra postojov k sexuálnemu obťažovaniu u mužov - Heatmap graf"}
 d3heatmap(as.matrix(rq8_attitudes_item_freqs_males), dendrogram = "none", cexRow = .68, cexCol = .75, colors = "YlOrRd", anim_duration = 1000, scale = "row", labRow = noquote(sprintf("Situácia %d", 1:19)))
 
@@ -329,6 +330,7 @@ d3heatmap(as.matrix(rq10_misconcept_item_freqs_females), dendrogram = "none", ce
 
 #heatmap.2(as.matrix(rq10_misconcept_item_freqs_females), cexRow = 1, cexCol = 1,  dendrogram = "none", key = F, Rowv = FALSE, Colv = FALSE, scale = "row", col = RColorBrewer::brewer.pal(n = 9, name = "Blues"), trace = "none", margins = c(6,7), srtCol = 45, density.info = "none", keysize = 0.5)
 ```
+
 
 
 ```{r miscHeatM, fig.cap="Štruktúra miskoncepcií u mužov - Heatmap graf"}

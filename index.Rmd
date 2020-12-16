@@ -42,7 +42,7 @@ header-includes:
 
 ```{r include=FALSE, warning=FALSE}
 # install required R libraries if not installed already
-list.of.packages <- c("knitr", "kableExtra", "tidyverse", "BayesFactor", "esc", "d3heatmap", "plotly", "r2d3", "webshot")
+list.of.packages <- c("knitr", "kableExtra", "tidyverse", "BayesFactor", "esc", "d3heatmap", "plotly", "gplots", "RColorBrewer")
 new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
 if(length(new.packages)) install.packages(new.packages)
 
@@ -144,11 +144,13 @@ V následnom kroku boli z celkovej vzorky vylúčení participanti, ktorých št
 
 # Výsledky výskumu {#vysledky}
 ## Prevalencia foriem sexuálneho obťažovania
-Primárnym výsledkom výskumu sú odhady populačných proporcií jednotlivých foriem sexuálneho obťažovania. Celkovo bolo meraných 20 rôznych foriem sexuálneho obťažovania. Ich konkrétna špecifikácia je uvedená v Tabuľke \@ref(tab:formsList). Týchto 20 konkrétnych foriem spadá do 3 nadradených klastrov, ktorými sú (1) rodovo motivované obťažovanie (formy 1-8), (2) neželaná sexuálna pozornosť (formy 9-16), a (3) sexuálny nátlak (formy 17-20). Na grafe \@ref(fig:prevItems) sú zobrazené vážené percentuálne prevalencie 20 individuálnych foriem, s farebným odlíšením foriem, do ktorých spadajú.
+Primárnym výsledkom výskumu sú odhady populačných proporcií jednotlivých foriem sexuálneho obťažovania. Celkovo bolo meraných 20 rôznych foriem sexuálneho obťažovania. Ich konkrétna špecifikácia je uvedená v Tabuľke \@ref(tab:formsList). 
 
 ```{r formsList}
 kbl(forms, digits = 3, caption = "Zoznam foriem sexuálneho obťažovania", booktabs = T, col.names = c("Položka", "Formulované ako 'Stalo sa vám počas štúdia na súčasnej vysokej škole, že..'")) %>% kable_paper("hover") %>% kable_styling(latex_options = c("striped", "scale_down", "HOLD_position"), full_width = F, font_size = 12) %>% scroll_box(height = "300px")
 ```
+
+Týchto 20 konkrétnych foriem spadá do 3 nadradených klastrov, ktorými sú (1) rodovo motivované obťažovanie (formy 1-8), (2) neželaná sexuálna pozornosť (formy 9-16), a (3) sexuálny nátlak (formy 17-20). Na grafe \@ref(fig:prevItems) sú zobrazené vážené percentuálne prevalencie 20 individuálnych foriem, s farebným odlíšením foriem, do ktorých spadajú.
 
 ```{r prevItems, fig.cap="Prevalencia individuálnych foriem sexuálneho obťažovania"}
 rq1.1_items_plot %>% ggplotly()
@@ -279,11 +281,15 @@ Nižšie je zároveň možné vidieť tzv. heatmaps grafy pre obe pohlavia. Heat
 
 ```{r attHeatF, fig.cap="Štruktúra postojov k sexuálnemu obťažovaniu u žien - Heatmap graf"}
 d3heatmap(as.matrix(rq8_attitudes_item_freqs_females), dendrogram = "none", cexRow = .68, cexCol = .75, colors = "YlOrRd", anim_duration = 1000, scale = "row", labRow = noquote(sprintf("Situácia %d", 1:19)))
+
+#heatmap.2(as.matrix(rq8_attitudes_item_freqs_females), cexRow = 1, cexCol = 1,  dendrogram = "none", key = F, Rowv = FALSE, Colv = FALSE, scale = "row", col = RColorBrewer::brewer.pal(n = 9, name = "Blues"), trace = "none", margins = c(6,7), srtCol = 45, density.info = "none", keysize = 0.5)
 ```
 
 
 ```{r attHeatM, fig.cap="Štruktúra postojov k sexuálnemu obťažovaniu u mužov - Heatmap graf"}
 d3heatmap(as.matrix(rq8_attitudes_item_freqs_males), dendrogram = "none", cexRow = .68, cexCol = .75, colors = "YlOrRd", anim_duration = 1000, scale = "row", labRow = noquote(sprintf("Situácia %d", 1:19)))
+
+#heatmap.2(as.matrix(rq8_attitudes_item_freqs_males), cexRow = 1, cexCol = 1,  dendrogram = "none", key = F, Rowv = FALSE, Colv = FALSE, scale = "row", col = RColorBrewer::brewer.pal(n = 9, name = "Blues"), trace = "none", margins = c(6,7), srtCol = 45, density.info = "none", keysize = 0.5)
 ```
 
 Zároveň sa nepreukázal vzťah medzi senzitivitou na sexuálne obťažovanie a závažnosťou obťažovania, ktorému bol participant vystavený, *r* = `r round(rq8_harrassedSensitivity_cor$estimate, 2)`, *p* = `r round(rq8_harrassedSensitivity_cor$p.value, 2)`, <I>BF<sub>01</sub></I> = `r round(1/extractBF(rq8_harrassedSensitivity_bf)[1], 2)` a ani statusom obete, `r out(rq8_harrassedSensitivityBF, rq8_harrassedSensitivityAnova)`. Medzi participantami študujúcimi iné odbory však boli detekované rozdiely, `r out(rq8_fieldSensitivityBF, rq8_fieldSensitivityAnova)`. V tabuľke \@ref(tab:sensField) je možné vidieť priemery (vyššia hodnota značí vyššiu mieru senzitivity) a smerodajné odchýlky senzitivity na sexuálne obťažovanie naprieč všetkými odbormi. Ako je vidieť v tabuľke regresných koeficinetov \@ref(tab:sensFieldReg), kde odbor "filozofický, humanitný, pedagogický, teologický" predstavuje referenčnú skupinu, študenti prírodovedných, technických a zdravotníckych odborov vykazujú v porovnaní so spoločensko-humanitnými odbormi signifikantne nižšiu senzitivitu na sexuálne obťažovanie^[Regresné koeficinety predstavujú rozdiel v priemeroch v porovnaní s referenčnou skupinou (intercept modelu)] filozofických, humanitných, pedagogických, a teologických odborov.] Výrazne nižší priemer v porovnaní s referenčnou skupinou bol aj v mediálnych a umeleckých odboroch, no v danom prípade je možné predpokladať nižšiu štatistickú silu na detekciu signifikantného rozdielu z dôvodu malej početnosti participantov tohto odboru vo vzorke.
@@ -320,11 +326,15 @@ Exaktné distribúcie odpovedí na položky merajúce miskoncepty o sexuálnom o
 
 ```{r miscHeatF, fig.cap="Štruktúra miskoncepcií u žien - Heatmap graf"}
 d3heatmap(as.matrix(rq10_misconcept_item_freqs_females), dendrogram = "none", cexRow = .68, cexCol = .75, colors = "YlOrRd", anim_duration = 1000)
+
+#heatmap.2(as.matrix(rq10_misconcept_item_freqs_females), cexRow = 1, cexCol = 1,  dendrogram = "none", key = F, Rowv = FALSE, Colv = FALSE, scale = "row", col = RColorBrewer::brewer.pal(n = 9, name = "Blues"), trace = "none", margins = c(6,7), srtCol = 45, density.info = "none", keysize = 0.5)
 ```
 
 
 ```{r miscHeatM, fig.cap="Štruktúra miskoncepcií u mužov - Heatmap graf"}
-d3heatmap(as.matrix(rq10_misconcept_item_freqs_males), dendrogram = "none", cexRow = .68, cexCol = .75, colors = "YlOrRd", anim_duration = 1000)
+d3heatmap(as.matrix(rq10_misconcept_item_freqs_males), dendrogram = "none", cexRow = .68, cexCol = .75, colors = "Oranges", anim_duration = 1000)
+
+#heatmap.2(as.matrix(rq10_misconcept_item_freqs_males), cexRow = 1, cexCol = 1,  dendrogram = "none", key = F, Rowv = FALSE, Colv = FALSE, scale = "row", col = RColorBrewer::brewer.pal(n = 9, name = "Blues"), trace = "none", margins = c(6,7), srtCol = 45, density.info = "none", keysize = 0.5)
 ```
 
 

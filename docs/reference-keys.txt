@@ -29,6 +29,7 @@ tab:sensFieldReg
 tab:unnamed-chunk-6
 tab:miscList
 fig:miscPlot
+fig:miscHeatF
 fig:miscHeatM
 tab:miscF
 tab:miscM
@@ -56,6 +57,3 @@ právne-povedomie-a-informácie
 vnímanie-sexuálneho-obťažovania
 stereotypy-o-sexuálnom-obťažovaní
 referencie
-fig:mischeatm
-fig:mischeatf
-fig:miscHeatF

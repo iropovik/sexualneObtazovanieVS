@@ -107,14 +107,14 @@ ss_fieldStudy_n <- data %>%
 
 ss_fieldStudy_plot <- data %>% filter(Rod %in% c(0, 1)) %>% mutate(Rod = fct_rev(Rod)) %>%
            ggplot(aes(`fieldStudy`, fill = factor(Rod, labels = c("Ženy", "Muži")))) + geom_histogram(stat = "count", alpha = .6, binwidth=.5, bins = length(data$`fieldStudy`)) +
-           labs(x = "", y = "Počet participantov", fill = "Pohlavie") + coord_flip() + scale_fill_manual(values=c(cbPalette[1], cbPalette[3])) +
+           labs(x = "", y = "Počet participantov", fill = "") + coord_flip() + scale_fill_manual(values=c(cbPalette[1], cbPalette[3])) +
            scale_x_discrete(limits = ss_fieldStudy_n$Odbor, labels = rev(c("spoločenský\nekonomický\nprávny","technický","filozofický\nhumanitný\npedagogický\nteologický", "zdravotnícky", "prírodovedecký", "mediálny\numelecký")))
 
 # age
 ageRange <- 17:30
 ss_age_plot <- data %>% filter(age %in% ageRange & Rod %in% c(0, 1)) %>% mutate(Rod = fct_rev(Rod)) %>%
                       ggplot(aes(age, fill = factor(Rod, labels = c("Ženy", "Muži")))) + geom_histogram(binwidth=.5, bins = length(ageRange), position = position_stack(), alpha = .6) +
-                      scale_x_continuous(name = "Vek", breaks=seq(17,30,1)) + labs(y = "Počet", fill = "Pohlavie") +
+                      scale_x_continuous(name = "Vek", breaks=seq(17,30,1)) + labs(y = "Počet participantov", fill = "") +
                       scale_fill_manual(values=c(cbPalette[1], cbPalette[3]))
 
 # age groups
@@ -152,7 +152,7 @@ ss_sexOrien_n <- data %>%
 data$`Rok štúdia` <- as.factor(as.numeric(gsub("([0-9]+).*$", "\\1", data$yearStudy)))
 ss_yearStudy_plot <- data %>% filter(`Rok štúdia` %in% 1:7 & Rod %in% c(0, 1)) %>%
                       ggplot(aes(`Rok štúdia`, fill = fct_rev(Rod))) + geom_bar(stat = "count", position = "stack", alpha = .6) +
-                      scale_x_discrete(name = "Rok štúdia") + labs(title = "Rok štúdia", y = "Počet", fill = "Pohlavie") +
+                      scale_x_discrete(name = "Rok štúdia") + labs(title = "Rok štúdia", y = "Počet", fill = "") +
                       scale_fill_manual(values=c(cbPalette[1], cbPalette[3]))
 
 # field of study by year
@@ -162,8 +162,8 @@ ss_fieldStudyYear_n <- data %>%
             percent = round(100*n()/nrow(.), 2))
 
 ss_fieldStudyYear_plot <- data %>% filter(`Rok štúdia` %in% 1:7 & Rod %in% c(0, 1)) %>%
-           ggplot(aes(`fieldStudy`, fill = `Rok štúdia`)) + geom_bar(stat = "count", position = position_stack(), alpha = .6) +
-           scale_x_discrete(name = "Odbor", limits = ss_fieldStudy_n$Odbor, labels = rev(c("spoločenský\nekonomický\nprávny","technický","filozofický\nhumanitný\npedagogický\nteologický", "zdravotnícky", "prírodovedecký", "mediálny\numelecký"))) + labs(y = "Počet", fill = "Ročník") +
+           ggplot(aes(`fieldStudy`, fill = factor(`Rok štúdia`, labels = noquote(sprintf("%d%s", 1:6, ". ročník"))))) + geom_bar(stat = "count", position = position_stack(), alpha = .6) +
+           scale_x_discrete(name = "Odbor", limits = ss_fieldStudy_n$Odbor, labels = rev(c("spoločenský\nekonomický\nprávny","technický","filozofický\nhumanitný\npedagogický\nteologický", "zdravotnícky", "prírodovedecký", "mediálny\numelecký"))) + labs(y = "Počet participantov", fill = "") +
            scale_fill_manual(values=cbPalette) + coord_flip()
 
 # field of study by region
@@ -281,7 +281,7 @@ rq1.1_items_plotData <- as_tibble(cbind(item = names(rq1.1_items_n), t(rq1.1_ite
   mutate(perc = as.numeric(V2), item = str_remove(item, "_perc"), cluster = c(rep("GMH", 8), rep("USA", 8), rep("SAB", 4)), V2 = NULL) %>% arrange(perc)
 
 rq1.1_items_plot <- rq1.1_items_plotData %>% ggplot(aes(x = item, y = perc, fill = factor(cluster, labels = c("Rodovo motivované\nobťažovanie", "Sexuálny nátlak", "Neželaná sexuálna\npozornosť")))) + geom_bar(stat = "identity",  alpha = .6) +
-           labs(x = "", y = "Percento participantov") + scale_fill_manual("Klaster\nsexuálneho obťažovania", values = c(cbPalette[1], cbPalette[2], cbPalette[3])) +
+           labs(x = "", y = "Percento participantov") + scale_fill_manual("", values = c(cbPalette[1], cbPalette[2], cbPalette[3])) +
            coord_flip() + scale_x_discrete(limits = rq1.1_items_plotData$item)
 
 # individual forms by gender
@@ -297,7 +297,7 @@ rq1.1_itemsGender_plotData <- as_tibble(cbind(item = names(rq1.1_itemsGender_n),
   mutate(gender = ifelse(gender == "male", "Muži", "Ženy"))
 
 rq1.1_itemsGender_plot <- rq1.1_itemsGender_plotData %>% ggplot(aes(x = item, y = perc, fill = fct_rev(gender))) + geom_bar(stat = "identity",  alpha = .6, position = "dodge") +
-                               labs(x = "", y = "Percento participantov") + scale_fill_manual("Pohlavie", values = c("Ženy" = cbPalette[1], "Muži" = cbPalette[3])) +
+                               labs(x = "", y = "Percento participantov") + scale_fill_manual("", values = c("Ženy" = cbPalette[1], "Muži" = cbPalette[3])) +
                                coord_flip() + scale_x_discrete(limits = rev(rq1.1_itemsGender_plotData$item))
 
 ### Frequencies by cluster
@@ -355,7 +355,7 @@ rq1.2_clusterGender_plotData <- as_tibble(cbind(item = names(rq1.2_clusterGender
 
 rq1.2_clusterGender_plot <- rq1.2_clusterGender_plotData %>% mutate(gender = fct_recode(gender, "Muži" = "male", "Ženy" = "female")) %>%
                                      ggplot(aes(x = item, y = perc, fill = gender)) + geom_bar(stat = "identity",  alpha = .6, position = "dodge") +
-                                     labs(x = "", y = "Percento participantov") + scale_fill_manual("Pohlavie", values = c("Ženy" = cbPalette[1], "Muži" = cbPalette[3])) +
+                                     labs(x = "", y = "Percento participantov") + scale_fill_manual("", values = c("Ženy" = cbPalette[1], "Muži" = cbPalette[3])) +
                                      coord_flip() + scale_x_discrete(limits = rev(rq1.2_clusterGender_plotData$item), labels = c(`Rodovo motivované obťažovanie` = "Rodovo\nmotivované\nobťažovanie", `Neželaná sexuálna pozornosť` = "Neželaná\nsexuálna\npozornosť", `Sexuálny nátlak` = "Sexuálne\nnásilie"))
 
 # Computes the weighted proportions (prevalence rates) and CIs of CSA forms in girls
@@ -1230,7 +1230,7 @@ rq8_attitudes_n_plotData <- as_tibble(cbind(item = names(rq8_attitudes_n), t(rq8
   mutate(Muži = as.numeric(V2), Ženy = as.numeric(V3), item = as.numeric(1:19), V2 = NULL, V3 = NULL) %>% pivot_longer(cols = c(Muži, Ženy), names_to = "Rod", values_to = "perc")
 
 rq8_attitudes_plot <- rq8_attitudes_n_plotData %>% ggplot(aes(x = reorder(item, -item), y = perc, fill = fct_rev(Rod))) + geom_bar(stat = "identity",  alpha = .6, position = "dodge") +
-                                     labs(x = "Prejavy obťažujúceho správania", y = "Priemerná miera súhlasu") + scale_fill_manual("Pohlavie", values = c("Ženy" = cbPalette[1], "Muži" = cbPalette[3])) +
+                                     labs(x = "Prejavy obťažujúceho správania", y = "Priemerná miera súhlasu") + scale_fill_manual("", values = c("Ženy" = cbPalette[1], "Muži" = cbPalette[3])) +
                                      coord_flip() + scale_x_discrete(labels = rev(noquote(sprintf("Situácia %d", 1:19)))) + scale_y_continuous(limits = c(0, 100))
 
 attitudesList <- c("Rozprával príbehy alebo vtipy so sexuálnym podtónom (napr. na hodine/počas praxe/súkromne v kabinete).",
@@ -1439,7 +1439,7 @@ rq10_misconcept_n_plotData <- as_tibble(cbind(item = names(rq10_misconcept_n), t
   mutate(Muži = as.numeric(V2), Ženy = as.numeric(V3), item = as.numeric(1:11), V2 = NULL, V3 = NULL) %>% pivot_longer(cols = c(Muži, Ženy), names_to = "Rod", values_to = "perc")
 
 rq10_misconcept_plot <- rq10_misconcept_n_plotData %>% ggplot(aes(x = reorder(item, -item), y = perc, fill = Rod)) + geom_bar(stat = "identity",  alpha = .6, position = "dodge") +
-                                     labs(x = "Miskoncepty o sexuálnom obťažovaní", y = "Priemerná miera súhlasu") + scale_fill_manual("Pohlavie", values = c("Ženy" = cbPalette[1], "Muži" = cbPalette[3])) +
+                                     labs(x = "Miskoncepty o sexuálnom obťažovaní", y = "Priemerná miera súhlasu") + scale_fill_manual("", values = c("Ženy" = cbPalette[1], "Muži" = cbPalette[3])) +
                                      coord_flip() + scale_x_discrete(labels = rev(noquote(sprintf("Miskoncept %d", 1:11)))) + scale_y_continuous(limits = c(0, 100))
 
 misconceptsList <- c("Ženy si často vymýšľajú obvinenia zo sexuálneho obťažovania.",

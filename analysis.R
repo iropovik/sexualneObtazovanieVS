@@ -1275,7 +1275,6 @@ names(rq8_attitudes_item_freqs_males) <- c("Úplne nesúhlasím",	"Skôr nesúhl
 
 rq8_attitudes_item_freqs_wNA <- data %>% select(starts_with("att") & !contains(c("unwanted"))) %>%
   map(~round(prop.table(wtd.table(., weights = data$w, normwt = T, na.rm = F, na.show = T))*100, 2))
-rq8_attitudes_item_freqs_wNA
 
 # Existujú rozdiely s ohľadom na klastre foriem SO (1. rodové obťažovanie, 2. nechcená sexuálna pozornosť, 3. sexuálne donútenie/násilie) ?
 # Tazko zodpovedatelne. Alternativa: vztah zavaznosti SO a senzitivity na obtazovanie

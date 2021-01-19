@@ -629,11 +629,7 @@ rq3_perpetratorsByItem_female_2ndmost <- rq3_perpByItem_female %>% map(~arrange(
 rq3_perpOverallMostFemale <- cbind(rq3_perpetratorsByItem_female_most, rq3_perpetratorsByItem_female_2ndmost)
 rownames(rq3_perpOverallMostFemale) <- noquote(sprintf("q%d", 1:20))
 
-<<<<<<< HEAD
 # Kto sú najčastejší pachatelia SO v rámci jednotlivých foriem SO u chlapcov
-=======
-# Kto sú pachatelia SO v rámci jednotlivých foriem SO u chlapcov
->>>>>>> aab08046f0e7fd3daceb12555622498903503593
 rq3_perpByItem_male <- list()
 for(i in seqq){
   rq3_perpByItem_male[[i]] <- do.call(rbind.data.frame, data[data$Rod == 0,] %>% select(contains("_who") & !contains("Other")) %>% map(~cbind("freq" = round(wtd.table(., weights = data[data$Rod == 0,]$w, normwt = T), 0), "perc" = round(prop.table(wtd.table(., weights = data[data$Rod == 0,]$w, normwt = T)), 2)))) %>%
@@ -673,7 +669,6 @@ for(n in 1:6){
 rq3_perpetratorsOverall_table <- round(unlist(rq3_perpetratorsOverall_n)*100/sum(unlist(rq3_perpetratorsOverall_n)), 2)
 names(rq3_perpetratorsOverall_table) <- gsub(".count.freq", "", names(rq3_perpetratorsOverall_table))
 
-<<<<<<< HEAD
 # Kto sú všetci pachatelia SO v rámci jednotlivých foriem SO u chlapcov
 perpItemsMale <- list(NA)
 perpItemsNamesMale <- list(NA)
@@ -724,8 +719,6 @@ perpAllFemalePlot <- ggplot(perpItemsFemale, aes(x = value , y = reorder(forma, 
                                         "Učiteľ Muž" = cbPalette[6], "Učiteľ Žena" = cbPalette[5],
                                         "Zamestnanec Muž" = cbPalette[2], "Zamestnanec Žena" = cbPalette[4]))
 
-=======
->>>>>>> aab08046f0e7fd3daceb12555622498903503593
 # Count per cluster overall
 # GenderMotivHarr
 whoGenderMotivHarr <- do.call(rbind.data.frame, data %>% select(q1:q9 & contains("_who") & !contains("Other")) %>% map(~cbind("freq" = round(wtd.table(., weights = data$w, normwt = T), 0), "perc" = prop.table(round(wtd.table(., weights = data$w, normwt = T), 0))))) %>% rownames_to_column("who")

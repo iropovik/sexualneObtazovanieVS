@@ -225,6 +225,7 @@ kbl(perpertatorsTable_female, digits = 3, caption = "Najčastejší páchatelia 
 kbl(perpertatorsTable_male, digits = 3, caption = "Najčastejší páchatelia u mužov - klastre", booktabs = T) %>% kable_paper("hover") %>% kable_styling(latex_options = c("striped", "scale_down", "HOLD_position"), full_width = F, font_size = 12)
 ```
 
+<<<<<<< HEAD
 Na nasledujúcich grafoch je možné vidieť úplné dáta páchateľov sexuálneho obťažovania separátne pre ženy \@ref(fig:perpAllFemale) a pre mužov \@ref(fig:perpAllMale). Jednotlivé stĺpce predstavujú proporčné rozdelenie páchateľov označených obeťami sexuálneho obťažovania.
 
 ```{r perpAllFemale, fig.cap="Páchatelia jednotlivých foriem u žien", warning=FALSE}
@@ -236,6 +237,8 @@ perpAllMalePlot %>% ggplotly(tooltip = c("value", "Páchateľ"))
 ```
 
 
+=======
+>>>>>>> aab08046f0e7fd3daceb12555622498903503593
 Z pomedzi rôznych druhov prostredia sme separátne analyzovali online prostredie. Jednoznačne najčastejším páchateľom sexuálneho obťažovania vo všetkých 3 klastroch sú študenti alebo študentky. V porovnaní s druhou najfrekventovanejšou skupinou, učiteľmi, sú študenti `r round(unlist(perpOnline[1])[c(2)]/unlist(perpOnline[1])[3], 1)` krát častejším páchatelom rodovo motivovaného obťažovania, `r round(unlist(perpOnline[2])[c(2)]/unlist(perpOnline[2])[3], 1)` krát častejším páchatelom neželanej sexuálnej pozornosti a až `r round(unlist(perpOnline[3])[c(2)]/unlist(perpOnline[3])[3], 1)` krát častejším páchatelom sexuálneho násilia.
 
 ## Miesto sexuálneho obťažovania

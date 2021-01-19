@@ -17,8 +17,11 @@ tab:rfSAB
 tab:perpClust
 tab:perpClustF
 tab:perpClustM
+<<<<<<< HEAD
 fig:perpAllFemale
 fig:perpAllMale
+=======
+>>>>>>> aab08046f0e7fd3daceb12555622498903503593
 tab:whereOverall
 tab:whereTable
 tab:suffer

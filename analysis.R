@@ -629,7 +629,7 @@ rq3_perpetratorsByItem_female_2ndmost <- rq3_perpByItem_female %>% map(~arrange(
 rq3_perpOverallMostFemale <- cbind(rq3_perpetratorsByItem_female_most, rq3_perpetratorsByItem_female_2ndmost)
 rownames(rq3_perpOverallMostFemale) <- noquote(sprintf("q%d", 1:20))
 
-# Kto sú pachatelia SO v rámci jednotlivých foriem SO u chlapcov
+# Kto sú najčastejší pachatelia SO v rámci jednotlivých foriem SO u chlapcov
 rq3_perpByItem_male <- list()
 for(i in seqq){
   rq3_perpByItem_male[[i]] <- do.call(rbind.data.frame, data[data$Rod == 0,] %>% select(contains("_who") & !contains("Other")) %>% map(~cbind("freq" = round(wtd.table(., weights = data[data$Rod == 0,]$w, normwt = T), 0), "perc" = round(prop.table(wtd.table(., weights = data[data$Rod == 0,]$w, normwt = T)), 2)))) %>%
@@ -668,6 +668,56 @@ for(n in 1:6){
 
 rq3_perpetratorsOverall_table <- round(unlist(rq3_perpetratorsOverall_n)*100/sum(unlist(rq3_perpetratorsOverall_n)), 2)
 names(rq3_perpetratorsOverall_table) <- gsub(".count.freq", "", names(rq3_perpetratorsOverall_table))
+
+# Kto sú všetci pachatelia SO v rámci jednotlivých foriem SO u chlapcov
+perpItemsMale <- list(NA)
+perpItemsNamesMale <- list(NA)
+for(i in 1:20){
+  perpItemsNamesMale[[i]] <- rq3_perpByItem_male[[i]] %>% mutate(who = str_replace_all(who, c(".*Student_M.1.*" = "Študent Muž",
+                                                                                     ".*Teacher_M.1.*" = "Učiteľ Muž",
+                                                                                     ".*Teacher_M.1.*" = "Učiteľ Muž",
+                                                                                     ".*Teacher_F.1.*" = "Učiteľ Žena",
+                                                                                     ".*Student_F.1.*" = "Študent Žena",
+                                                                                     ".*Employee_F.1.*" = "Zamestnanec Žena",
+                                                                                     ".*Employee_M.1.*" = "Zamestnanec Muž")))
+  perpItemsMale[[i]] <- rq3_perpByItem_male[[i]] %>% select(perc) %>% unlist()
+  names(perpItemsMale[[i]]) <- perpItemsNamesMale[[i]]$who
+}
+perpItemsTableMale <- perpItemsMale %>% bind_rows() %>% rownames_to_column("forma") %>% mutate(forma = as.numeric(forma))
+perpItemsMale <- perpItemsTableMale %>% pivot_longer(cols = 2:7, names_to = "Páchateľ")
+
+perpAllMalePlot <- ggplot(perpItemsMale, aes(x = value , y = reorder(forma, -forma), fill = Páchateľ)) +
+  geom_bar(stat = 'identity', position = "fill", alpha = .6) +
+  labs(x = "Proporcie páchateľov", y = "Forma sexuálneho obťažovania") +
+  theme_minimal() +
+  scale_fill_manual(values = c("Študent Žena" = cbPalette[1], "Študent Muž" = cbPalette[3],
+                               "Učiteľ Muž" = cbPalette[6], "Učiteľ Žena" = cbPalette[5],
+                               "Zamestnanec Muž" = cbPalette[2], "Zamestnanec Žena" = cbPalette[4]))
+
+# Kto sú všetci pachatelia SO v rámci jednotlivých foriem SO u dievčat
+perpItemsFemale <- list(NA)
+perpItemsNamesFemale <- list(NA)
+for(i in 1:20){
+  perpItemsNamesFemale[[i]] <- rq3_perpByItem_female[[i]] %>% mutate(who = str_replace_all(who, c(".*Student_M.1.*" = "Študent Muž",
+                                                                                              ".*Teacher_M.1.*" = "Učiteľ Muž",
+                                                                                              ".*Teacher_M.1.*" = "Učiteľ Muž",
+                                                                                              ".*Teacher_F.1.*" = "Učiteľ Žena",
+                                                                                              ".*Student_F.1.*" = "Študent Žena",
+                                                                                              ".*Employee_F.1.*" = "Zamestnanec Žena",
+                                                                                              ".*Employee_M.1.*" = "Zamestnanec Muž")))
+  perpItemsFemale[[i]] <- rq3_perpByItem_female[[i]] %>% select(perc) %>% unlist()
+  names(perpItemsFemale[[i]]) <- perpItemsNamesFemale[[i]]$who
+}
+perpItemsTableFemale <- perpItemsFemale %>% bind_rows() %>% rownames_to_column("forma") %>% mutate(forma = as.numeric(forma))
+perpItemsFemale <- perpItemsTableFemale %>% pivot_longer(cols = 2:7, names_to = "Páchateľ")
+
+perpAllFemalePlot <- ggplot(perpItemsFemale, aes(x = value , y = reorder(forma, -forma), fill = Páchateľ)) +
+           geom_bar(stat = 'identity', position = "fill", alpha = .6) +
+           labs(x = "Proporcie páchateľov", y = "Forma sexuálneho obťažovania") +
+           theme_minimal() +
+           scale_fill_manual(values = c("Študent Žena" = cbPalette[1], "Študent Muž" = cbPalette[3],
+                                        "Učiteľ Muž" = cbPalette[6], "Učiteľ Žena" = cbPalette[5],
+                                        "Zamestnanec Muž" = cbPalette[2], "Zamestnanec Žena" = cbPalette[4]))
 
 # Count per cluster overall
 # GenderMotivHarr

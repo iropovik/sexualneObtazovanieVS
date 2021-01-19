@@ -17,6 +17,8 @@ tab:rfSAB
 tab:perpClust
 tab:perpClustF
 tab:perpClustM
+fig:perpAllFemale
+fig:perpAllMale
 tab:whereOverall
 tab:whereTable
 tab:suffer
@@ -57,5 +59,3 @@ právne-povedomie-a-informácie
 vnímanie-sexuálneho-obťažovania
 stereotypy-o-sexuálnom-obťažovaní
 referencie
-fig:perpAllFemale
-fig:perpAllMale

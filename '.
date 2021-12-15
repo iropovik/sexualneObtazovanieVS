@@ -1,3 +1,0 @@
-Error in eval(parse(text = name)) : object 'table_css' not found
-Calls: local ... create_output_format -> create_output_format_function -> eval -> eval
-Execution halted

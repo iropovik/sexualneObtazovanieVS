@@ -325,22 +325,22 @@ rq1.2_cluster_n <- data %>%
                     perc = round(svytotal(as.logical(.), design, na.rm = T), 3)*100/sum(w)))
 
 # frequency tables (n's and %) for aggregate categories of abuse, showing percentages for one-time and repeated abuses
-rq1.2_cluster_exposure <- data %>% select(`Rodovo motivované obťažovanie`, `Neželaná sexuálna pozornosť`, `Sexuálny nátlak`) %>% map(., ~round(prop.table(wtd.table(., weights = data$w)), 2))
-rq1.2_cluster_exposureF <- data[data$Rod == 1,] %>% select(`Rodovo motivované obťažovanie`, `Neželaná sexuálna pozornosť`, `Sexuálny nátlak`) %>% map(., ~round(prop.table(wtd.table(., weights = data[data$Rod == 1,]$w)), 2))
-rq1.2_cluster_exposureM <- data[data$Rod == 0,] %>% select(`Rodovo motivované obťažovanie`, `Neželaná sexuálna pozornosť`, `Sexuálny nátlak`) %>% map(., ~round(prop.table(wtd.table(., weights = data[data$Rod == 0,]$w)), 2))
-repExpGMH <- round(rq1.2_cluster_exposure$`Rodovo motivované obťažovanie`[3]/sum(rq1.2_cluster_exposure$`Rodovo motivované obťažovanie`[c(2,3)]), 2)*100
-repExpGMHf <- round(rq1.2_cluster_exposureF$`Rodovo motivované obťažovanie`[3]/sum(rq1.2_cluster_exposureF$`Rodovo motivované obťažovanie`[c(2,3)]), 2)*100
-repExpGMHm <- round(rq1.2_cluster_exposureM$`Rodovo motivované obťažovanie`[3]/sum(rq1.2_cluster_exposureM$`Rodovo motivované obťažovanie`[c(2,3)]), 2)*100
+rq1.2_cluster_exposure <- data %>% select(`Rodovo motivované obťažovanie`, `Neželaná sexuálna pozornosť`, `Sexuálny nátlak`) %>% map(., ~round(prop.table(wtd.table(., weights = data$w)), 3))
+rq1.2_cluster_exposureF <- data[data$Rod == 1,] %>% select(`Rodovo motivované obťažovanie`, `Neželaná sexuálna pozornosť`, `Sexuálny nátlak`) %>% map(., ~round(prop.table(wtd.table(., weights = data[data$Rod == 1,]$w)), 3))
+rq1.2_cluster_exposureM <- data[data$Rod == 0,] %>% select(`Rodovo motivované obťažovanie`, `Neželaná sexuálna pozornosť`, `Sexuálny nátlak`) %>% map(., ~round(prop.table(wtd.table(., weights = data[data$Rod == 0,]$w)), 3))
+repExpGMH <- round(rq1.2_cluster_exposure$`Rodovo motivované obťažovanie`[3]/sum(rq1.2_cluster_exposure$`Rodovo motivované obťažovanie`[c(2,3)]), 3)*100
+repExpGMHf <- round(rq1.2_cluster_exposureF$`Rodovo motivované obťažovanie`[3]/sum(rq1.2_cluster_exposureF$`Rodovo motivované obťažovanie`[c(2,3)]), 3)*100
+repExpGMHm <- round(rq1.2_cluster_exposureM$`Rodovo motivované obťažovanie`[3]/sum(rq1.2_cluster_exposureM$`Rodovo motivované obťažovanie`[c(2,3)]), 3)*100
 
 # females
-repExpUSA <- round(rq1.2_cluster_exposure$`Neželaná sexuálna pozornosť`[3]/sum(rq1.2_cluster_exposure$`Neželaná sexuálna pozornosť`[c(2,3)]), 2)*100
-repExpUSAf <- round(rq1.2_cluster_exposureF$`Neželaná sexuálna pozornosť`[3]/sum(rq1.2_cluster_exposureF$`Neželaná sexuálna pozornosť`[c(2,3)]), 2)*100
-repExpUSAm <- round(rq1.2_cluster_exposureM$`Neželaná sexuálna pozornosť`[3]/sum(rq1.2_cluster_exposureM$`Neželaná sexuálna pozornosť`[c(2,3)]), 2)*100
+repExpUSA <- round(rq1.2_cluster_exposure$`Neželaná sexuálna pozornosť`[3]/sum(rq1.2_cluster_exposure$`Neželaná sexuálna pozornosť`[c(2,3)]), 3)*100
+repExpUSAf <- round(rq1.2_cluster_exposureF$`Neželaná sexuálna pozornosť`[3]/sum(rq1.2_cluster_exposureF$`Neželaná sexuálna pozornosť`[c(2,3)]), 3)*100
+repExpUSAm <- round(rq1.2_cluster_exposureM$`Neželaná sexuálna pozornosť`[3]/sum(rq1.2_cluster_exposureM$`Neželaná sexuálna pozornosť`[c(2,3)]), 3)*100
 
 # males
-repExpSAB <- round(rq1.2_cluster_exposure$`Sexuálny nátlak`[3]/sum(rq1.2_cluster_exposure$`Sexuálny nátlak`[c(2,3)]), 2)*100
-repExpSABf <- round(rq1.2_cluster_exposureF$`Sexuálny nátlak`[3]/sum(rq1.2_cluster_exposureF$`Sexuálny nátlak`[c(2,3)]), 2)*100
-repExpSABm <- round(rq1.2_cluster_exposureM$`Sexuálny nátlak`[3]/sum(rq1.2_cluster_exposureM$`Sexuálny nátlak`[c(2,3)]), 2)*100
+repExpSAB <- round(rq1.2_cluster_exposure$`Sexuálny nátlak`[3]/sum(rq1.2_cluster_exposure$`Sexuálny nátlak`[c(2,3)]), 3)*100
+repExpSABf <- round(rq1.2_cluster_exposureF$`Sexuálny nátlak`[3]/sum(rq1.2_cluster_exposureF$`Sexuálny nátlak`[c(2,3)]), 3)*100
+repExpSABm <- round(rq1.2_cluster_exposureM$`Sexuálny nátlak`[3]/sum(rq1.2_cluster_exposureM$`Sexuálny nátlak`[c(2,3)]), 3)*100
 
 # frequency tables (n's and %) for aggregate categories of abuse by gender.
 # dropping other than female, male

@@ -10,7 +10,7 @@ links-as-notes: true
 tables: yes
 output:
   bookdown::gitbook
-  #bookdown::pdf_book: default
+  #bookdown::pdf_book:
 github-repo: iropovik/sexualneObtazovanieVS
 description: "Národne reprezentatívny výskum sexuálneho obťažovania na slovenských vysokých školách"
 url: 'https\://iropovik.github.io/sexualneObtazovanieVS/'
@@ -95,33 +95,30 @@ knitr::include_graphics("funders.png")
 
 **Jazyková korektúra:** Sára Činčurová
 
-**Externá spolupráca:** Natália Heribanová 
+**Externá spolupráca:** Natália Heriban
 
 **ISBN:**
 
-\newpage
-
-# Obsah
+# Obsah {-}
 
 **Úvod**
 
-**1.	VÝCHODISKÁ SKÚMANIA SEXUÁLNEHO OBŤAŽOVANIA V AKADEMICKOM PROSTREDÍ**
 
-**1.1.	Vývoj konceptu sexuálneho obťažovania v aktivizme a legislatíve**
+**1.	Východiská skúmania sexuálneho obťažovania v akademickom prostredí**
+
+1.1.	 Vývoj konceptu sexuálneho obťažovania v aktivizme a legislatíve
 
 1.1.1.	Koncept sexuálneho obťažovania v medzinárodných dokumentoch a v slovenskom právnom poriadku
 
+1.2.	Definície sexuálneho obťažovania z perspektívy sociálnych vied
 
-**1.2.	Definície sexuálneho obťažovania z perspektívy sociálnych vied**
-
-1.2.1.	Typológia sexuálneho obťažovania podľa Luis Fitzgerald a kol.
+1.2.1.	Typológia sexuálneho obťažovania podľa Luis Fitzgerald a kol. 
 
 1.2.2.	Typológia sexuálneho obťažovania podľa Jamesa Grubera
 
-1.2.3.	Typológia sexuálneho obťažovania podľa Marie Rotundo a kol. 
+1.2.3.	Typológia sexuálneho obťažovania podľa Marie Rotundo a kol.
 
-
-**1.3.	Súčasný stav vedeckého poznania**
+1.3.	Súčasný stav vedeckého poznania
 
 1.3.1.	Výskum prevalencie sexuálneho obťažovania v akademickom prostredí
 
@@ -136,17 +133,17 @@ knitr::include_graphics("funders.png")
 1.3.6.	Nedostatky v doterajšom poznaní a cieľ výskumu IVPR
 
 
-**2.	METODIKA VÝSKUMU SEXUÁLNEHO OBŤAŽOVANIA NA SLOVENSKÝCH VYSOKÝCH ŠKOLÁCH**
+**2. Metodika výskumu sexuálneho obťažovania na slovenských vysokých školách**
 
-**2.1. Výskumná vzorka**
+2.1. Výskumná vzorka 
 
-**2.2. Spolupráca s fakultami a procedúra zberu dát**
+2.2. Spolupráca s fakultami a procedúra zberu dát
 
-**2.3. Výskumný nástroj a technické stránky jeho distribúcie**
+2.3. Výskumný nástroj a technické stránky jeho distribúcie
 
 2.3.1. Kľúčové otázky pri tvorbe dotazníka – etika a dostupnosť
 
-**2.4. Analýza dát**
+2.4. Analýza dát
 
 2.4.1. Skríning dát
 
@@ -155,25 +152,57 @@ knitr::include_graphics("funders.png")
 2.4.3. Aplikácia výberových váh
 
 
-**3. DISKUSIA VÝSLEDKOV VÝSKUMU**
+**3.	Výsledky výskumu**
 
-3.1. Prevalencia foriem sexuálneho obťažovania
+3.1.	Popis vzorky
 
-3.2. Páchatelia/ky a miesta výskytu sexuálneho obťažovania
+3.1.1 Demografické charakteristiky
 
-3.3. Rizikové faktory prevalencie sexuálneho obťažovania 
+3.1.2. Študijné charakteristiky
 
-3.4. Dôsledky, vyrovnávanie sa so situáciou a prístup k spravodlivosti
+3.1.3. Vylúčenie nedbanlivých participantov
 
-3.5. Povedomie o sexuálnom obťažovaní a jeho vnímanie 
+3.2.	Prevalencia foriem sexuálneho obťažovania
+
+3.3.	Rizikové faktory sexuálneho obťažovania
+
+3.4.	Páchatelia sexuálneho obťažovania
+
+3.5.	Miesto sexuálneho obťažovania
+
+3.6.	Subjektívne dôsledky sexuálneho obťažovania
+
+3.7.	Hľadanie pomoci
+
+3.8.	Právne povedomie a informácie
+
+3.9.	Vnímanie sexuálneho obťažovania
+
+3.10.	Stereotypy o sexuálnom obťažovaní
 
 
-**ZÁVER**
+**4. Diskusia výsledkov výskumu**
+
+4.1. Prevalencia foriem sexuálneho obťažovania
+
+4.2. Páchatelia/ky a miesta výskytu sexuálneho obťažovania
+
+4.3. Rizikové faktory prevalencie sexuálneho obťažovania 
+
+4.4. Dôsledky, vyrovnávanie sa so situáciou a prístup k spravodlivosti
+
+4.5. Povedomie o sexuálnom obťažovaní a jeho vnímanie 
 
 
-**O AUTORKÁCH A AUTOROCH**
+**Záver**
 
-# Úvod
+
+**Referencie**
+
+
+**O autorkách a autoroch**
+
+# Úvod {-}
 
 Sexuálne obťažovanie je súčasťou slovenskej legislatívy od roku 2008, kedy došlo k reforme zákona č. 365/2004 Z. z. o rovnakom zaobchádzaní v niektorých oblastiach a o ochrane pred diskrimináciou a o zmene a doplnení niektorých zákonov, teda tzv. antidiskriminačného zákona. Táto právna úprava, ktorú Slovenská republika prebrala zo smerníc Európskej únie a ich chápania sexuálneho obťažovania ako diskriminačnej praxe, zahŕňa dve perspektívy sexuálneho obťažovania. Je to obťažovanie quid pro quo („niečo za niečo“) i obťažovanie ako vytváranie nepriateľského prostredia, zasahujúce do dôstojnosti osôb. Zároveň môže byť sexuálnym obťažovaním podľa tohto zákona verbálne, neverbálne aj fyzické správanie sexuálnej povahy, pričom nie je zásadný zámer, ale podstatnou skutočnosťou je dôsledok takéhoto správania. Ako taká je právna úprava zakazujúca sexuálne obťažovanie na Slovensku v súlade nielen s európskymi normami, ale aj súčasným a vedecky podloženým chápaním sexuálneho obťažovania ako sociálnej praxe v organizáciách, ovplyvňujúcej kvalitu života, práce či štúdia. 
 
@@ -440,13 +469,13 @@ Meritokratický systém hodnotenia nepristupuje k sexuálnemu obťažovaniu ako 
   
 #### „Mačistická kultúra“ a sexizmus v kolektívoch
 
-Výskum sexuálneho obťažovania v prostredí vysokých škôl poukazuje na výskyt obťažovania v prostrediach a disciplínach, kde tradične študuje/učí vyšší počet mužov, a kde prevládajú tzv. androcentrické diskurzy. O „maskulinizovaných kolektívoch“ a organizačnej klíme ako najvplyvnejších faktoroch toho, či v organizáciách dochádza k sexuálnemu obťažovaniu, píšu už Hulin, Fitzgerald a Drasgow (1996). Práve v týchto prostrediach je prítomnosť žien považovaná za „atypickú“, či dokonca nežiadúcu, čo môže viesť k ich vytláčaniu z prostredia aj praxou sexuálneho a rodovo motivovaného obťažovania či diskriminácie (Vohlídalová, 2009; Šaldová, Tupá & Vohlídalová, 2009). Môže ísť napríklad o také študijne kolektívy, kde sú muži i dokonca ženy v kolektíve presvedčené, že toto konkrétne povolanie/odbor nie je vhodný pre ženy. Okrem toho pracovné kolektívy, v ktorých je dominantné množstvo mužov, môžu tiež klásť väčší dôraz na maskulínne kvality ako moc, sila, dominancia, agresivita alebo súťaživosť – v týchto mužských komunitách môžu ženy pôsobiť ako narušiteľky “mužských hodnotových klubov” (McDonald, 2012). V týchto prostrediach je zároveň pravdepodobné, že bude častejšie dochádzať k tzv. horizontálnemu sexuálnemu obťažovaniu – teda zo strany osôb s rovnakým statusom (napr. medzi študentmi/študentkami navzájom) (Lovaš & Vasková, 2014). Je tiež nutné zdôrazniť, že aj akademické oblasti, do ktorých už začali prenikať ženy, môžu ešte prechovávať „maskulinizované“ praktiky a organizačnú kultúru (Johnson, Widnall & Benya, 2018). 
+Výskum sexuálneho obťažovania v prostredí vysokých škôl poukazuje na výskyt obťažovania v prostrediach a disciplínach, kde tradične študuje/učí vyšší počet mužov, a kde prevládajú tzv. androcentrické diskurzy. O „maskulinizovaných kolektívoch“ a organizačnej klíme ako najvplyvnejších faktoroch toho, či v organizáciách dochádza k sexuálnemu obťažovaniu, píšu už Hulin, Fitzgerald a Drasgow (1996). Práve v týchto prostrediach je prítomnosť žien považovaná za „atypickú“, či dokonca nežiadúcu, čo môže viesť k ich vytláčaniu z prostredia aj praxou sexuálneho a rodovo motivovaného obťažovania či diskriminácie (Vohlídalová, 2009; Šaldová, Tupá & Vohlídalová, 2009). Môže ísť napríklad o také študijné kolektívy, kde sú muži i dokonca ženy v kolektíve presvedčené, že toto konkrétne povolanie/odbor nie je vhodný pre ženy. Okrem toho pracovné kolektívy, v ktorých je dominantné množstvo mužov, môžu tiež klásť väčší dôraz na maskulínne kvality ako moc, sila, dominancia, agresivita alebo súťaživosť – v týchto mužských komunitách môžu ženy pôsobiť ako narušiteľky “mužských hodnotových klubov” (McDonald, 2012). V týchto prostrediach je zároveň pravdepodobné, že bude častejšie dochádzať k tzv. horizontálnemu sexuálnemu obťažovaniu – teda zo strany osôb s rovnakým statusom (napr. medzi študentmi/študentkami navzájom) (Lovaš & Vasková, 2014). Je tiež nutné zdôrazniť, že aj akademické oblasti, do ktorých už začali prenikať ženy, môžu ešte prechovávať „maskulinizované“ praktiky a organizačnú kultúru (Johnson, Widnall & Benya, 2018). 
 
 Existujúci výskum poukazuje na to, že ak je v organizácii rozšírené sexuálne obťažovanie alebo rodovo motivované obťažovanie, mladí ľudia, ktorí do tohto prostredia vstupujú, bývajú už od začiatku socializovaní tak, aby takéto praktiky prijali a pokračovali v nich (Fasting, Brackenridge & Walseth, 2007; Johnson, Widnall & Benya, 2018). Rutinnosť a zakorenenosť sexuálneho obťažovania v organizáciách môže byť v mnohých kolektívoch rutinizovanou sociálnou praxou (Pryor, 1985; Hearn & Parkin, 1995; Collinson & Collinson, 1996; Pryor, Lavite & Stoller, 1993). Ako píšu De Judicibus a McCabe (2001, s. 2016): “V prostredí s vysokým stupňom sexualizovaného správania, ktoré je spoločensky akceptované, môžu ľudia interpretovať potenciálne obťažujúce správanie ako normálne interakcie. Osoba, ktorá namieta toto inými normalizované správanie, môže v takýchto prostrediach zažívať značné problémy.” 
 
 Tzv. rodové režimy sú materiálne i diskurzívne štruktúry, ktoré vplývajú na to, akým spôsobom sa sexuálne obťažovanie i násilie v organizáciách deje, no majú vplyv aj na to, ako sú posudzované jednotlivé sťažnosti a ako vedenie organizácie pristupuje k osobám, ktoré sa na obťažovanie rozhodnú sťažovať. V niektorých vedných odboroch môžu rodové režimy vystupovať na povrch v podobe rodovej diskriminácie a rodovo motivovaného obťažovania, prejavujú sa však aj tým, ako veľmi otvorené tieto štruktúry sú pre ženy i mužov, aká je ich šanca na kariérny postup (napr. na doktorandské štúdium) a ako môžu byť ženy i muži umlčiavaní práve pre svoj rod (Šaldová, Tupá & Vohlídalová, 2009; Lombardo & Bustelo 2021).
 
-Z tohto pohľadu sa v rôznych vedných oblastiach nemusí napĺňať predpokladaný scenár, kedy je študentka obťažovaná vyučujúcim. Naopak, výskum v Českej republike preukázal, že rodovo motivovaného obťažovania a rodovej diskriminácie sa môžu dopúšťať aj vyučujúce ženy na svojich študentoch (Vohlídalová, 2009). Ako píšu Smetáčková a Pavlík (2011, s. 370): „Rodové obťažovanie využíva rodové stereotypy, a prehlbuje tak polarizáciu žien/femininity a mužov/maskulinity. Sexuálna pozornosť stavia ženy (eventuálne i mužov) do pozície sexuálnych objektov, a tým zneviditeľňuje ich ďalšie charakteristiky relevantné pre dané prostredie (napr. študijne dispozície a výkony) a odoberá im časť zodpovednosti za vlastnú aktivitu (vystižnejšie self-efficacy).“
+Z tohto pohľadu sa v rôznych vedných oblastiach nemusí napĺňať predpokladaný scenár, kedy je študentka obťažovaná vyučujúcim. Naopak, výskum v Českej republike preukázal, že rodovo motivovaného obťažovania a rodovej diskriminácie sa môžu dopúšťať aj vyučujúce ženy na svojich študentoch (Vohlídalová, 2009). Ako píšu Smetáčková a Pavlík (2011, s. 370): „Rodové obťažovanie využíva rodové stereotypy, a prehlbuje tak polarizáciu žien/femininity a mužov/maskulinity. Sexuálna pozornosť stavia ženy (eventuálne i mužov) do pozície sexuálnych objektov, a tým zneviditeľňuje ich ďalšie charakteristiky relevantné pre dané prostredie (napr. študijné dispozície a výkony) a odoberá im časť zodpovednosti za vlastnú aktivitu (vystižnejšie self-efficacy).“
 
 #### Neformálne komunikačné štruktúry v akademickom prostredí 
 
@@ -626,10 +655,11 @@ Z dôvodu nízkej početnosti v niektorých kategoriách kategorických premenn�
 ### Software
 Všetky analýzy boli realizované v R, verzii 4.0.3. s využitím nasledujúcich balíkov: tidyverse (Wickham et al., 2019), epitools (Aragón, 2012), BayesFactor (Morey & Rouder, 2015), psych (Revelle, 2020), car (Fox & Weisberg, 2011), plotly (Sievert, 2020), survey (Lumley, 2010), sjstats (Lüdecke, 2020), questionr (Barnier, Briatte, & Larmarange, 2020), careless (Yentes & Wilhelm, 2018) a data.table (Dowle & Srinivasan, 2020). Všetky grafy využívajú color-blind-friendly paletu farieb.
 
-\newpage
+# Výsledky výskumu {#vysledky}
 
-# Popis výskumnej vzorky {#popis-vzorky}
-## Demografické charakteristiky
+## Popis vzorky {#popis-vzorky}
+
+### Demografické charakteristiky
 Výskumná vzorka pozostávala z `r ss_total_n` participantov, študentov slovenských vysokých škôl. Priemerný vek participantov bol `r round(mean(data$age, na.rm = T), 2)` rokov (*SD* = `r round(sd(data$age, na.rm = T), 2)`). Z hľadiska pohlavia, vzorku tvorilo `r round(ss_gender_n[1,3], 0)`% žien, `r round(ss_gender_n[2,3], 0)`% mužov a menej než 1% transrodových osôb (`r round(ss_gender_n[4,3], 0)`% participantov rod neuviedlo). Graf \@ref(fig:ageplot) zobrazuje distribúciu veku podľa rodu (ako binárnej premennej). 
 
 ```{r ageplot, fig.cap= "Distribúcia veku podľa pohlavia"}
@@ -645,7 +675,7 @@ colnames(ss_region_n)[1] <- "Región pôvodu participantov"
 kbl(arrange(ss_region_n, desc(percent)), digits = 3, caption = "Participanti podľa kraja", booktabs = T) %>% kable_paper("hover") %>% kable_styling(latex_options = c("striped", "HOLD_position"), full_width = F, font_size = 12)
 ```
 
-## Študijné charakteristiky
+### Študijné charakteristiky
 Výskumná vzorka reprezentovala participantov študujúcich všetky skupiny odborov. Tabuľka \@ref(tab:regFieldTab) zobrazuje počty participantov vo vzorke podľa lokality fakulty, na ktorej v čase výskumu študovali, zatiaľ čo Tabuľka \@ref(tab:fieldStudyTab) zobrazuje počty participantov podľa študijných odborov, ktoré študovali. Najviac zastúpené je západné, najmenej stredné Slovensko. Rozdelenie participantov vo vzorke z hľadiska odborov približne kopíruje populačné proporcie počtu študentov študujúcich dané odbory na Slovensku.
 
 ```{r regFieldTab}
@@ -667,12 +697,9 @@ ss_fieldStudy_plot %>% ggplotly()
 ss_fieldStudyYear_plot %>% ggplotly()
 ```
 
-## Vylúčenie nedbanlivých participantov
+### Vylúčenie nedbanlivých participantov
 V následnom kroku boli z celkovej vzorky vylúčení participanti, ktorých štýl odpovedania vykazoval znaky nedbanlivosti. Konkrétne, participant bol z ďalších analýz vylúčený ak sada jeho odpovedí spĺňal aspoň jedno z 5 kritérií uvedenými v sekcii \@ref(analyza-dat). Týmto spôsobom bolo vylúčených *n* = `r ss_total_n - nrow(data)`, čo predstavuje `r round((ss_total_n - nrow(data))/nrow(data), 4)*100`% všetkých participantov, redukujúc analytickú vzorku pre nasledujúce analýzy na *n* = `r nrow(data)`. Obdobná miera redukcie vzorky o nedbanlivých participantov býva v podobných výskumných dizajnoch štandardom (Meade & Craig, 2012).
 
-\newpage
-
-# Výsledky výskumu {#vysledky}
 ## Prevalencia foriem sexuálneho obťažovania
 Primárnym výsledkom výskumu sú odhady populačných proporcií jednotlivých foriem sexuálneho obťažovania. Celkovo bolo meraných 20 rôznych foriem sexuálneho obťažovania. Ich konkrétna špecifikácia je uvedená v Tabuľke \@ref(tab:formsList). 
 
@@ -944,7 +971,8 @@ Mnohí študenti a študentky si zároveň myslia, že im ich škola neponúkla 
 V neposlednom rade nás zaujímalo, čo si študenti a študentky myslia o tzv. horizontálnych vzťahoch (romantických a sexuálnych vzťahoch) medzi vyučujúcimi a študujúcimi (Kuruc & Valkovičová, 2020). Približne polovica z nich si myslí, že vyučujúci by nemali mať romantické vzťahy so študentmi a študentkami (priemerná miera súhlasu bola 56 % u študentiek a 54 % u študentov - 67 % zo všetkých študentov a študentiek uviedlo, že „rozhodne súhlasia“ alebo „skôr súhlasia“ s tvrdením). O niečo vyšší podiel študentov a študentiek súhlasil s tvrdením, že vyučujúci by nemali mať sexuálne vzťahy so študentmi a študentkami (priemerná miera súhlasu bola 62 % u študentiek a 57 % u študentov - 72 % zo všetkých študentov a študentiek uviedlo, že „rozhodne súhlasia“ alebo „skôr súhlasia“ s tvrdením). Z odpovedí respondentov a respondentiek môžeme vyvodiť, že sú takéto vzťahy v akademickom prostredí mnohými vnímané ako nevhodné, potenciálne signalizujúce prekračovanie hraníc a favoritizmus, ako uvádza aj Smetáčková a Pavlík (2011). 
 
 Záverom tak hodnotíme, že študenti a študentky považujú sexuálne obťažovanie za riešiteľnú situáciu, v ktorej by malo byť umožnené obeti dožadovať sa spravodlivosti aj po rokoch. Taktiež pociťujú zodpovednosť školy za prevenciu a riešenie prípadov, aj keď minimum z nich bolo školou v téme sexuálneho obťažovania poučených. Pri tom prevencia v akademickom prostredí môže mať rôzne podoby a formy, ktoré nemusia byť limitované len na pomenovávanie neetického správania, ale môžu obsahovať aj odporúčania a informácie o možnosti konzultácií či formálnej sťažnosti (Klein & Martin, 2019; Johnson, Widnall & Benya, 2018; Sabri et al., 2019).
-3.5. Povedomie o sexuálnom obťažovaní a jeho vnímanie
+
+## Povedomie o sexuálnom obťažovaní a jeho vnímanie
 Zo všetkých dotazovaných študentov a študentiek vyše dve tretiny vedeli o tom, že je sexuálne obťažovanie postihované zákonom, pričom študenti muži vykazovali vyššiu mieru právneho povedomia. Prekvapivo, ešte vyšší počet študentov a študentiek odpovedal, že v prípade sexuálneho obťažovania je možné obrátiť sa aj na súd. Vo vzťahu k uvedenému je možné predpokladať, že aj keď študenti a študentky nemajú právne povedomie o zákonoch na Slovensku, vďaka správam a príbehom, ktoré médiá spájali s hnutím #MeToo v posledných rokoch, zaregistrovali, že je možné riešiť situáciu i súdnou cestou. 
 
 V dotazníku sme sa následne dopytovali, ktoré z uvedených 20 scenárov z 3 klastrov (rodovo motivované obťažovanie, neželaná sexuálna pozornosť a sexuálny nátlak), by naši respondenti a respondentky považovali za „sexuálne obťažovanie“, ak by sa týchto činov dopúšťal vyučujúci/vyučujúca. Keďže aj v medziach antidiskriminačného zákona môže sexuálne obťažovanie predstavovať penzum situácií a scenárov, zaujímalo nás, ktoré z uvedených vnímajú študenti a študentky ako obťažujúce. Predpokladali sme ale, že hierarchia, ktorú vytvára pozícia učiteľa/učiteľky, je silným faktorom, ktorý pridáva k pociťovanej závažnosti správania (Lovaš & Vasková, 2014; Clarke, 2020). 
@@ -953,16 +981,15 @@ Len 30 % študentov a študentiek považovalo za sexuálne obťažovanie ak vyu�
 
 Posledné otázky dotazníka boli formulované s ohľadom na poznanie, ktoré spája názory na sexuálne obťažovanie so stereotypmi o mužskej a ženskej sexualite, ako aj s tzv. mýtami znásilnenia (Lonsway & Fitzgerald, 1995; Quinn, 2002). Vychádzali sme z predpokladu, že názory a postoje prevládajúce v organizácii zásadne ovplyvňujú vyrovnávanie sa so situáciou pre osobu, ktorá obťažovanie zažíva, rovnako ako ovplyvňujú i jej prístup k spravodlivosti (Malovich & Stake, 1990; Hearn & Parkin, 1995). Sledovali sme niekoľko miskonceptov, v ktorých opäť nenachádzame zásadné rozdiely podľa pohlavia/rodu, aj keď z prvého pohľadu na výsledky možno konštatovať zriedkavejšie stereotypné predstavy u študentiek žien. Značné množstvo študentov a študentiek si myslí, že si ženy často vymýšľajú obvinenia zo sexuálneho obťažovania (priemerná miera súhlasu bola 28 % u študentiek a až 42 % u študentov). Zásadné zistenie je tiež to, že sexuálne obťažovanie možno podľa študentov a študentiek vyprovokovať. Priemerná miera súhlasu s tvrdením, že ženy, ktoré sa obliekajú sexuálne atraktívnym spôsobom si koledujú o sexuálnu pozornosť (napr. komentáre) bola u študentiek 39 % a u študentov 53 %. S ohľadom na predchádzajúce výskumy však nešlo o hodnotový výskum, ktorý by komplexne mapoval mieru stereotypov voči mužským a ženským rodovým rolám na Slovensku. Aj s ohľadom na tieto limitované zistenia je však nutné pripomenúť argument Lonsway a Fitzgerald (1995) (ďalej aj u Russell & Trigg, 2004; Lonsway, Cortina & Magley, 2008), že mýty o sexuálnom násilí môžu u mužov a žien slúžiť na rôzne ciele, napríklad na popieranie vlastnej zraniteľnosti, či na prenesenie zodpovednosti za násilie na obeť.   
 
-# Záver
+# Záver {-}
 
 Výskum uskutočnený Inštitútom pre výskum práce a rodiny v akademickom roku 2019/2020 je zatiaľ jedinou kvantitatívnou a reprezentatívnou sondou do skúseností študentov a študentiek s obťažujúcim správaním na slovenských vysokých školách. S ohľadom na predchádzajúce zahraničné prevalenčné výskumy registrujeme vyšší podiel skúseností s prejavmi rodovo motivovaného obťažovania. Jedná sa prevažne o skúsenosti v rovesníckych kolektívoch. Avšak samotné skúsenosti s obťažujúcim správaním od vyučujúcich by školami nemali byť prehliadané. Sú to práve vyučujúci a vyučujúce, kto má mať na zreteli etiku a princíp nediskriminácie v akademickom prostredí, no zároveň aj disponuje značnou autoritou a mocou v týchto kolektívoch.
 
 Ak do istej miery možno hovoriť o prekvapujúcich výsledkoch, potom sú nimi neexistujúce rozdiely na základe pohlavia/rodu. Muži študenti a ženy študentky vykazujú približne rovnaké skúsenosti i názory. Samotný výberový súbor je prekvapivo homogénny (s ohľadom na vek, vierovyznanie i menšinový status), preto badáme len zriedkavé rozdiely u študentov a študentiek z vybraných komunít/identít – ako napr. pri sexuálnej orientácii. Zásadné je pre nás aj pomerne silné právne povedomie a scitlivenie študentov a študentiek na tému sexuálneho obťažovania. Sexuálne obťažovanie je medzi nimi rozpoznávané ako problém, ktorý by mali školy riešiť. Z dát, ktoré sme získali, však vyplýva, že sa to deje zriedkavo, čo môže vyplývať zo zriedkavého komunikovania problému zamestnancom/zamestnankyniam školy. 
 
-Prirodzeným nasledovaním tohto kvanitatívneho výskumu je bude kvalitatívne uchopenie problematiky v podobe hĺbkových kognitívnych a naratívnych rozhovorov, ktoré sme následne uskutočnili so študentkami (prihlásili sa len ženy) so skúsenosťou s obťažovaním. Výskum sa totiž v minimálnej miere venoval procesom vysporiadavania sa so situáciou a organizačnej štruktúre či klíme, v ktorej sa obťažovanie odohralo. Tieto otázky budú ďalej súčasťou analýzy spomínaných rozhovorov. 
+Prirodzeným nasledovaním tohto kvanitatívneho výskumu je kvalitatívne uchopenie problematiky v podobe hĺbkových kognitívnych a naratívnych rozhovorov, ktoré sme následne uskutočnili so študentkami (prihlásili sa len ženy) so skúsenosťou s obťažovaním. Výskum sa totiž v minimálnej miere venoval procesom vysporiadavania sa so situáciou a organizačnej štruktúre či klíme, v ktorej sa obťažovanie odohralo. Tieto otázky budú ďalej súčasťou analýzy spomínaných rozhovorov. 
 
-
-# Referencie
+# Referencie {-}
 
 Akpotor, J. (2013). Sexism and sexual harassment in tertiary institutions. Gender and Behaviour, 11(1): 5237-5243. 
 
@@ -1292,7 +1319,7 @@ Yentes R.D., & Wilhelm, F. (2018). careless: Procedures for computing indices of
 Zákon č. 365/2004 Z. z. o rovnakom zaobchádzaní v niektorých oblastiach a o ochrane pred diskrimináciou a o zmene a doplnení niektorých zákonov (2004). https://www.slov-lex.sk/pravne-predpisy/SK/ZZ/2004/365/
 
 
-# O autorkách a autoroch
+# O autorkách a autoroch {-}
 
 **Mgr. Veronika Valkovičová, PhD.** je výskumníčka a pedagogička v oblasti verejných politík a sociálnych hnutí. Doktorát získala v spojenom doktorandskom programe na Fakulte sociálnych a ekonomických vied Univerzity Komenského a na Fakulte sociálnych vied Univerzity v Antverpách. V Národnom projekte Prevencia a eliminácia rodovej diskriminácie na Inštitúte pre výskum práce a rodiny sa venuje oblasti sexuálneho obťažovania v akademickom prostredí a v zamestnaní. Publikačná činnosť dostupná tu: [Researchgate](https://www.researchgate.net/profile/Veronika-Valkovicova). 
 

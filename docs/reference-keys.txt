@@ -38,8 +38,6 @@ fig:miscHeatF
 fig:miscHeatM
 tab:miscF
 tab:miscM
-obsah
-úvod
 východiská-skúmania-sexuálneho-obťažovania-v-akademickom-prostredí
 vývoj-konceptu-sexuálneho-obťažovania-v-aktivizme-a-legislatíve
 koncept-sexuálneho-obťažovania-v-medzinárodných-dokumentoch-a-v-slovenskom-právnom-poriadku
@@ -73,11 +71,11 @@ bayesiánske-metódy
 základné-analytické-rámce
 redukcie-kategórií
 software
+vysledky
 popis-vzorky
 demografické-charakteristiky
 študijné-charakteristiky
 vylúčenie-nedbanlivých-participantov
-vysledky
 prevalencia-foriem-sexuálneho-obťažovania
 rizikové-faktory-sexuálneho-obťažovania
 páchatelia-sexuálneho-obťažovania
@@ -92,6 +90,4 @@ prevalencia-foriem-sexuálneho-obťažovania-1
 páchateliaky-a-miesta-výskytu-sexuálneho-obťažovania
 rizikové-faktory-prevalencie-sexuálneho-obťažovania
 dôsledky-vyrovnávanie-sa-so-situáciou-a-prístup-k-spravodlivosti
-záver
-referencie
-o-autorkách-a-autoroch
+povedomie-o-sexuálnom-obťažovaní-a-jeho-vnímanie

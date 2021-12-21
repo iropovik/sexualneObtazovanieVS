@@ -97,7 +97,7 @@ knitr::include_graphics("funders.png")
 
 **Externá spolupráca:** Natália Heriban
 
-**ISBN:**
+**ISBN:** 978-80-7138-175-4  
 
 # Obsah {-}
 

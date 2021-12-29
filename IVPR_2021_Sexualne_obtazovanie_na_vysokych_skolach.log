@@ -1,9 +1,9 @@
-This is XeTeX, Version 3.14159265-2.6-0.999992 (TeX Live 2020) (preloaded format=xelatex 2020.12.11)  29 DEC 2021 23:48
+This is XeTeX, Version 3.14159265-2.6-0.999992 (TeX Live 2020) (preloaded format=xelatex 2020.12.11)  30 DEC 2021 00:41
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
-**IVPR-2021-Sexuálne-obťažovanie-na-vysokých-školách.tex
-(./IVPR-2021-Sexuálne-obťažovanie-na-vysokých-školách.tex
+**IVPR_2021_Sexualne_obtazovanie_na_vysokych_skolach.tex
+(./IVPR_2021_Sexualne_obtazovanie_na_vysokych_skolach.tex
 LaTeX2e <2020-10-01> patch level 2
 L3 programming layer <2020-12-07> xparse <2020-03-03> (/Users/ivanropovik/Libra
 ry/TinyTeX/texmf-dist/tex/latex/base/book.cls
@@ -561,7 +561,7 @@ Package: ifvtex 2019/10/25 v1.7 ifvtex legacy package. Use iftex instead.
 \Gm@layouthoffset=\dimen256
 \Gm@layoutvoffset=\dimen257
 \Gm@dimlist=\toks37
-) (./IVPR-2021-Sexuálne-obťažovanie-na-vysokých-školách.aux
+) (./IVPR_2021_Sexualne_obtazovanie_na_vysokych_skolach.aux
 
 LaTeX Warning: Label `tab:textTable2' multiply defined.
 
@@ -581,7 +581,7 @@ LaTeX Warning: Label `tab:attList' multiply defined.
 LaTeX Warning: Label `tab:miscList' multiply defined.
 
 )
-\openout1 = `IVPR-2021-Sexuálne-obťažovanie-na-vysokých-školách.aux'.
+\openout1 = `IVPR_2021_Sexualne_obtazovanie_na_vysokych_skolach.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 119.
 LaTeX Font Info:    ... okay on input line 119.
@@ -885,10 +885,10 @@ Package: gettitlestring 2019/12/15 v1.6 Cleanup title references (HO)
 LaTeX Info: Redefining \ref on input line 119.
 LaTeX Info: Redefining \pageref on input line 119.
 LaTeX Info: Redefining \nameref on input line 119.
-(./IVPR-2021-Sexuálne-obťažovanie-na-vysokých-školách.out) (./IVPR-2021-Sexuáln
-e-obťažovanie-na-vysokých-školách.out)
+(./IVPR_2021_Sexualne_obtazovanie_na_vysokych_skolach.out) (./IVPR_2021_Sexualn
+e_obtazovanie_na_vysokych_skolach.out)
 \@outlinefile=\write3
-\openout3 = `IVPR-2021-Sexuálne-obťažovanie-na-vysokých-školách.out'.
+\openout3 = `IVPR_2021_Sexualne_obtazovanie_na_vysokych_skolach.out'.
 
 *geometry* driver: auto-detecting
 *geometry* detected driver: xetex
@@ -1088,9 +1088,9 @@ Underfull \hbox (badness 1132) in paragraph at lines 919--920
 enských
  []
 
-File: IVPR-2021-Sexuálne-obťažovanie-na-vysokých-školách_files/figure-latex/age
+File: IVPR_2021_Sexualne_obtazovanie_na_vysokych_skolach_files/figure-latex/age
 plot-1.pdf Graphic file (type pdf)
-<use IVPR-2021-Sexuálne-obťažovanie-na-vysokých-školách_files/figure-latex/agep
+<use IVPR_2021_Sexualne_obtazovanie_na_vysokych_skolach_files/figure-latex/agep
 lot-1.pdf>
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(1)/m/n' will be
 (Font)              scaled to size 9.0pt on input line 939.
@@ -1107,27 +1107,27 @@ skupiny
  []
 
 [74]
-File: IVPR-2021-Sexuálne-obťažovanie-na-vysokých-školách_files/figure-latex/fie
+File: IVPR_2021_Sexualne_obtazovanie_na_vysokych_skolach_files/figure-latex/fie
 ldPlotMF-1.pdf Graphic file (type pdf)
-<use IVPR-2021-Sexuálne-obťažovanie-na-vysokých-školách_files/figure-latex/fiel
+<use IVPR_2021_Sexualne_obtazovanie_na_vysokych_skolach_files/figure-latex/fiel
 dPlotMF-1.pdf>
-File: IVPR-2021-Sexuálne-obťažovanie-na-vysokých-školách_files/figure-latex/fie
+File: IVPR_2021_Sexualne_obtazovanie_na_vysokych_skolach_files/figure-latex/fie
 ldPlotYear-1.pdf Graphic file (type pdf)
-<use IVPR-2021-Sexuálne-obťažovanie-na-vysokých-školách_files/figure-latex/fiel
+<use IVPR_2021_Sexualne_obtazovanie_na_vysokych_skolach_files/figure-latex/fiel
 dPlotYear-1.pdf>
 [75] [76]
-File: IVPR-2021-Sexuálne-obťažovanie-na-vysokých-školách_files/figure-latex/pre
+File: IVPR_2021_Sexualne_obtazovanie_na_vysokych_skolach_files/figure-latex/pre
 vItems-1.pdf Graphic file (type pdf)
-<use IVPR-2021-Sexuálne-obťažovanie-na-vysokých-školách_files/figure-latex/prev
+<use IVPR_2021_Sexualne_obtazovanie_na_vysokych_skolach_files/figure-latex/prev
 Items-1.pdf>
 [77]
-File: IVPR-2021-Sexuálne-obťažovanie-na-vysokých-školách_files/figure-latex/pre
+File: IVPR_2021_Sexualne_obtazovanie_na_vysokych_skolach_files/figure-latex/pre
 vItemsG-1.pdf Graphic file (type pdf)
-<use IVPR-2021-Sexuálne-obťažovanie-na-vysokých-školách_files/figure-latex/prev
+<use IVPR_2021_Sexualne_obtazovanie_na_vysokych_skolach_files/figure-latex/prev
 ItemsG-1.pdf>
-File: IVPR-2021-Sexuálne-obťažovanie-na-vysokých-školách_files/figure-latex/pre
+File: IVPR_2021_Sexualne_obtazovanie_na_vysokych_skolach_files/figure-latex/pre
 vClust-1.pdf Graphic file (type pdf)
-<use IVPR-2021-Sexuálne-obťažovanie-na-vysokých-školách_files/figure-latex/prev
+<use IVPR_2021_Sexualne_obtazovanie_na_vysokych_skolach_files/figure-latex/prev
 Clust-1.pdf>
 [78] [79] [80] [81] [82] [83] [84] [85] [86]
 Underfull \hbox (badness 1360) in paragraph at lines 1324--1325
@@ -1135,40 +1135,40 @@ Underfull \hbox (badness 1360) in paragraph at lines 1324--1325
 otlivé stĺpce
  []
 
-File: IVPR-2021-Sexuálne-obťažovanie-na-vysokých-školách_files/figure-latex/per
+File: IVPR_2021_Sexualne_obtazovanie_na_vysokych_skolach_files/figure-latex/per
 pAllFemale-1.pdf Graphic file (type pdf)
-<use IVPR-2021-Sexuálne-obťažovanie-na-vysokých-školách_files/figure-latex/perp
+<use IVPR_2021_Sexualne_obtazovanie_na_vysokych_skolach_files/figure-latex/perp
 AllFemale-1.pdf>
-File: IVPR-2021-Sexuálne-obťažovanie-na-vysokých-školách_files/figure-latex/per
+File: IVPR_2021_Sexualne_obtazovanie_na_vysokych_skolach_files/figure-latex/per
 pAllMale-1.pdf Graphic file (type pdf)
-<use IVPR-2021-Sexuálne-obťažovanie-na-vysokých-školách_files/figure-latex/perp
+<use IVPR_2021_Sexualne_obtazovanie_na_vysokych_skolach_files/figure-latex/perp
 AllMale-1.pdf>
 [87] [88] [89] [90] [91] [92] [93]
-File: IVPR-2021-Sexuálne-obťažovanie-na-vysokých-školách_files/figure-latex/att
+File: IVPR_2021_Sexualne_obtazovanie_na_vysokych_skolach_files/figure-latex/att
 Plot-1.pdf Graphic file (type pdf)
-<use IVPR-2021-Sexuálne-obťažovanie-na-vysokých-školách_files/figure-latex/attP
+<use IVPR_2021_Sexualne_obtazovanie_na_vysokych_skolach_files/figure-latex/attP
 lot-1.pdf>
-File: IVPR-2021-Sexuálne-obťažovanie-na-vysokých-školách_files/figure-latex/att
+File: IVPR_2021_Sexualne_obtazovanie_na_vysokych_skolach_files/figure-latex/att
 HeatF-1.pdf Graphic file (type pdf)
-<use IVPR-2021-Sexuálne-obťažovanie-na-vysokých-školách_files/figure-latex/attH
+<use IVPR_2021_Sexualne_obtazovanie_na_vysokych_skolach_files/figure-latex/attH
 eatF-1.pdf>
-File: IVPR-2021-Sexuálne-obťažovanie-na-vysokých-školách_files/figure-latex/att
+File: IVPR_2021_Sexualne_obtazovanie_na_vysokych_skolach_files/figure-latex/att
 HeatM-1.pdf Graphic file (type pdf)
-<use IVPR-2021-Sexuálne-obťažovanie-na-vysokých-školách_files/figure-latex/attH
+<use IVPR_2021_Sexualne_obtazovanie_na_vysokych_skolach_files/figure-latex/attH
 eatM-1.pdf>
 [94] [95] [96] [97]
-File: IVPR-2021-Sexuálne-obťažovanie-na-vysokých-školách_files/figure-latex/mis
+File: IVPR_2021_Sexualne_obtazovanie_na_vysokych_skolach_files/figure-latex/mis
 cPlot-1.pdf Graphic file (type pdf)
-<use IVPR-2021-Sexuálne-obťažovanie-na-vysokých-školách_files/figure-latex/misc
+<use IVPR_2021_Sexualne_obtazovanie_na_vysokych_skolach_files/figure-latex/misc
 Plot-1.pdf>
-File: IVPR-2021-Sexuálne-obťažovanie-na-vysokých-školách_files/figure-latex/mis
+File: IVPR_2021_Sexualne_obtazovanie_na_vysokych_skolach_files/figure-latex/mis
 cHeatF-1.pdf Graphic file (type pdf)
-<use IVPR-2021-Sexuálne-obťažovanie-na-vysokých-školách_files/figure-latex/misc
+<use IVPR_2021_Sexualne_obtazovanie_na_vysokych_skolach_files/figure-latex/misc
 HeatF-1.pdf>
 [98]
-File: IVPR-2021-Sexuálne-obťažovanie-na-vysokých-školách_files/figure-latex/mis
+File: IVPR_2021_Sexualne_obtazovanie_na_vysokych_skolach_files/figure-latex/mis
 cHeatM-1.pdf Graphic file (type pdf)
-<use IVPR-2021-Sexuálne-obťažovanie-na-vysokých-školách_files/figure-latex/misc
+<use IVPR_2021_Sexualne_obtazovanie_na_vysokych_skolach_files/figure-latex/misc
 HeatM-1.pdf>
 [99] [100] [101]
  4.
@@ -1260,9 +1260,9 @@ Underfull \hbox (badness 4595) in paragraph at lines 2093--2094
 
 [130] [131] [132] [133
 
-] [134] (./IVPR-2021-Sexuálne-obťažovanie-na-vysokých-školách.aux)
-Package rerunfilecheck Info: File `IVPR-2021-Sexuálne-obťažovanie-na-vysokých-š
-kolách.out' has not changed.
+] [134] (./IVPR_2021_Sexualne_obtazovanie_na_vysokych_skolach.aux)
+Package rerunfilecheck Info: File `IVPR_2021_Sexualne_obtazovanie_na_vysokych_s
+kolach.out' has not changed.
 (rerunfilecheck)             Checksum: 08BC9B68BF631E7FCE515E8BA3C39513;13667.
 
 LaTeX Warning: There were multiply-defined labels.
@@ -1277,5 +1277,5 @@ Here is how much of TeX's memory you used:
  14 hyphenation exceptions out of 8191
  94i,16n,118p,3628b,638s stack positions out of 5000i,500n,10000p,200000b,80000s
 
-Output written on IVPR-2021-Sexuálne-obťažovanie-na-vysokých-školách.pdf (134 p
+Output written on IVPR_2021_Sexualne_obtazovanie_na_vysokych_skolach.pdf (134 p
 ages).

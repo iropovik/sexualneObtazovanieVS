@@ -38,7 +38,7 @@ header-includes:
 # %>% ggplotly(
 
 # rendering pdf?
-renderPDF <- TRUE
+renderPDF <- FALSE
 if(renderPDF == TRUE){
   fontSize <- 7
   fontSizeLarger <- 9

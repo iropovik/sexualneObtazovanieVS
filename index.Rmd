@@ -5,12 +5,12 @@
 site: bookdown::bookdown_site
 number_sections: true
 documentclass: book
+classoption: 
+- openany
+- oneside
 always_allow_html: true
 links-as-notes: true
 tables: yes
-output:
-  bookdown::gitbook
-  #bookdown::pdf_book:
 github-repo: iropovik/sexualneObtazovanieVS
 description: "Národne reprezentatívny výskum sexuálneho obťažovania na slovenských vysokých školách"
 url: 'https\://iropovik.github.io/sexualneObtazovanieVS/'
@@ -30,7 +30,23 @@ header-includes:
 - \usepackage{float}
 - \usepackage[normalem]{ulem}
 - \usepackage[paperwidth=7in, paperheight=9in]{geometry}
+- \AtBeginDocument{\renewcommand{\chaptername}{}}
 ---
+
+```{r, include = FALSE}
+# edited for the purpose of rendering pdf
+# #%>% ggplotly(
+
+# rendering pdf?
+renderPDF <- TRUE
+if(renderPDF == TRUE){
+  fontSize <- 7
+  fontSizeLarger <- 9
+} else {
+  fontSize <- 12
+  fontSizeLarger <- 12
+}
+```
 
 ```{r include = FALSE}
   #options("width"=56)
@@ -104,7 +120,7 @@ knitr::include_graphics("funders.png")
 **Úvod**
 
 
-**1.	Východiská skúmania sexuálneho obťažovania v akademickom prostredí**
+**1. Východiská skúmania sexuálneho obťažovania v akademickom prostredí**
 
 1.1.	 Vývoj konceptu sexuálneho obťažovania v aktivizme a legislatíve
 
@@ -218,7 +234,7 @@ Vydaním tejto správy sa však výskumné aktivity Národného projektu Prevenc
 
 V Bratislave, 2021
 
-# Východiská skúmania sexuálneho obťažovania v akademickom prostredí {#teoria}
+# Teoretické východiská {#teoria}
  
 ## Vývoj konceptu sexuálneho obťažovania v aktivizme a legislatíve
  
@@ -231,7 +247,7 @@ Feministické myslenie sociálneho hnutia za práva žien sa v témach sexuálne
 V ďalšom štádiu konceptualizácie sexuálneho obťažovania v medziach sociálnych hnutí za práva žien došlo k transformácií právnych noriem cez súdnu prax. V nasledujúcej Tabuľke \@ref(tab:textTable1) uvádzame niekoľko zásadných rozhodnutí, ktoré mali vplyv na formovanie konceptu sexuálneho obťažovania ako protiprávneho konania v Spojených štátoch amerických^[Tento výpočet nie je reprezentatívny, jeho cieľom je ilustrovať trendy.]. 
 
 ```{r textTable1}
-kbl(textTable1, caption = "Zásadné prípady postihovania sexuálneho obťažovania v Spojených štátoch amerických", booktabs = T) %>% kable_paper("hover") %>% kable_styling(latex_options = c("striped", "scale_down", "HOLD_position"), full_width = F, font_size = 12)
+suppressWarnings(kbl(textTable1, caption = "Zásadné prípady postihovania sexuálneho obťažovania v Spojených štátoch amerických", booktabs = T) %>% kable_paper("hover") %>% kable_styling(latex_options = c("striped", "scale_down", "HOLD_position"), full_width = T, font_size = fontSize))
 ```
 
 Sexuálne obťažovanie tak bolo definované ako diskriminačná prax, ktorá sa prejavuje ako sexuálne obťažovanie quid pro quo a vytváranie nepriateľského alebo zastrašujúceho prostredia. Aj keď bolo sexuálne obťažovanie quid pro quo ako prvé uznané za škodlivú a diskriminačnú prax, trvalo niekoľko rokov, kým bolo za škodlivé uznané aj vytváranie nepriateľského či zastrašujúceho prostredia (hostile environment), (U.S. Equal Employment Opportunity Commission, 1990). V medziach zamestnania a vzdelávania je zakázané Hlavou IX zákona o vzdelávaní a v zamestnaní a vzdelávaní a Hlavou VII zákona o občianskych právach. No aj keď už bolo zakázané zákonom, sexuálne obťažovanie predstavovalo pre súdnu prax niekoľko zásadných otázok. V tomto ohľade však súdy museli hľadať odpoveď na otázku, ako možno takéto prostredie definovať (Clarke, 2020). V roku 1991 o tejto téme diskutovala aj americká verejnosť, keď profesorka práva Anita Hill obvinila kandidáta na ústavného sudcu Clarenca Thomasa zo sexuálneho obťažovania z čias, keď spolu pracovali v Komisii pre rovné príležitosti v zamestnaní (Equal Employment Opportunity Commission). Thomas bol obvinení zbavený a vymenovaný za ústavného sudcu (Thomas, McCoy & McBride, 1993). Do roku 2017 išlo o najznámejší medializovaný prípad sexuálneho obťažovania v Spojených štátoch amerických.  
@@ -253,7 +269,7 @@ V európskom kontexte ako aj v kontexte slovenskom možno hovoriť o zásadných
 Samotný koncept sexuálneho obťažovania sa v medzinárodných ľudskoprávnych dokumentoch objavuje ako forma nerovnakého zaobchádzania a vychádza (tak ako v severoamerickom právnom poriadku) z odmietnutia diskriminačného správania. Diskriminácia na základe pohlavia sa objavuje už vo Všeobecnej deklarácii ľudských práv, ktorá bola prijatá v roku 1948 a ktorej článok 2 uvádza: „(1) Každý je oprávnený na všetky práva a slobody, ktoré stanovuje táto deklarácia, bez akéhokoľvek rozdielu rasy, farby pleti, pohlavia, jazyka, náboženstva, politického alebo iného zmýšľania, národnostného alebo sociálneho pôvodu, majetku, rodu alebo iného postavenia.“ (Universal Declaration of Human Rights, 1948). V nasledujúcej Tabuľke \@ref(tab:textTable2) zhrnieme niektoré zásadné medzinárodné dohovory a normy, ktoré sa venujú téme sexuálneho obťažovania. 
 
 ```{r textTable2}
-kbl(textTable2, caption = "Sexuálne obťažovanie v medzinárodných dohovoroch a supranacionálnych normách", booktabs = T) %>% kable_paper("hover") %>% kable_styling(latex_options = c("striped", "scale_down", "HOLD_position"), full_width = F, font_size = 12)
+suppressWarnings(kbl(textTable2, caption = "Sexuálne obťažovanie v medzinárodných dohovoroch a supranacionálnych normách", booktabs = T, longtable = T) %>% kable_paper("hover") %>% kable_styling(latex_options = c("striped", "scale_down", "HOLD_position", "repeat_header"), full_width = T, font_size = fontSize))
 ```
 
 Problematike sexuálneho obťažovania na pracovisku začali venovať svoju pozornosť orgány Európskeho spoločenstva približne od polovice osemdesiatych rokov 20. storočia. Po prvýkrát sa tak sexuálne obťažovanie objavilo vo verejných politikách Európskej únie v oblasti trhu práce, keďže práve táto oblasť bola veľmi skoro vyhradená kompetenciám EÚ. Samotnej diskriminácii v zamestnaní bola venovaná už Smernica rady (1976) o vykonávaní zásady rovnakého zaobchádzania s mužmi a ženami, pokiaľ ide o prístup k zamestnaniu, odbornej príprave a postupu v zamestnaní a o pracovné podmienky. 
@@ -273,7 +289,7 @@ Psychologické poznanie, ktoré sa doposiaľ venovalo sexuálnemu obťažovaniu,
 Prvý najrozsiahlejší výskum v severoamerickom priestore realizovala psychologička Luis Fitzgerald s kolegyňami. Ich výskum pokračoval niekoľko dekád a prešiel značnými premenami. Už v prvom výskume, ktorý sa zameriaval na vysokoškolské prostredie v roku 1980, vytvorili dotazník Sexual Experiences Questionaire (tzv. SEQ, teda Dotazník sexuálnych skúseností). V rámci neho autorky zadefinovali trojčlenný klasifikačný systém, ktorý rozdeľuje sexuálne obťažovanie do odlišných, ale prepojených klastrov: sexuálny nátlak (sexual coertion), neželaná sexuálna pozornosť (unwanted sexual attention)  a rodovo motivované obťažovanie  (gender harassment) (Fitzgerald, 1990; Fitzgerald et al., 1988). Nasledujúca Tabuľka \@ref(tab:textTable3) približuje jednotlivé klastre aj s príkladmi (Kuruc & Valkovičová, 2020, s. 7). 
 
 ```{r textTable3}
-kbl(textTable3, caption = "Klastre sexuálneho obťažovania a príklady", booktabs = T) %>% kable_paper("hover") %>% kable_styling(latex_options = c("striped", "scale_down", "HOLD_position"), full_width = F, font_size = 12)
+suppressWarnings(kbl(textTable3, caption = "Klastre sexuálneho obťažovania a príklady", booktabs = T, longtable = T) %>% kable_paper("hover") %>% kable_styling(latex_options = c("striped", "scale_down", "HOLD_position", "repeat_header"), full_width = T, font_size = fontSize))
 ```
 
 Klasifikácia Fitzgerald a kolektívu podnietila iných vedcov a vedkyne, aby uvažovali o rodovo motivovanom obťažovaní ako o formách mikroagresie. Tento pojem sa vzťahuje na každodenné verbálne, behaviorálne, alebo environmentálne (spojené s prostredím) poníženia či typy zlého zaobchádzania, či už zamýšľané alebo nezamýšľané, ktoré komunikujú nenávistné, hanlivé alebo negatívne postoje smerované k marginalizovaným skupinám (Sue et al., 2007, Lilienfeld, 2017). V medziach tohto správania je však nutné zdôrazniť, že sa zriedka v praxi jedná o oddelené klastre správania – práve naopak, tieto prejavy majú tendenciu byť prítomné v kombináciách. 
@@ -284,51 +300,51 @@ Avšak všetky kategórie majú spoločné charakteristiky: 1. správanie je sam
   
 Ďalšiu pomerne komplexnú kategorizáciu prejavov sexuálneho obťažovania vytvoril James Gruber (1992). Svojou prácou sa snažil vyplniť medzery medzi výskumnými zisteniami a zákonným definovaním obťažovania v severoamerickom priestore. Vo svojej práci Gruber pomenovával rôzne formy obťažovania, ktoré vnímal aj ako obťažovanie „niečo za niečo“ (quid pro quo), či ako formu sexuálneho úplatkárstva.  Vo svojej práci porovnával výsledky 17 štúdií, pričom vylúčil dáta získané od mužov – predpokladal, že je skúsenosť s obťažovaním rodovo determinovaná. Gruber (1992) tak vytvoril podrobnejšiu typológiu sexuálne obťažujúceho správania, ktorá sa skladá z troch kategórií: verbálne požiadavky, verbálne komentáre a neverbálne prejavy:
 
-(1.) Verbálne požiadavky:
+- Verbálne požiadavky:
 
-–	Sexuálne úplatkárstvo: žiadosť obsahuje hrozbu a/alebo prísľub odmeny  typu „niečo za niečo“  (napr. ponuka peňažnej odmeny za sex, ponuka lepších pracovných, študijných podmienok za sex);
+    -	Sexuálne úplatkárstvo: žiadosť obsahuje hrozbu a/alebo prísľub odmeny  typu „niečo za niečo“  (napr. ponuka peňažnej odmeny za sex, ponuka lepších pracovných, študijných podmienok za sex);
 
-–	Sexuálne návrhy: žiadosť neobsahuje hrozbu alebo prísľub odmeny, ide však o požiadavku sexuálneho zblíženia; 
+    - Sexuálne návrhy: žiadosť neobsahuje hrozbu alebo prísľub odmeny, ide však o požiadavku sexuálneho zblíženia; 
 
-–	Návrh vzťahu/randenia: opakovaná žiadosť, ktorej cieľom je nadviazať sociálny romantický vzťah. 
+    - Návrh vzťahu/randenia: opakovaná žiadosť, ktorej cieľom je nadviazať sociálny romantický vzťah. 
 
-–	Skryté návrhy: zámer verbálnej požiadavky je skrytý alebo dvojznačný (ide napr. o dvojzmyselné poznámky, komentáre vyslovené nahlas).
+    - Skryté návrhy: zámer verbálnej požiadavky je skrytý alebo dvojznačný (ide napr. o dvojzmyselné poznámky, komentáre vyslovené nahlas).
 
-(2.) Verbálne komentáre:
+- Verbálne komentáre:
 
-–	Osobné poznámky: komentáre alebo otázky, ktoré nie sú pracovnej povahy a sú adresované priamo žene z dôvodu jej pohlavia/rodu (napr. vtipy, provokovanie, otázky o sexualite alebo o vzhľade a znevažovanie);
+    - Osobné poznámky: komentáre alebo otázky, ktoré nie sú pracovnej povahy a sú adresované priamo žene z dôvodu jej pohlavia/rodu (napr. vtipy, provokovanie, otázky o sexualite alebo o vzhľade a znevažovanie);
 
-–	Subjektívne objektivizácie: poznámky v prítomnosti osoby alebo vo forme fám a klebiet (napr. fámy, že žena je lesba, alebo je sexuálne promiskuitná, verejné diskusie o jej tele alebo sexualite);
+    - Subjektívne objektivizácie: poznámky v prítomnosti osoby alebo vo forme fám a klebiet (napr. fámy, že žena je lesba, alebo je sexuálne promiskuitná, verejné diskusie o jej tele alebo sexualite);
 
-–	Sexuálne či rodovo kategorizujúce poznámky: sexuálne podfarbené komentáre o inej žene alebo o ženách vo všeobecnosti (napr. komentáre, ktoré očierňujú ženy vo všeobecnosti alebo očierňujú konkrétnu skupinu alebo kategóriu žien). 
+    - Sexuálne či rodovo kategorizujúce poznámky: sexuálne podfarbené komentáre o inej žene alebo o ženách vo všeobecnosti (napr. komentáre, ktoré očierňujú ženy vo všeobecnosti alebo očierňujú konkrétnu skupinu alebo kategóriu žien). 
 
-(3.) Neverbálne prejavy:
+- Neverbálne prejavy:
 
-–	Sexuálne napadnutie/útok: dlhšia alebo intenzívna a agresívna forma sexuálneho kontaktu zahŕňajúca nátlak (napr. pokus  o styk alebo priamy pohlavný styk, hladenie na intímnych miestach);
+    - Sexuálne napadnutie/útok: dlhšia alebo intenzívna a agresívna forma sexuálneho kontaktu zahŕňajúca nátlak (napr. pokus  o styk alebo priamy pohlavný styk, hladenie na intímnych miestach);
 
-–	Sexuálne dotyky: sexuálne (resp. sexualizované) dotyky. Ide o konanie kratšie a spontánnejšie než sexuálne napadnutie;
+    - Sexuálne dotyky: sexuálne (resp. sexualizované) dotyky. Ide o konanie kratšie a spontánnejšie než sexuálne napadnutie;
 
-–	Sexuálne držanie tela/pózy: narúšanie osobného priestoru a pokusy o fyzický kontakt (napr. pokusy o chňapnutie, zatlačenie do kúta, prekážanie v pohybe); 
+    - Sexuálne držanie tela/pózy: narúšanie osobného priestoru a pokusy o fyzický kontakt (napr. pokusy o chňapnutie, zatlačenie do kúta, prekážanie v pohybe); 
 
-–	Sexuálne ladené materiály: pornografický materiál alebo mediálne obsahy/predmety, ktoré sexuálne znevažujú ženy alebo ženstvo (napr. nevyžiadané zasielanie filmov, časopisov, sexuálnych hračiek). 
+    - Sexuálne ladené materiály: pornografický materiál alebo mediálne obsahy/predmety, ktoré sexuálne znevažujú ženy alebo ženstvo (napr. nevyžiadané zasielanie filmov, časopisov, sexuálnych hračiek). 
  
 ### Typológia sexuálneho obťažovania podľa Marie Rotundo a kol.  
 
 Kolektív Rotundo, Nguyen a Sackett (2001) realizoval metanalýzu 62 štúdií rodových rozdielov v prežívaní a vnímaní obťažujúceho správania.  Vo svojej štúdii popisuje kategorizáciu sexuálne obťažujúceho správania na základe siedmych faktorov.
 
-(1.) neosobné hanlivé postoje – správanie, ktorého súčasťou sú ponižujúce postoje o mužoch a ženách vo všeobecnosti (napr. obscénne gestá, ktoré nie sú namierené na konkrétnu osobu alebo sexistické vtipy).
+1. neosobné hanlivé postoje – správanie, ktorého súčasťou sú ponižujúce postoje o mužoch a ženách vo všeobecnosti (napr. obscénne gestá, ktoré nie sú namierené na konkrétnu osobu alebo sexistické vtipy).
 
-(2.) osobné hanlivé postoje – správanie namierené priamo voči konkrétnej osobe. Toto správanie predstavuje ponižujúce postoje namierené na jej rod/pohlavie (napr. obscénne telefonáty, znevažovanie kompetencie obťažovanej osoby).
+2. osobné hanlivé postoje – správanie namierené priamo voči konkrétnej osobe. Toto správanie predstavuje ponižujúce postoje namierené na jej rod/pohlavie (napr. obscénne telefonáty, znevažovanie kompetencie obťažovanej osoby).
 
-(3.) neželaný nátlak na stretnutie/rande – opakujúce  sa žiadosti o stretnutie napriek nezáujmu druhej strany (napr. opakujúce sa návrhy ísť von po škole).
+3. neželaný nátlak na stretnutie/rande – opakujúce  sa žiadosti o stretnutie napriek nezáujmu druhej strany (napr. opakujúce sa návrhy ísť von po škole).
 
-(4.) sexuálne návrhy – priame žiadosti o sexuálny styk (napr. návrh mať aférku).
+4. sexuálne návrhy – priame žiadosti o sexuálny styk (napr. návrh mať aférku).
 
-(5.) sexuálny fyzický kontakt – správanie, pri ktorom má obťažujúci fyzický sexuálny kontakt s obťažovanou osobou (napr. pobozkanie).
+5. sexuálny fyzický kontakt – správanie, pri ktorom má obťažujúci fyzický sexuálny kontakt s obťažovanou osobou (napr. pobozkanie).
 
-(6.) nesexuálny fyzický kontakt – správanie, pri ktorom obťažujúci urobí nesexuálny fyzický kontakt s obťažovanou osobou (napr. objatie).
+6. nesexuálny fyzický kontakt – správanie, pri ktorom obťažujúci urobí nesexuálny fyzický kontakt s obťažovanou osobou (napr. objatie).
 
-(7.) sexuálny nátlak – žiadosti o sexuálny styk alebo násilný styk bez skutočného súhlasu, ktorý je podmienkou zamestnania alebo povýšenia (napr. sexuálne úplatkárstvo, vyhrážanie sa prepustením).
+7. sexuálny nátlak – žiadosti o sexuálny styk alebo násilný styk bez skutočného súhlasu, ktorý je podmienkou zamestnania alebo povýšenia (napr. sexuálne úplatkárstvo, vyhrážanie sa prepustením).
 
 ## Súčasný stav vedeckého poznania
 
@@ -390,11 +406,11 @@ Niektoré štúdie (napr. Jirek & Saunders, 2018) zároveň zistili, že u jedin
 
 Výskum zameraný na sexuálne obťažovanie (nielen vo vysokoškolskom prostredí) sa od 80. rokov 20. storočia začal sústrediť na postoje, názory, resp. presvedčenia o rôznych aspektoch sexuálneho obťažovania, čo malo zásadný vplyv na organizačné štúdiá. Postoje členov a členiek komunity sa pretavujú v sociálnu prax a môžu viesť k prehlbovaniu alebo neriešeniu prípadov sexuálneho obťažovania v organizácii (Hearn & Parkin, 1995; Johnson, Widnall & Benya, 2018). Malovich a Stake (1990) napríklad uvádzajú niekoľko dôvodov, prečo je výskum názorov na sexuálne obťažovanie (napr. tolerancia sexuálneho obťažovania) kľúčový v konkrétnych organizačných štruktúrach (napr. v akademickom prostredí):
 
-(1.)  Predstavy a vnímanie obťažovania sú relevantné pre osoby, ktoré obťažovanie zažili. Ovplyvňujú totiž ich stratégie vyrovnávania sa so situáciou ako aj ďalšie rozhodnutia týkajúce sa profesionálneho a súkromného života. 
+- Predstavy a vnímanie obťažovania sú relevantné pre osoby, ktoré obťažovanie zažili. Ovplyvňujú totiž ich stratégie vyrovnávania sa so situáciou ako aj ďalšie rozhodnutia týkajúce sa profesionálneho a súkromného života. 
 
-(2.)  Predstavy a vnímanie obťažovania v konkrétnych organizáciách môžu ovplyvniť to, či k sexuálnemu obťažovaniu bude beztrestne a normalizovane dochádzať aj naďalej. 
+- Predstavy a vnímanie obťažovania v konkrétnych organizáciách môžu ovplyvniť to, či k sexuálnemu obťažovaniu bude beztrestne a normalizovane dochádzať aj naďalej. 
 
-(3.)  Predstavy a názory okolia na osoby, ktoré zažili sexuálne obťažovanie v organizáciách, môžu ovplyvňovať to, ako sa okolie k tejto osobe bude stavať a ako bude posudzovať jeho/jej situáciu.
+- Predstavy a názory okolia na osoby, ktoré zažili sexuálne obťažovanie v organizáciách, môžu ovplyvňovať to, ako sa okolie k tejto osobe bude stavať a ako bude posudzovať jeho/jej situáciu.
 
 Organizačná kultúra a jej prax sa však nevyskytujú v sociálnom vákuu. Názory a postoje sa u ľudí formujú už pred tým, než sa stanú súčasťou nejakej komunity, napríklad na akademickej pôde. Preto je nevyhnutné zohľadňovať aké sú spoločensky prevládajúce názory predstavy o sexuálnom obťažovaní (Dudová & Uhde, 2006). Napríklad reprezentatívny výskum z roku 2003 (Bodnárová & Filadelfiová, 2003 in Holubová, 2007) ukázal, že bola v danej dobe značným spoločenským sentimentom na Slovensku ľahostajnosť voči sexuálnemu obťažovaniu. Podľa nedávneho prieskumu Eurobarometer 449 na tému rodovo podmieneného násilia a rodovej diskriminácie sa Slovensko radí do bloku krajín EÚ, ktoré sú viac tolerantné voči sexuálnemu obťažovaniu^[Výskum napríklad poukazuje na to, že sú prípady sexuálneho obťažovania respondentmi a respondentkami vnímané ako problematické. No napr. 37% respondentiek a respondentov si myslí, že aj keď je obťažovanie na ulici problematické, nemalo by byť protizákonné.] (Directorate-General for Justice and Consumers, European Commission, 2016).  
 
@@ -427,21 +443,21 @@ Vo svojej monografií venovanej štúdiu sexuality v organizáciách Hearn a Par
 
 Súčasťou organizačnej klímy je napríklad to, ako veľmi je sexuálne obťažovanie v organizácii tolerované vedením či zamestnancami a zamestnankyňami. Tolerovanie sexuálneho obťažovania v organizačnej štruktúre obsahuje podľa severoamerického výskumu tri elementy (Johnson, Widnall & Benya, 2018), ktoré je nutné zohľadniť pri výskume sexuálneho obťažovania ako organizačnej praxe:
 
-(1.) Riziko pre osoby, ktoré sa rozhodnú nahlásiť sexuálne obťažovanie (t. j. Obávajú sa negatívnych následkov? Sú v organizácií známe prípady, kedy nahlásenie sexuálneho obťažovania viedlo k potrestaniu jeho obete?),
+- Riziko pre osoby, ktoré sa rozhodnú nahlásiť sexuálne obťažovanie (t. j. Obávajú sa negatívnych následkov? Sú v organizácií známe prípady, kedy nahlásenie sexuálneho obťažovania viedlo k potrestaniu jeho obete?),
 
-(2.) Sankcie voči osobám, ktoré páchajú sexuálne obťažovanie (t. j. Existuje formalizovaný systém trestania sexuálneho obťažovania? Je tento systém univerzálne platný pre všetkých? Sú sankcie voči sexuálnemu obťažovaniu efektívne?),
+- Sankcie voči osobám, ktoré páchajú sexuálne obťažovanie (t. j. Existuje formalizovaný systém trestania sexuálneho obťažovania? Je tento systém univerzálne platný pre všetkých? Sú sankcie voči sexuálnemu obťažovaniu efektívne?),
 
-(3.) Obavy, že sťažnosť voči sexuálnemu obťažovaniu nebude braná vážne (t. j. Existuje formalizovaný a efektívny systém nahlasovania sťažností? Je osoba, ktorá nahlasuje sexuálne obťažovanie, chránená a anonymizovaná?).
+- Obavy, že sťažnosť voči sexuálnemu obťažovaniu nebude braná vážne (t. j. Existuje formalizovaný a efektívny systém nahlasovania sťažností? Je osoba, ktorá nahlasuje sexuálne obťažovanie, chránená a anonymizovaná?).
 
 Výskumná literatúra zdôrazňuje 4 faktory, ktoré prispievajú k páchaniu a netrestaniu sexuálneho obťažovania v akademickom prostredí (Johnson, Widnall & Benya, 2018):
 
-(1.)  Závislosť študentov a študentiek od svojich vyučujúcich a mentorov/mentoriek pri poskytovaní hodnotenia a v kariérnom napredovaní.
+- Závislosť študentov a študentiek od svojich vyučujúcich a mentorov/mentoriek pri poskytovaní hodnotenia a v kariérnom napredovaní.
 
-(2.)  Systém meritokracie, ktorý nezohľadňuje sexuálne obťažovanie ako rodovo zaťažený súbor aktov, ktoré ovplyvňujú produktivitu a motiváciu.
+- Systém meritokracie, ktorý nezohľadňuje sexuálne obťažovanie ako rodovo zaťažený súbor aktov, ktoré ovplyvňujú produktivitu a motiváciu.
 
-(3.)  „Mačistická kultúra“ v niektorých odboroch, v ktorých je tradične zastúpených viac mužov.
+- „Mačistická kultúra“ v niektorých odboroch, v ktorých je tradične zastúpených viac mužov.
 
-(4.)  Neformálne komunikačné štruktúry, cez ktoré cirkulujú informácie o „problematických jedincoch“, a ktoré tiež narúšajú anonymitu osoby, ktorá zažila sexuálne obťažovanie.
+- Neformálne komunikačné štruktúry, cez ktoré cirkulujú informácie o „problematických jedincoch“, a ktoré tiež narúšajú anonymitu osoby, ktorá zažila sexuálne obťažovanie.
 
 Nakoľko je práve organizačná klíma zásadnou pre to, či sa sexuálne obťažovanie v organizácii objaví a či bude pretrvávať, budeme sa týmito faktormi v akademickom prostredí bližšie zaoberať.  
 
@@ -489,23 +505,23 @@ Neformálne komunikačné štruktúry akademického prostredia spolu s ostatným
 
 Väčšinu súčasných zahraničných programov zameraných na prevenciu sexuálneho násilia a obťažovania v prostredí vysokých škôl možno rozdeliť do troch všeobecných typov (Bellis, 2020): 
 
-(1)	programy, ktoré sa sústredia na vzdelávanie a zvyšovanie povedomia o predmetnej problematike. Sú adresované širokému okruhu osôb pohybujúcich sa vo vysokoškolskom prostredí, vrátane potenciálnych páchateľov sexuálneho násilia a obťažovania. Snažia sa u nich odbúravať mylné presvedčenia o sexuálnom násilí a obťažovaní, edukovať o význame súhlasu (consent) pri sexuálnych aktivitách, zvyšovať empatiu k obetiam sexuálneho násilia a obťažovania a tak prispieť k žiadúcej zmene postojov a správania sa.  
+-	programy, ktoré sa sústredia na vzdelávanie a zvyšovanie povedomia o predmetnej problematike. Sú adresované širokému okruhu osôb pohybujúcich sa vo vysokoškolskom prostredí, vrátane potenciálnych páchateľov sexuálneho násilia a obťažovania. Snažia sa u nich odbúravať mylné presvedčenia o sexuálnom násilí a obťažovaní, edukovať o význame súhlasu (consent) pri sexuálnych aktivitách, zvyšovať empatiu k obetiam sexuálneho násilia a obťažovania a tak prispieť k žiadúcej zmene postojov a správania sa.  
 
-(2)	programy, ktoré potenciálnym obetiam ponúkajú stratégie znižovania rizika viktimizácie alebo sebaobrany. Tieto programy sa takmer výhradne zameriavajú na ženy vo vysokoškolskom prostredí. V ich obsahu sa zvyčajne kombinujú informácie o potenciálnych rizikových faktoroch spojených so sexuálnou viktimizáciou spolu s tréningom verbálnych a fyzických zručností sebaobrany. Hoci výskumné dáta potvrdzujú efektivitu takýchto preventívnych programov (napr. Senn et al., 2017), sú zároveň považované za kontroverzné, pretože bremeno zodpovednosti za zmenu správania a vlastnú ochranu kladú na ženy (Bellis 2020).
+-	programy, ktoré potenciálnym obetiam ponúkajú stratégie znižovania rizika viktimizácie alebo sebaobrany. Tieto programy sa takmer výhradne zameriavajú na ženy vo vysokoškolskom prostredí. V ich obsahu sa zvyčajne kombinujú informácie o potenciálnych rizikových faktoroch spojených so sexuálnou viktimizáciou spolu s tréningom verbálnych a fyzických zručností sebaobrany. Hoci výskumné dáta potvrdzujú efektivitu takýchto preventívnych programov (napr. Senn et al., 2017), sú zároveň považované za kontroverzné, pretože bremeno zodpovednosti za zmenu správania a vlastnú ochranu kladú na ženy (Bellis 2020).
 
-(3)	programy, ktoré vysvetľujú príčiny tzv. efektu prizerajúcich (bystander effect)^[Efekt prizerajúcich (prekladaný aj ako efekt okolostojacich) opisuje jav, kedy ľudia neposkytujú potrebnú pomoc osobe v núdzi. Ich pasivita môže byť podmienená rôznymi faktormi, vrátane napr. nesprávnej interpretácie situácie; domnienky, že pomoc nie je potrebná; pocitom rozptýlenej zodpovednosti, ak sa v prostredí nachádza viacero ľudí, ktorí by potenciálne mohli zasiahnuť; strachom z nesprávneho zásahu; obavou z nebezpečenstva, ktoré by človeku mohlo hroziť v prípade, že by sa rozhodol intervenovať, a podobne (Slaměník & Janoušek, 2019).] a učia stratégie ako intervenovať voči sexuálnemu násiliu a obťažovaniu. Vychádzajú z premisy, že ľudia väčšinou nie sú páchateľmi alebo obeťami, ale nachádzajú sa v ich sociálnom okolí a majú množstvo príležitostí intervenovať.^[Dôležité je, aby si všimli problémovú situáciu, interpretovali ju ako problémovú, uvedomili si osobnú zodpovednosť za to, aby nejakým spôsobom intervenovali, rozhodli sa intervenovať a následne aj konali. Intervencie môžu byť priame aj nepriame; môžu sa týkať páchateľov, osôb, ktoré sú terčom konania páchateľov, alebo iných ľudí, ktorí sú nablízku; môžu sa objaviť pred, počas alebo po problematickom incidente. Napr. bystanderi sa môžu odhodlať priamo konfrontovať osoby, ktoré sa dopúšťajú obťažovania; môžu pomôcť osobám, ktoré sú terčom obťažovania vzdialiť sa zo situácie; alebo môžu nepriamo pomôcť tým, že nájdu niekoho iného, kto zaintervenuje (napr. priateľa obťažovanej osoby alebo nejakú autoritu). V preventívnych programoch si osvojujú zručnosti a spôsobilosti nevyhnuté k tomu, aby v reálnej situácii dokázali intervenovať (Johnson, Widnall & Benya, 2018).] Intervenciou vytvárajú kultúru, v ktorej je obťažujúce správanie chápané ako anomália a nie ako norma (Banyard, 2015; McMahon et al., 2019). V prostredí vysokých škôl a univerzít sú takéto tréningy najčastejšie adresované študentom a študentkám. Podľa výskumov majú tí, ktorí ich absolvujú (v porovnaní s tými, ktorí ich neabsolvujú) viac postojov a presvedčení prispievajúcich k odhodlaniu intervenovať a s väčšou pravdepodobnosťou aj intervenujú voči sexuálnemu násiliu a obťažovaniu (Jouriles et al., 2018).^[Na zistenie toho, ktoré typy intervencií sú najúspešnejšie, je potrebný ešte ďalší výskum (McMahon et al.,  2019).] Hoci nie je jasné, či tieto tréningy sú rovnako efektívne aj u zamestnancov a zamestnankýň vysokých škôl a univerzít, považujú sa za nádejné a vysoko odporúčané (Johnson, Widnall & Benya, 2018). Univerzity, v ktorých sa tento typ preventívnych programov aplikuje, majú (v porovnaní v tými, ktoré ich neaplikujú), nižší výskyt sexuálneho násilia a obťažovania (McMahon et al., 2019).^[Hoci preventívne programy zamerané na posilňovanie intervenčného potenciálu tzv. bystanderov vznikli v USA, ukazujú sa ako aplikovateľné aj v Európskom prostredí, po starostlivom zohľadnení sociálnych, kultúrnych, ekonomických, politických, náboženských a historických kontextov, prispievajúcich k sexuálnemu násiliu a obťažovaniu v jednotlivých Európskych krajinách. V tomto zmysle je potrebné prispôsobiť školiace materiály tak, aby oslovovali a boli blízke životu zamýšľaných cieľových skupín (Fenton & Mott, 2017). O tom, že tieto programy sa využívajú aj v Európe (napr. v Anglicku a Švédsku), svedčia napr. aj dáta uvádzané na webovej stránke amerického centra na výskum inovácií v oblasti prevencie (Prevention Innovations Research Center, 2021).]
+-	programy, ktoré vysvetľujú príčiny tzv. efektu prizerajúcich (bystander effect)^[Efekt prizerajúcich (prekladaný aj ako efekt okolostojacich) opisuje jav, kedy ľudia neposkytujú potrebnú pomoc osobe v núdzi. Ich pasivita môže byť podmienená rôznymi faktormi, vrátane napr. nesprávnej interpretácie situácie; domnienky, že pomoc nie je potrebná; pocitom rozptýlenej zodpovednosti, ak sa v prostredí nachádza viacero ľudí, ktorí by potenciálne mohli zasiahnuť; strachom z nesprávneho zásahu; obavou z nebezpečenstva, ktoré by človeku mohlo hroziť v prípade, že by sa rozhodol intervenovať, a podobne (Slaměník & Janoušek, 2019).] a učia stratégie ako intervenovať voči sexuálnemu násiliu a obťažovaniu. Vychádzajú z premisy, že ľudia väčšinou nie sú páchateľmi alebo obeťami, ale nachádzajú sa v ich sociálnom okolí a majú množstvo príležitostí intervenovať.^[Dôležité je, aby si všimli problémovú situáciu, interpretovali ju ako problémovú, uvedomili si osobnú zodpovednosť za to, aby nejakým spôsobom intervenovali, rozhodli sa intervenovať a následne aj konali. Intervencie môžu byť priame aj nepriame; môžu sa týkať páchateľov, osôb, ktoré sú terčom konania páchateľov, alebo iných ľudí, ktorí sú nablízku; môžu sa objaviť pred, počas alebo po problematickom incidente. Napr. bystanderi sa môžu odhodlať priamo konfrontovať osoby, ktoré sa dopúšťajú obťažovania; môžu pomôcť osobám, ktoré sú terčom obťažovania vzdialiť sa zo situácie; alebo môžu nepriamo pomôcť tým, že nájdu niekoho iného, kto zaintervenuje (napr. priateľa obťažovanej osoby alebo nejakú autoritu). V preventívnych programoch si osvojujú zručnosti a spôsobilosti nevyhnuté k tomu, aby v reálnej situácii dokázali intervenovať (Johnson, Widnall & Benya, 2018).] Intervenciou vytvárajú kultúru, v ktorej je obťažujúce správanie chápané ako anomália a nie ako norma (Banyard, 2015; McMahon et al., 2019). V prostredí vysokých škôl a univerzít sú takéto tréningy najčastejšie adresované študentom a študentkám. Podľa výskumov majú tí, ktorí ich absolvujú (v porovnaní s tými, ktorí ich neabsolvujú) viac postojov a presvedčení prispievajúcich k odhodlaniu intervenovať a s väčšou pravdepodobnosťou aj intervenujú voči sexuálnemu násiliu a obťažovaniu (Jouriles et al., 2018).^[Na zistenie toho, ktoré typy intervencií sú najúspešnejšie, je potrebný ešte ďalší výskum (McMahon et al.,  2019).] Hoci nie je jasné, či tieto tréningy sú rovnako efektívne aj u zamestnancov a zamestnankýň vysokých škôl a univerzít, považujú sa za nádejné a vysoko odporúčané (Johnson, Widnall & Benya, 2018). Univerzity, v ktorých sa tento typ preventívnych programov aplikuje, majú (v porovnaní v tými, ktoré ich neaplikujú), nižší výskyt sexuálneho násilia a obťažovania (McMahon et al., 2019).^[Hoci preventívne programy zamerané na posilňovanie intervenčného potenciálu tzv. bystanderov vznikli v USA, ukazujú sa ako aplikovateľné aj v Európskom prostredí, po starostlivom zohľadnení sociálnych, kultúrnych, ekonomických, politických, náboženských a historických kontextov, prispievajúcich k sexuálnemu násiliu a obťažovaniu v jednotlivých Európskych krajinách. V tomto zmysle je potrebné prispôsobiť školiace materiály tak, aby oslovovali a boli blízke životu zamýšľaných cieľových skupín (Fenton & Mott, 2017). O tom, že tieto programy sa využívajú aj v Európe (napr. v Anglicku a Švédsku), svedčia napr. aj dáta uvádzané na webovej stránke amerického centra na výskum inovácií v oblasti prevencie (Prevention Innovations Research Center, 2021).]
 
 Výskumy efektivity preventívnych programov zameraných na problematiku sexuálneho násilia a obťažovania v prostredí vysokých škôl ukazujú, že ich pozitívny efekt sa dostaví s väčšou pravdepodobnosťou vtedy, ak:
 
-●	zodpovedajú socio-ekologickému modelu prevencie (DeGue et al., 2014; Kafonek & Richards, 2017). V kontexte tohto modelu sa zdôrazňuje, že faktory, ktoré napomáhajú alebo bránia výskytu sexuálneho násilia a obťažovania sa nachádzajú na rôznych úrovniach, ktoré sú vzájomne prepojené. Tieto úrovne zahŕňajú jednotlivcov, ich vzťahy a ich fyzické, sociálne a kultúrne prostredie. Stratégia prevencie by preto mala byť komplexná a ponúkať široké spektrum aktivít, s jednotným posolstvom nulovej tolerancie voči akýmkoľvek formám sexuálneho násilia a obťažovania. Posolstvo prevencie by sa malo kontinuálne šíriť nielen prostredníctvom preventívnych školení v malých skupinách, ale aj cez sociálno-marketingovú kampaň^[Jednu z takýchto sociálno-marketingových kampaní (s názvom Know Your Power® - v preklade Poznaj svoju moc), vyvinuli vedci a vedkyne z University of New Hampshire. Kampaň pozostáva zo série obrázkov, ktoré zobrazujú realistické a podnetné scenáre, zdôrazňujúce dôležitú úlohu všetkých členov komunity pri ukončení sexuálneho a interpersonálneho násilia a obťažovania (Prevention Innovations Research Center, 2021).], rôzne podujatia v priebehu celého akademického roka a samozrejme aj prostredníctvom webstránky^[Informácie týkajúce sa problematiky sexuálneho násilia a obťažovania by mali byť ľahko dostupné (v online forme), dobre viditeľné (ich vyhľadanie by nemalo byť užívateľsky náročné), zrozumiteľné a umožňujúce rýchlu orientáciu v možnostiach a postupoch riešenia a zdrojoch pomoci (Smolovic-Jones et al., 2013; Streng & Kamimura, 2015; Lund & Thomas, 2015; Lee & Wong, 2019). Informáciám týkajúcim sa predmetnej problematiky by vysoké školy/univerzity mali na svojich webstránkach vyhradiť jednu centralizovanú oblasť, aby sa zaistila konzistentnosť a správnosť poskytovaných informácií a zároveň aby sa redukovala frustrácia a únava spojená s online vyhľadávaním relevantných informácií (Lund & Thomas, 2015).] vysokej školy / univerzity. 
+- zodpovedajú socio-ekologickému modelu prevencie (DeGue et al., 2014; Kafonek & Richards, 2017). V kontexte tohto modelu sa zdôrazňuje, že faktory, ktoré napomáhajú alebo bránia výskytu sexuálneho násilia a obťažovania sa nachádzajú na rôznych úrovniach, ktoré sú vzájomne prepojené. Tieto úrovne zahŕňajú jednotlivcov, ich vzťahy a ich fyzické, sociálne a kultúrne prostredie. Stratégia prevencie by preto mala byť komplexná a ponúkať široké spektrum aktivít, s jednotným posolstvom nulovej tolerancie voči akýmkoľvek formám sexuálneho násilia a obťažovania. Posolstvo prevencie by sa malo kontinuálne šíriť nielen prostredníctvom preventívnych školení v malých skupinách, ale aj cez sociálno-marketingovú kampaň^[Jednu z takýchto sociálno-marketingových kampaní (s názvom Know Your Power® - v preklade Poznaj svoju moc), vyvinuli vedci a vedkyne z University of New Hampshire. Kampaň pozostáva zo série obrázkov, ktoré zobrazujú realistické a podnetné scenáre, zdôrazňujúce dôležitú úlohu všetkých členov komunity pri ukončení sexuálneho a interpersonálneho násilia a obťažovania (Prevention Innovations Research Center, 2021).], rôzne podujatia v priebehu celého akademického roka a samozrejme aj prostredníctvom webstránky^[Informácie týkajúce sa problematiky sexuálneho násilia a obťažovania by mali byť ľahko dostupné (v online forme), dobre viditeľné (ich vyhľadanie by nemalo byť užívateľsky náročné), zrozumiteľné a umožňujúce rýchlu orientáciu v možnostiach a postupoch riešenia a zdrojoch pomoci (Smolovic-Jones et al., 2013; Streng & Kamimura, 2015; Lund & Thomas, 2015; Lee & Wong, 2019). Informáciám týkajúcim sa predmetnej problematiky by vysoké školy/univerzity mali na svojich webstránkach vyhradiť jednu centralizovanú oblasť, aby sa zaistila konzistentnosť a správnosť poskytovaných informácií a zároveň aby sa redukovala frustrácia a únava spojená s online vyhľadávaním relevantných informácií (Lund & Thomas, 2015).] vysokej školy / univerzity. 
 
-●	sú obsahovo prispôsobené cieľovej skupine: Pri príprave preventívnych programov je potrebné zohľadňovať špecifiká rôznych cieľových skupín, teda študentov a študentiek^[Zistenia týkajúce sa zloženia skupiny naznačujú, že poskytovanie rôznych typov bystander programov pre mužov a ženy nie je potrebné – je totiž pravdepodobné, že študenti a študentky sa ocitnú v situáciách, keď v záujme prevencie sexuálneho násilia a obťažovania budú musieť interagovať s mužmi aj ženami. Výcvik študentov a študentiek v prirodzene sa vyskytujúcich rovesníckych skupinách môže tiež napomáhať vytváraniu a rozširovaniu nových skupinových noriem týkajúcich sa reagovania bystanderov voči sexuálnemu násiliu a obťažovaniu (Jouriles et al., 2018). Zároveň ale treba podotknúť, že niektoré preventívne programy sa zameriavajú osobitne na mužov a poukazujú na rodové stereotypy a kultúrne koncepcie „maskulinity“ a „feminity“, ktoré môžu podporovať sexuálne násilie a obťažovanie. Vzhľadom na to, že väčšinu sexuálneho násilia páchajú muži, čoraz viac sa zdôrazňuje význam ich zaangažovania do preventívneho úsilia (McMahon et al., 2019).]; vyučujúcich; ostatných zamestnancov a zamestnankýň vysokej školy/univerzity; a osôb vo vedúcich pozíciách (Johnson, Widnall & Benya, 2018). Zároveň treba prihliadať na špecifické riziká a potreby rôznorodej populácie vysokoškolských študentov a študentiek, osobitne LGBTQ a rasových alebo etnických menšín (Kafonek & Richards, 2017). 
+- sú obsahovo prispôsobené cieľovej skupine: Pri príprave preventívnych programov je potrebné zohľadňovať špecifiká rôznych cieľových skupín, teda študentov a študentiek^[Zistenia týkajúce sa zloženia skupiny naznačujú, že poskytovanie rôznych typov bystander programov pre mužov a ženy nie je potrebné – je totiž pravdepodobné, že študenti a študentky sa ocitnú v situáciách, keď v záujme prevencie sexuálneho násilia a obťažovania budú musieť interagovať s mužmi aj ženami. Výcvik študentov a študentiek v prirodzene sa vyskytujúcich rovesníckych skupinách môže tiež napomáhať vytváraniu a rozširovaniu nových skupinových noriem týkajúcich sa reagovania bystanderov voči sexuálnemu násiliu a obťažovaniu (Jouriles et al., 2018). Zároveň ale treba podotknúť, že niektoré preventívne programy sa zameriavajú osobitne na mužov a poukazujú na rodové stereotypy a kultúrne koncepcie „maskulinity“ a „feminity“, ktoré môžu podporovať sexuálne násilie a obťažovanie. Vzhľadom na to, že väčšinu sexuálneho násilia páchajú muži, čoraz viac sa zdôrazňuje význam ich zaangažovania do preventívneho úsilia (McMahon et al., 2019).]; vyučujúcich; ostatných zamestnancov a zamestnankýň vysokej školy/univerzity; a osôb vo vedúcich pozíciách (Johnson, Widnall & Benya, 2018). Zároveň treba prihliadať na špecifické riziká a potreby rôznorodej populácie vysokoškolských študentov a študentiek, osobitne LGBTQ a rasových alebo etnických menšín (Kafonek & Richards, 2017). 
 
-●	majú dostatočný rozsah: Preventívne tréningy by mali trvať viac než štyri hodiny (Kalinoski et al. 2013), optimálne až šesť hodín (Jouriles et al., 2018). Ak sú krátke a navyše jednorazové nevedú k dlhodobej zmene presvedčení, postojov a správania (DeGue et al., 2014; Jouriles et al., 2018).^[Takéto prístupy môžu byť užitočné ako jedna zo zložiek komplexnej stratégie; no ak sú aplikované ako jediná alebo primárna stratégia prevencie, neprispejú k zníženiu výskytu sexuálneho násilia a obťažovania (DeGue et al., 2014).] Preventívne programy, ktoré majú dlhšie trvanie a pozostávajú z viacerých stretnutí, sú efektívnejšie než kratšie programy. Na udržanie pozitívneho efektu preventívnych programov sú navyše potrebné nadväzujúce (follow-up) alebo posilňovacie (booster) stretnutia (McMahon et al., 2015, 2019; Kafonek & Richards, 2017; Jouriles et al., 2018). Zmena postojov voči sexuálnemu násiliu a obťažovaniu môže byť posilnená aj vtedy, ak na preventívne programy realizované formou workshopov v malých skupinách nadväzuje celouniverzitná či celofakultná sociálno-marketingová kampaň (Banyard et al., 2018). 
+- majú dostatočný rozsah: Preventívne tréningy by mali trvať viac než štyri hodiny (Kalinoski et al. 2013), optimálne až šesť hodín (Jouriles et al., 2018). Ak sú krátke a navyše jednorazové nevedú k dlhodobej zmene presvedčení, postojov a správania (DeGue et al., 2014; Jouriles et al., 2018).^[Takéto prístupy môžu byť užitočné ako jedna zo zložiek komplexnej stratégie; no ak sú aplikované ako jediná alebo primárna stratégia prevencie, neprispejú k zníženiu výskytu sexuálneho násilia a obťažovania (DeGue et al., 2014).] Preventívne programy, ktoré majú dlhšie trvanie a pozostávajú z viacerých stretnutí, sú efektívnejšie než kratšie programy. Na udržanie pozitívneho efektu preventívnych programov sú navyše potrebné nadväzujúce (follow-up) alebo posilňovacie (booster) stretnutia (McMahon et al., 2015, 2019; Kafonek & Richards, 2017; Jouriles et al., 2018). Zmena postojov voči sexuálnemu násiliu a obťažovaniu môže byť posilnená aj vtedy, ak na preventívne programy realizované formou workshopov v malých skupinách nadväzuje celouniverzitná či celofakultná sociálno-marketingová kampaň (Banyard et al., 2018). 
 
-●	využívajú viacero metód a foriem učenia: Pasívne metódy učenia (ako napr. vypočutie prednášky, pozretie filmu) sú menej efektívne než interaktívne metódy. Preventívne programy by preto mali obsahovať participačné aktivity (ako napr. diskusia, písomné cvičenia, hranie rolí) (Kalinoski et al., 2013; DeGue et al., 2014; Kafonek & Richards, 2017). Využívanie participatívnych metód sa ukazuje ako dôležité aj pri diseminácii inštitucionálnej politiky (smernice) týkajúcej sa prevencie sexuálneho násilia a obťažovania. Študenti a študentky, ktorým bola smernica prečítaná v triede a následne mali možnosť o nej diskutovať, vykazovali výraznejšie pozitívne zmeny v postojoch a vedomostiach než tí, ktorým smernica predstavená nebola, alebo ktorým bola iba prečítaná (Potter et al., 2016). Pozitívny efekt preventívnych aktivít sa posilňuje aj vtedy, ak je rovnaké posolstvo komunikované prostredníctvom rôznych formátov podujatí (DeGue et al., 2014) – napr. prednášky expertov a expertiek venujúcich sa výskumu problematiky sexuálneho násilia a obťažovania; prednášky osôb z radov pomáhajúcich profesií, prednášky osôb, ktoré zažili sexuálne násilie alebo obťažovanie; divadelné predstavenia dotýkajúce sa predmetnej témy (Kafonek & Richards, 2017). Hoci niektoré analýzy uvádzajú, že preventívne programy sú účinnejšie ak sa realizujú prezenčnou formou (face to face) (Kalinoski et al., 2013; Katz & Moore, 2013), novšie dáta poukazujú na to, že rovnako efektívne môžu byť aj online formy prevencie (Kleinsasser et al. 2015; Jouriles et al., 2018).^[Na odhalenie toho, ktoré prvky online programov sú najefektívnejšie a vedú k trvalej zmene, je potrebný ďalší výskum (McMahon et al., 2019).] Využívanie digitálnych možností vzdelávania navyše robí prevenciu sexuálneho násilia a zneužívania široko dostupnou a zároveň menej organizačne náročnou a finančne nákladnou (Thomas-Card & Eichele, 2016; Kafonek & Richards, 2017; Jouriles et al., 2018). K inovatívnym a životaschopným spôsobom prevencie sexuálneho násilia a obťažovania patria aj počítačové hry (Jozkowski & Ekbia, 2015).
+- využívajú viacero metód a foriem učenia: Pasívne metódy učenia (ako napr. vypočutie prednášky, pozretie filmu) sú menej efektívne než interaktívne metódy. Preventívne programy by preto mali obsahovať participačné aktivity (ako napr. diskusia, písomné cvičenia, hranie rolí) (Kalinoski et al., 2013; DeGue et al., 2014; Kafonek & Richards, 2017). Využívanie participatívnych metód sa ukazuje ako dôležité aj pri diseminácii inštitucionálnej politiky (smernice) týkajúcej sa prevencie sexuálneho násilia a obťažovania. Študenti a študentky, ktorým bola smernica prečítaná v triede a následne mali možnosť o nej diskutovať, vykazovali výraznejšie pozitívne zmeny v postojoch a vedomostiach než tí, ktorým smernica predstavená nebola, alebo ktorým bola iba prečítaná (Potter et al., 2016). Pozitívny efekt preventívnych aktivít sa posilňuje aj vtedy, ak je rovnaké posolstvo komunikované prostredníctvom rôznych formátov podujatí (DeGue et al., 2014) – napr. prednášky expertov a expertiek venujúcich sa výskumu problematiky sexuálneho násilia a obťažovania; prednášky osôb z radov pomáhajúcich profesií, prednášky osôb, ktoré zažili sexuálne násilie alebo obťažovanie; divadelné predstavenia dotýkajúce sa predmetnej témy (Kafonek & Richards, 2017). Hoci niektoré analýzy uvádzajú, že preventívne programy sú účinnejšie ak sa realizujú prezenčnou formou (face to face) (Kalinoski et al., 2013; Katz & Moore, 2013), novšie dáta poukazujú na to, že rovnako efektívne môžu byť aj online formy prevencie (Kleinsasser et al. 2015; Jouriles et al., 2018).^[Na odhalenie toho, ktoré prvky online programov sú najefektívnejšie a vedú k trvalej zmene, je potrebný ďalší výskum (McMahon et al., 2019).] Využívanie digitálnych možností vzdelávania navyše robí prevenciu sexuálneho násilia a zneužívania široko dostupnou a zároveň menej organizačne náročnou a finančne nákladnou (Thomas-Card & Eichele, 2016; Kafonek & Richards, 2017; Jouriles et al., 2018). K inovatívnym a životaschopným spôsobom prevencie sexuálneho násilia a obťažovania patria aj počítačové hry (Jozkowski & Ekbia, 2015).
 
-●	osoby, ktoré implementujú preventívne programy, disponujú primeranými vedomosťami a spôsobilosťami: Mali by sa vyznačovať nielen odbornou kompetenciou vo vzťahu k problematike sexuálneho násilia a obťažovania, ale aj oddanosťou preventívnej práci, emočnou stabilitou, vnímavosťou a schopnosťou efektívne nadviazať kontakt s adresátmi a adresátkami preventívnych programov (DeGue et al., 2014; Kafonek & Richards, 2017). Je tiež dôležité, aby boli istené dostatočnou podporou a supervíziou (Kafonek & Richards, 2017). Metaanalýza efektivity tréningov zameraných na prevenciu sexuálneho obťažovania ukázala, že pozitívny efekt sa zvyšuje pokiaľ tréning vedie supervízor/ka alebo externý/á expert/ka (Kalinoski et al., 2013). Pokiaľ ide o programy, ktoré sa zameriavajú na intervenčný potenciál okolostojacich (bystanders) študentov a študentiek, podľa výskumov ich efektivita nie je ovplyvnená statusom facilitátora/rky. Takéto programy môžu byť teda úspešne realizované aj rovesníkmi a rovesníčkami študentov a študentiek, pokiaľ sú adekvátne vyškolení na rolu facilitátorov a facilitátoriek skupín (Jouriles et al., 2018). Vyškolení lídri z radov rovesníkov sa osvedčili aj v programoch prevencie sexuálneho násilia adresovaných špeciálne vysokoškolským študentom. Podľa výskumov môžu byť takíto lídri efektívni pri korigovaní mýtov o sexuálnom násilí a jeho prevencii a pri komunikovaní a propagovaní prosociálneho správania (Stein, 2007; Foubert et al., 2010). 
+- osoby, ktoré implementujú preventívne programy, disponujú primeranými vedomosťami a spôsobilosťami: Mali by sa vyznačovať nielen odbornou kompetenciou vo vzťahu k problematike sexuálneho násilia a obťažovania, ale aj oddanosťou preventívnej práci, emočnou stabilitou, vnímavosťou a schopnosťou efektívne nadviazať kontakt s adresátmi a adresátkami preventívnych programov (DeGue et al., 2014; Kafonek & Richards, 2017). Je tiež dôležité, aby boli istené dostatočnou podporou a supervíziou (Kafonek & Richards, 2017). Metaanalýza efektivity tréningov zameraných na prevenciu sexuálneho obťažovania ukázala, že pozitívny efekt sa zvyšuje pokiaľ tréning vedie supervízor/ka alebo externý/á expert/ka (Kalinoski et al., 2013). Pokiaľ ide o programy, ktoré sa zameriavajú na intervenčný potenciál okolostojacich (bystanders) študentov a študentiek, podľa výskumov ich efektivita nie je ovplyvnená statusom facilitátora/rky. Takéto programy môžu byť teda úspešne realizované aj rovesníkmi a rovesníčkami študentov a študentiek, pokiaľ sú adekvátne vyškolení na rolu facilitátorov a facilitátoriek skupín (Jouriles et al., 2018). Vyškolení lídri z radov rovesníkov sa osvedčili aj v programoch prevencie sexuálneho násilia adresovaných špeciálne vysokoškolským študentom. Podľa výskumov môžu byť takíto lídri efektívni pri korigovaní mýtov o sexuálnom násilí a jeho prevencii a pri komunikovaní a propagovaní prosociálneho správania (Stein, 2007; Foubert et al., 2010). 
 
 Odporúča sa, aby vysoké školy a univerzity implementovali také preventívne programy, ktoré sú vedecky overené (DeGue et al., 2014). V tomto ohľade predstavuje unikátnu iniciatívu webový portál „Culture of Respect“^[Dostupné na: https://cultureofrespect.org/programs-and-tools/matrix/. V zozname možno vyhľadať programy podľa stupňa ich vedeckého overenia, podľa formátu (online kurz, prezenčná forma workshopu, prezentácia, marketingová kampaň) a podľa cieľových skupín. O každom programe v zozname sa po jeho rozkliknutí možno dočítať podrobnejšie informácie. V zozname sa aktuálne (apríl 2021) nachádza 14 preventívnych programov, ktoré sú vedecky overené, čo znamená, že ich efektivita bola potvrdená výskumami s precíznou metodológiou zahŕňajúcou okrem experimentálnej skupiny aj kontrolnú skupinu skúmaných osôb. Okrem toho zoznam obsahuje 40 programov, pri ktorých výskumnom overovaní neboli použité kontrolné skupiny, ich výsledky však vyzerajú sľubne. Napokon je v zozname ešte ďalších 12 programov, u ktorých zatiaľ chýbajú dôkazy o tom, že sa ich realizáciou darí dosahovať stanovené učebné ciele (predpokladá sa však, že sú efektívne, pretože sa opierajú o solídnu teóriu a predošlé výskumy).], ktorý obsahuje zoznam (v angličtine) dostupných preventívnych programov zameraných na problematiku sexuálneho násilia. 
 
@@ -575,22 +591,22 @@ Na fakulty tak anketárky vstupovali s pomocou zástupcov a zástupkýň fakúlt
 
 Dotazník, ktorého cieľom bolo mapovať skúsenosti študentov a študentiek so sexuálnym obťažovaním na vysokých školách, ako aj ich názory, začal vznikať v roku 2019.  Štruktúru tohto dotazníka s názvom “Kvalita vzťahov a skúsenosti s obťažujúcim správaním na vysokých školách” sme rozdelili do niekoľkých sekcií podľa sledovaných výskumných otázok. Tieto sekcie možno pomenovať nasledovne:
 
-1.	Prevalencia rodovo motivovaného obťažovania, nechcenej sexuálnej pozornosti a sexuálneho nátlaku. 
+- Prevalencia rodovo motivovaného obťažovania, nechcenej sexuálnej pozornosti a sexuálneho nátlaku. 
 
-2.	Vyrovnávanie sa so situáciami (tzv. coping), dôsledky obťažovania a prístup k spravodlivosti. 
+- Vyrovnávanie sa so situáciami (tzv. coping), dôsledky obťažovania a prístup k spravodlivosti. 
 
-3.	Názory a stereotypné vnímanie sexuálneho obťažovania. 
+- Názory a stereotypné vnímanie sexuálneho obťažovania. 
 
-4.	Právne povedomie o sexuálnom obťažovaní. 
+- Právne povedomie o sexuálnom obťažovaní. 
 
-5.	Biografické otázky o respondentoch a respondentkách.
+- Biografické otázky o respondentoch a respondentkách.
 
 Zámerom úvodnej sekcie dotazníka zameranej na prevalenciu bolo dopytovať sa na incidenciu skúseností s obťažujúcim a diskriminačným správaním na vysokých školách. Predložený dotazník sa v tomto ohľade inšpiruje výskumami sexuálneho obťažovania uskutočnenými v Českej republike^[Ide konkrétne o dva výskumy zamerané na sexuálne obťažovanie vo vysokoškolskom prostredí, ktoré prebehli v rokoch 2008 - 2009 na Fakulte humanitných štúdií univerzity Karlovej v Prahe a výskum Sociologického ústavu Akadémie vied Českej republiky (Smetáčková & Pavlík, 2011).]. Dotazník aplikuje modifikovaný rámec SEQ dotazníku (t.j. Sexual Experiences Questionnaire) po vzore typológie obťažovania od Fitzgerald a kolektívu (Fitzgerald & Ormerod, 1991; Fitzgerald et al., 1995). Ako uvádzame v predchádzajúcej kapitole, rámec dotazníkov SEQ stanovuje tri kategórie správania (t. j. rodovo motivované obťažovanie, nechcená sexuálna pozornosť a sexuálny nátlak), ktoré nevníma ako oddelené akty ale skôr ako kontinuum praktík (Rubin & Borgers, 1990; Holubová, 2007; Smetáčková & Pavlík, 2011; Johnson, Widnall & Benya, 2018). Cieľom takéhoto nahliadania na formy rodovej diskriminácie a obťažovania bola snaha pokryť rôzne situácie, s ktorými sa študenti a študentky stretávajú. Rozhodli sme sa v medziach tzv. stand-point theory (Sprague, 2016) poskytnúť respondentom a respondentkám priestor označiť s akými druhmi správania sa stretli. Zároveň sme sa chceli vymedziť voči jednoduchému dopytovaniu sa respondentov a respondentiek na to, či “majú skúsenosť so sexuálnym obťažovaním”. Aj iní výskumníci a výskumníčky, ktorí/é sa venovali sexuálnemu obťažovaniu narazili na to, že respondenti a respondentky vnímajú komplexné pojmy ako „sexuálne obťažovanie“ rôznymi spôsobmi^[Smetáčková a Pavlík (2011) uvádzajú, že sa prevalencia sexuálneho obťažovania rôzni a výskyt môže variovať od 5% po 80%. Autor a autorka tejto štúdie poukazujú na to, že približne 75 % respondentov a respondentiek z ich vzorky zažilo správanie objektívne definovateľné podľa antidiskirminačného práva ako sexuálne obťažovanie.]. Preto napríklad Fricker a kolektív (2003) odporúčajú tzv. behaviorálne špecifické otázky, ktoré sú podľa nich vhodnejšie ako otázky s „nálepkou“ sexuálneho obťažovania. Autorský kolektív zároveň zdôrazňuje, že tieto behaviorálne špecifické otázky majú tendenciu viesť k vyššej miere prevalencie, keďže je pre respondentov a respondentky jednoduchšie uviesť, s akým konkrétnym správaním a situáciami majú skúsenosť.    
 
 Nami predložený dotazník pracuje s 19 scenármi, ktoré boli vytvorené a roztriedené do troch skupín konania (viď Tabuľka \@ref(tab:formsList)):
 
 ```{r formsList}
-kbl(forms, digits = 3, caption = "Zoznam foriem sexuálneho obťažovania", booktabs = T, col.names = c("Položka", "Formulované ako 'Stalo sa vám počas štúdia na súčasnej vysokej škole, že..'")) %>% kable_paper("hover") %>% kable_styling(latex_options = c("striped", "scale_down", "HOLD_position"), full_width = F, font_size = 12) %>% row_spec(1:8, color = "black", background = "#E69F00") %>% row_spec(9:16, color = "black", background = "#56B4E9") %>% row_spec(17:20, color = "black", background = "#999999") %>% footnote(general = "Farby vyznačujú príslušnosť k všeobecnej forme (resp. klastru) sexuálneho obťažovania. Žltá = formy rodovo motivovaného obťažovania; modrá = formy neželanej sexuálnej pozornosti; sivá = formy sexuálneho nátlaku.")
+suppressWarnings(kbl(forms, caption = "Zoznam foriem sexuálneho obťažovania", booktabs = T, longtable = T, col.names = c("Položka", "Formulované ako 'Stalo sa vám počas štúdia na súčasnej vysokej škole, že..'")) %>% kable_paper("hover") %>% kable_styling(latex_options = c("striped", "scale_down", "repeat_header"), full_width = T, font_size = fontSize) %>% row_spec(1:8, color = "black", background = "#E69F00") %>% row_spec(9:16, color = "black", background = "#56B4E9") %>% row_spec(17:20, color = "black", background = "#999999") %>% footnote(general = "Farby vyznačujú príslušnosť k všeobecnej forme (resp. klastru) sexuálneho obťažovania. Žltá = formy rodovo motivovaného obťažovania; modrá = formy neželanej sexuálnej pozornosti; sivá = formy sexuálneho nátlaku.", threeparttable = T))
 ```
 
 Keďže sme vychádzali z rámca SEQ, pracovali sme s anglickou verziou dotazníku, ktorú bolo nutné preložiť do slovenčiny. Aby sme sa uistili, že respondenti a respondentky si budú situácie, ktoré opisujeme, vykladať rovnako, využili sme možnosť pilotného testovania dotazníku a kognitívnych rozhovorov (Vohlídalová, 2009; Popper, 2019) na dvoch bratislavských fakultách verejných vysokých škôl. Ako je zjavné z Tabuľky \@ref(tab:formsList), na základe pilotného testovania dotazníku sme sa rozhodli pri niektorých scenároch uviesť príklady.
@@ -663,7 +679,7 @@ Všetky analýzy boli realizované v R, verzii 4.0.3. s využitím nasledujúcic
 Výskumná vzorka pozostávala z `r ss_total_n` participantov, študentov slovenských vysokých škôl. Priemerný vek participantov bol `r round(mean(data$age, na.rm = T), 2)` rokov (*SD* = `r round(sd(data$age, na.rm = T), 2)`). Z hľadiska pohlavia, vzorku tvorilo `r round(ss_gender_n[1,3], 0)`% žien, `r round(ss_gender_n[2,3], 0)`% mužov a menej než 1% transrodových osôb (`r round(ss_gender_n[4,3], 0)`% participantov rod neuviedlo). Graf \@ref(fig:ageplot) zobrazuje distribúciu veku podľa rodu (ako binárnej premennej). 
 
 ```{r ageplot, fig.cap= "Distribúcia veku podľa pohlavia"}
-ss_age_plot %>% ggplotly()
+ss_age_plot #%>% ggplotly()
 ```
 
 Z celkovej vzorky, 2,7% participantov sa hlásilo k etnickej minorite, 3.5% k sexuálnej menšine (queer), 5,2% k náboženskej minorite, a po 1,0% participantov uvádzalo postihnutie alebo status imigranta.
@@ -672,7 +688,7 @@ Najviac zastúpení vo vzorke boli študenti pochádzajúci z krajov východnéh
 
 ```{r regionTab}
 colnames(ss_region_n)[1] <- "Región pôvodu participantov"
-kbl(arrange(ss_region_n, desc(percent)), digits = 3, caption = "Participanti podľa kraja", booktabs = T) %>% kable_paper("hover") %>% kable_styling(latex_options = c("striped", "HOLD_position"), full_width = F, font_size = 12)
+kbl(arrange(ss_region_n, desc(percent)), digits = 3, caption = "Participanti podľa kraja", booktabs = T) %>% kable_paper("hover") %>% kable_styling(latex_options = c("striped", "HOLD_position"), full_width = F, font_size = fontSizeLarger)
 ```
 
 ### Študijné charakteristiky
@@ -680,21 +696,21 @@ Výskumná vzorka reprezentovala participantov študujúcich všetky skupiny odb
 
 ```{r regFieldTab}
 colnames(ss_facultyRegion_n)[1] <- "Región fakulty"
-kbl(arrange(ss_facultyRegion_n, desc(percent)), digits = 3, caption = "Región fakulty", booktabs = T) %>% kable_paper("hover") %>% kable_styling(latex_options = c("striped", "HOLD_position"), full_width = F, font_size = 12)
+kbl(arrange(ss_facultyRegion_n, desc(percent)), digits = 3, caption = "Región fakulty", booktabs = T) %>% kable_paper("hover") %>% kable_styling(latex_options = c("striped", "HOLD_position"), full_width = F, font_size = fontSizeLarger)
 ```
 
 ```{r fieldStudyTab}
-kbl(arrange(ss_fieldStudy_n, desc(percent)), digits = 3, caption = "Skupiny študijných odborov", booktabs = T) %>% kable_paper("hover") %>% kable_styling(latex_options = c("striped", "HOLD_position"), full_width = F, font_size = 12)
+kbl(arrange(ss_fieldStudy_n, desc(percent)), digits = 3, caption = "Skupiny študijných odborov", booktabs = T) %>% kable_paper("hover") %>% kable_styling(latex_options = c("striped", "HOLD_position"), full_width = F, font_size = fontSizeLarger)
 ```
 
 Nižšie je možné vidieť skupiny odborov rozdelené podľa pohlavia (Graf \@ref(fig:fieldPlotMF)) a podľa ročníka (Graf \@ref(fig:fieldPlotYear)).
 
 ```{r fieldPlotMF, fig.cap="Odbor štúdia podľa pohlavia"}
-ss_fieldStudy_plot %>% ggplotly()
+ss_fieldStudy_plot #%>% ggplotly()
 ```
 
 ```{r fieldPlotYear, fig.cap="Odbor štúdia podľa ročníka"}
-ss_fieldStudyYear_plot %>% ggplotly()
+ss_fieldStudyYear_plot #%>% ggplotly()
 ```
 
 ### Vylúčenie nedbanlivých participantov
@@ -706,29 +722,31 @@ Primárnym výsledkom výskumu sú odhady populačných proporcií jednotlivých
 Dvadsať konkrétnych foriem uvedených v danej tabuľke spadá do 3 nadradených klastrov, ktorými sú (1) rodovo motivované obťažovanie (formy 1-8, vyznačené žltou farbou), (2) neželaná sexuálna pozornosť (formy 9-16, vyznačené modrou farbou), a (3) sexuálny nátlak (formy 17-20, vyznačené sivou farbou). Na grafe \@ref(fig:prevItems) sú zobrazené vážené percentuálne prevalencie 20 individuálnych foriem, s farebným odlíšením foriem, do ktorých spadajú.
 
 ```{r prevItems, fig.cap="Prevalencia individuálnych foriem sexuálneho obťažovania"}
-rq1.1_items_plot %>% ggplotly()
+rq1.1_items_plot #%>% ggplotly()
 ```
 
 Prevalencia rodovo motivovaného obťažovania variuje od `r round(rq1.1_items_n$q7_perc[1], 1)`% do `r round(rq1.1_items_n$q1_perc[1], 1)`%, prevalencia foriem neželanej sexuálnej pozornosti od `r round(rq1.1_items_n$q13_perc[1], 1)`% do `r round(rq1.1_items_n$q12_perc[1], 1)`%, a najmenej frekventovanou formou sexuálneho obťažovania je sexuálne násilie, kde sa prevalencia jednotlivých foriem pohybuje medzi `r round(rq1.1_items_n$q20_perc[1], 1)`% a `r round(rq1.1_items_n$q17_perc[1], 1)`%. Celkovo `r round(rq1.2_cluster_n[4][1], 2)`% (*N* = `r table(as.logical(data$"Rodovo motivované obťažovanie"))[2]`) participantov uvádzalo, že zažilo aspoň jednu z foriem rodovo motivovaného obťažovania, `r round(rq1.2_cluster_n[5][1], 2)`% (*N* = `r table(as.logical(data$"Neželaná sexuálna pozornosť"))[2]`) neželanú sexuálnu pozornosť a `r round(rq1.2_cluster_n[6][1], 2)`% (*N* = `r table(as.logical(data$"Sexuálny nátlak"))[2]`) sexuálny nátlak.^[Reportované frekvencie reflektujú na rozdiel od percent prirodzené, nie vážené počty participantov-obetí.] 
 
 ```{r prevItemsG, fig.cap="Prevalencia individuálnych foriem sexuálneho obťažovania podľa rodu"}
-rq1.1_itemsGender_plot %>% ggplotly()
+rq1.1_itemsGender_plot #%>% ggplotly()
 ```
 
 Celkovo výrazne vyššie percento obetí pritom uvádzalo, že boli vystavení sexuálnemu obťažovaniu skôr opakovane, než jednorázovo, až `r repExpGMH`% obetí rodovo motivovaného obťažovania (`r repExpGMHf`% žien a `r repExpGMHm`% mužov), `r repExpUSA`% obetí neželanej sexuálnej pozornosti (`r repExpUSAf`% žien a `r repExpUSAm`% mužov), a `r repExpSAB`% obetí sexuálneho nátlaku (`r repExpSABf`% žien a `r repExpSABm`% mužov).
 
-Populačné odhady prevalencií pre jednotlivé formy, separátne pre ženy a mužov je možné vidieť na grafe \@ref(fig:prevItemsG) a prevalencie sexuálneho obťažovania pre klastre na grafe \@ref(fig:prevClust). Nižšie v tabuľkách \@ref(tab:prevTabFemale) a \@ref(tab:prevTabMale) sú uvedené prevalencie pre ženy, respektíve pre mužov s 95% intervalmi spoľahlivosti z binomiálneho testu proporcií (založeného na prirodzených vážených počtoch participantov).
+Populačné odhady prevalencií pre jednotlivé formy, separátne pre ženy a mužov je možné vidieť na grafe \@ref(fig:prevItemsG) a prevalencie sexuálneho obťažovania pre klastre na grafe \@ref(fig:prevClust). 
 
 ```{r prevClust, fig.cap="Prevalencia klastrov sexuálneho obťažovania podľa pohlavia"}
-rq1.2_clusterGender_plot %>% ggplotly()
+rq1.2_clusterGender_plot #%>% ggplotly()
 ```
 
+Nižšie v tabuľkách \@ref(tab:prevTabFemale) a \@ref(tab:prevTabMale) sú uvedené prevalencie pre ženy, respektíve pre mužov s 95% intervalmi spoľahlivosti z binomiálneho testu proporcií (založeného na prirodzených vážených počtoch participantov).
+
 ```{r prevTabFemale}
-kbl(rq1.2_female_ci, digits = 3, caption = "Prevalencie foriem a klastrov sexuálneho obťažovania u žien", booktabs = T) %>% kable_paper("hover") %>% kable_styling(latex_options = c("striped", "scale_down", "HOLD_position"), full_width = F, font_size = 12)
+kbl(rq1.2_female_ci, digits = 3, caption = "Prevalencie foriem a klastrov sexuálneho obťažovania u žien", booktabs = T) %>% kable_paper("hover") %>% kable_styling(latex_options = c("striped", "scale_down", "HOLD_position"), full_width = F, font_size = fontSizeLarger)
 ```
 
 ```{r prevTabMale}
-kbl(rq1.2_male_ci, digits = 3, caption = "Prevalencie foriem a klastrov sexuálneho obťažovania u mužov", booktabs = T) %>% kable_paper("hover") %>% kable_styling(latex_options = c("striped", "scale_down", "HOLD_position"), full_width = F, font_size = 12)
+kbl(rq1.2_male_ci, digits = 3, caption = "Prevalencie foriem a klastrov sexuálneho obťažovania u mužov", booktabs = T) %>% kable_paper("hover") %>% kable_styling(latex_options = c("striped", "scale_down", "HOLD_position"), full_width = F, font_size = fontSizeLarger)
 ```
 
 Z grafu \@ref(fig:prevItemsG) je zrejmé, že naprieč formami sexuálneho obťažovania existuje v predmetnej vzorke variabilita v rozdieloch medzi ženami a mužmi. Relevantné však je, či pozorované rozdiely odzrkadľujú reálne existujúce, systematické rozdiely v populácii alebo náhodné fluktuácie. Za účelom odhadu relatívneho rizika a testovania, či je možné zodpovedajúce rozdiely očakávať v celej populácii študentov Slovenských vysokých škôl, bolo pre každú formu sexuálneho obťažovania vypočítané relatívne riziko spolu s 95% intervalmi spoľahlivosti a Bayesov faktor. Výsledky sú uvedené v Tabuľke \@ref(tab:rrTable).
@@ -736,7 +754,7 @@ Z grafu \@ref(fig:prevItemsG) je zrejmé, že naprieč formami sexuálneho obťa
 Hodnoty relatívneho rizika väčšie ako 1 vyjadrujú väčšie riziko u žien, hodnoty menšie ako jeden väčšie riziko u mužov. Ak interval spoľahlivosti pretína hodnotu 1, nebol detekovaný štatisticky významný rozdiel v riziku danej formy. Hodnoty Bayesových faktorov na druhej strane predstavujú mieru empirických dôkazov v prospech rozdielu v prevalenciách u žien a mužov. *BF<sub>10</sub>* vyjadruje mieru dôkazov v prospech alternatívnej hypotézy (existencia rozdielu), *BF<sub>01</sub>* na druhej strane mieru dôkazov v prospech nulovej hypotézy (absencia rozdielu). Napríklad *BF<sub>10</sub>* = 2.55 tak znamená, že je 2.55 krát pravdepodobnejšie, že pozorovaný pomer rizík je reálny systematický efekt, zatiaľ čo *BF<sub>01</sub>* = 7.93 znamená takmer 8x vačšiu pravdepodobnosť, že v populácii neexistuje rozdiel v riziku danej formy sexuálneho obťažovania. 
 
 ```{r rrTable}
-kbl(rq1.2_clusterGender_table, digits = 3, caption = "Relatívne riziko a Bayesove faktory pre rozdiely v prevalencii sexuálneho obťažovania podľa pohlavia", booktabs = T) %>% kable_paper("hover") %>% kable_styling(latex_options = c("striped", "scale_down", "HOLD_position"), full_width = F, font_size = 12)
+kbl(rq1.2_clusterGender_table, digits = 3, caption = "Relatívne riziko a Bayesove faktory pre rozdiely v prevalencii sexuálneho obťažovania podľa pohlavia", booktabs = T) %>% kable_paper("hover") %>% kable_styling(latex_options = c("striped", "scale_down", "HOLD_position"), full_width = F, font_size = fontSizeLarger)
 ```
 
 Štatisticky signifikantný rozdiel medzi pohlaviami v riziku výskytu danej formy sexuálneho obťažovania bol zaznamenaný v nasledujúcich formách (prezentované z pohľadu žien): forma q5 o 24% väčšie riziko no miera dôkazov v prospech existencie rozdielu je veľmi slabá (*BF<sub>01</sub>* = 1.17); q6 1.85x vačšie riziko a q7 o ~73% menšie riziko, pričom oba efekty sú veľmi robustné; q8 o 14% väčšie riziko no miera dôkazov v prospech rozdielu je mimoriadne slabá; q9 o 44% menšie riziko - veľmi silný efekt; q11 o 28% mensie riziko no miera dôkazov v prospech tvrdenia je mimoriadne slabá; v prípade formy q14 bolo zistené 2.29x vačšie riziko, pričom sa jedná o veľmi robustný efekt; q15 o 50% vačšie riziko no miera dôkazov je slabá (hypotéza existencie rozdielu je iba 3.73x pravdepodobnejšia ako nulová hypotéza), q16 o 38% menšie riziko no miera dôkazov je podobne slabá (*BF<sub>10</sub>* = 2.55). Pri ostatných individuálnych formách nebol štatisticky signifikantný rozdiel. Najmä pri formách sexuálneho nátlaku (q17 - q20) boli frekvencie vykazovaných prípadov tak nízke, že pomer rizík nebol interpretovateľný a nebolo ani možné odhadnúť informatívny interval spoľahlivosti.
@@ -747,13 +765,13 @@ Z hľadiska klastrov sexuálneho obťažovania nebol ani v jednom pozorovaný si
 Keďže v mnohých formách sexuálneho obťažovania boli zaznamenané výraznejšie prevalencie, v ďalšom kroku sme sa zamerali na skúmanie rizikových faktorov agregátnych foriem (klastrov) sexuálneho obťažovania. V Tabuľkách \@ref(tab:rfGMH), \@ref(tab:rfUSA), resp. \@ref(tab:rfSAB) sú uvedené hodnoty relatívneho rizika a Bayesove faktory pre dichotomické rizikové faktory troch klastrov sexuálneho obťažovania. Ako je možné vidieť, hodnoty relatívneho rizika pre jednotlivé faktory pri veľkej väčšine faktorov blízke 1, resp. interval spoľahlivosti zahŕňa 1 (rovnaké riziko pre obe úrovne rizikového faktora). Signifikantné hodnoty relatívneho rizika boli zaznamenané iba v nasledujúcich prípadoch: vek vyšší ako 23 rokov bol asociovaný s mierne nižším rizikom rodovo motivovaného obťažovania (o 9%, *BF<sub>10</sub>* = 10.9), neheterosexuálna orientácia bola asociovaná s 35% vyšším rizikom neželanej sexuálnej pozornosti (no *BF<sub>10</sub>* = 1.01, takže miera empirických dôkazov v prospech alternatívnej hypotézy prakticky absentuje). Po zohľadnení inflácie miery chyby I. typu v dôsledku viacnásobného testovania (korigovaním hladiny $\alpha$ Bonferroniho korekciou), ostal signifikantným iba efekt veku pri rodovo motivovanom obťažovaní.
 
 ```{r rfGMH}
-kbl(rq2_gmh_or_table, digits = 3, caption = "Rodovo motivované obťažovanie - rizikové faktory", booktabs = T) %>% kable_paper("hover") %>% kable_styling(latex_options = c("striped", "scale_down", "HOLD_position"), full_width = F, font_size = 12)
+kbl(rq2_gmh_or_table, digits = 3, caption = "Rodovo motivované obťažovanie - rizikové faktory", booktabs = T) %>% kable_paper("hover") %>% kable_styling(latex_options = c("striped", "scale_down", "HOLD_position"), full_width = F, font_size = fontSizeLarger)
 ```
 ```{r rfUSA}
-kbl(rq2_usa_or_table, digits = 3, caption = "Neželaná sexuálna pozornosť - rizikové faktory", booktabs = T) %>% kable_paper("hover") %>% kable_styling(latex_options = c("striped", "scale_down", "HOLD_position"), full_width = F, font_size = 12)
+kbl(rq2_usa_or_table, digits = 3, caption = "Neželaná sexuálna pozornosť - rizikové faktory", booktabs = T) %>% kable_paper("hover") %>% kable_styling(latex_options = c("striped", "scale_down", "HOLD_position"), full_width = F, font_size = fontSizeLarger)
 ```
 ```{r rfSAB}
-kbl(rq2_sab_or_table, digits = 3, caption = "Sexuálny nátlak - rizikové faktory", booktabs = T) %>% kable_paper("hover") %>% kable_styling(latex_options = c("striped", "scale_down", "HOLD_position"), full_width = F, font_size = 12)
+kbl(rq2_sab_or_table, digits = 3, caption = "Sexuálny nátlak - rizikové faktory", booktabs = T) %>% kable_paper("hover") %>% kable_styling(latex_options = c("striped", "scale_down", "HOLD_position"), full_width = F, font_size = fontSizeLarger)
 ```
 
 Zároveň boli analyzované ďalšie 3 multinominálne rizikové faktory: rok štúdia, odbor štúdia a lokalita fakulty, separátne pre všetky tri klastre sexuálneho obťažovania. Bayesiánska analýza ukázala, že jediným robustným efektom je rozdielne riziko rodovo motivovaného obťažovania v závislosti od odboru štúdia (`r noquote(rq2_gmh_or_table_multinomial[2])`). V porovnaní s referenčnou skupinou študentov filozofických, humanitných, pedagogických, alebo teologických odborov bolo zistené vyššie riziko u študentov zdravotníckych odborov (o 32%), technických odborov (o 21%), prírodovedeckých odborov (o 18%), skupiny spoločenských, ekonomických alebo právnych odborov (o 13%) a skupiny mediálnych a umeleckých odborov (o 13%). 
@@ -765,29 +783,28 @@ Ako súhrnnejšiu alternatívu sme analyzovali, či rizikové faktory dokážu p
 V prípade, že participant sa identifikoval ako obeť konkrétnej formy sexuálneho obťažovania, mal možnosť označiť páchateľa (prípadne páchateľov) danej formy obťažovania. Celkovo, najčastejším páchateľom sexuálneho obťažovania sú študent-muž (`r rq3_perpetratorsOverall_table[3]`%), učiteľ-muž (`r rq3_perpetratorsOverall_table[1]`%) a študent-žena (`r rq3_perpetratorsOverall_table[4]`%). V porovnaní so ženami, u mužov je riziko páchania sexuálneho obťažovania takmer 2x vyššie, `r rr(rq3_abusesByPerpetratorGenderOverall_rr, rq3_abusesByPerpetratorGenderOverall_bf)`. Ide o veľmi robustný efekt. Z hľadiska jednotlivých klastrov sexuálneho obťažovania, muži sú približne dva krát náchylnejší páchať formy rodovo motivovaného obťažovania, `r rr(rq3_abusesByPerpetratorGenderGMH_rr, rq3_abusesByPerpetratorGenderGMH_bf)` a zároveň aj neželanej sexuálnej pozornosti `r rr(rq3_abusesByPerpetratorGenderUSA_rr, rq3_abusesByPerpetratorGenderUSA_bf)`. V oblasti sexuálneho násilia nebol z hľadiska pohlavia páchateľa detekovaný signifikantný rozdiel, `r rr(rq3_abusesByPerpetratorGenderSAB_rr, rq3_abusesByPerpetratorGenderSAB_bf)`.
 
 ```{r perpClust}
-kbl(perpertatorsTable, digits = 3, caption = "Najčastejší páchatelia celkovo - klastre", booktabs = T) %>% kable_paper("hover") %>% kable_styling(latex_options = c("striped", "scale_down", "HOLD_position"), full_width = F, font_size = 12)
+kbl(perpertatorsTable, digits = 3, caption = "Najčastejší páchatelia celkovo - klastre", booktabs = T) %>% kable_paper("hover") %>% kable_styling(latex_options = c("striped", "scale_down", "HOLD_position"), full_width = F, font_size = fontSizeLarger)
 ```
 
 V tabuľke \@ref(tab:perpClust) sú pre každý klaster sexuálneho obťažovania uvedené vážené proporcie uvádzaných páchateľov. V rámci jednotlivých klastrov sexuálneho obťažovania, rodovo motivovaného obťažovania sa najčastejšie dopúšťajú študenti a učitelia^[Frekvencia kontaktov študentov s učiteľmi a inými študentmi nie je ale rovnomerná. Celkovo, učitelia predstavujú páchateľa sexuálneho obťažovania až v `r round(sum(rq3_perpetratorsOverall_table[c(1,2)]), 0)`% prípadov. Daný údaj je tak potrebné vnímať v kontexte nízkeho relatívneho zastúpenia učiteľov v štruktúre kontaktov študentov.] mužského pohlavia (`r round(perpertatorsTable[7],0)`%, resp. `r round(perpertatorsTable[1],0)`%), na neželanej sexuálnej pozornosti sa najviac podieľajú študenti-muži a študentky-ženy (`r round(perpertatorsTable[8],0)`%, resp. `r round(perpertatorsTable[11],0)`%), a najčastejšími páchateľmi sexuálneho donútenia sú v prakticky rovnakej miere študenti-muži a študentky-ženy (`r round(perpertatorsTable[9],0)`%, resp. `r round(perpertatorsTable[12],0)`%). Nižšie v tabuľkách \@ref(tab:perpClustF) a \@ref(tab:perpClustM) sú uvedení najčastejší páchatelia pre obete ženského, resp. mužského pohlavia.
 
 ```{r perpClustF}
-kbl(perpertatorsTable_female, digits = 3, caption = "Najčastejší páchatelia u žien - klastre", booktabs = T) %>% kable_paper("hover") %>% kable_styling(latex_options = c("striped", "scale_down", "HOLD_position"), full_width = F, font_size = 12)
+kbl(perpertatorsTable_female, digits = 3, caption = "Najčastejší páchatelia u žien - klastre", booktabs = T) %>% kable_paper("hover") %>% kable_styling(latex_options = c("striped", "scale_down", "HOLD_position"), full_width = F, font_size = fontSizeLarger)
 ```
 
 ```{r perpClustM}
-kbl(perpertatorsTable_male, digits = 3, caption = "Najčastejší páchatelia u mužov - klastre", booktabs = T) %>% kable_paper("hover") %>% kable_styling(latex_options = c("striped", "scale_down", "HOLD_position"), full_width = F, font_size = 12)
+kbl(perpertatorsTable_male, digits = 3, caption = "Najčastejší páchatelia u mužov - klastre", booktabs = T) %>% kable_paper("hover") %>% kable_styling(latex_options = c("striped", "scale_down", "HOLD_position"), full_width = F, font_size = fontSizeLarger)
 ```
 
 Na nasledujúcich grafoch je možné vidieť úplné dáta páchateľov sexuálneho obťažovania separátne pre ženy \@ref(fig:perpAllFemale) a pre mužov \@ref(fig:perpAllMale). Jednotlivé stĺpce predstavujú proporčné rozdelenie páchateľov označených obeťami sexuálneho obťažovania.
 
 ```{r perpAllFemale, fig.cap="Páchatelia jednotlivých foriem u žien", warning=FALSE}
-perpAllFemalePlot %>% ggplotly(tooltip = c("value", "Páchateľ"))
+perpAllFemalePlot #%>% ggplotly(tooltip = c("value", "Páchateľ"))
 ```
 
 ```{r perpAllMale, fig.cap="Páchatelia jednotlivých foriem u mužov", warning=FALSE}
-perpAllMalePlot %>% ggplotly(tooltip = c("value", "Páchateľ"))
+perpAllMalePlot #%>% ggplotly(tooltip = c("value", "Páchateľ"))
 ```
-
 
 Z pomedzi rôznych druhov prostredia sme separátne analyzovali online prostredie. Jednoznačne najčastejším páchateľom sexuálneho obťažovania vo všetkých 3 klastroch sú študenti alebo študentky. V porovnaní s druhou najfrekventovanejšou skupinou, učiteľmi, sú študenti `r round(unlist(perpOnline[1])[c(2)]/unlist(perpOnline[1])[3], 1)` krát častejším páchatelom rodovo motivovaného obťažovania, `r round(unlist(perpOnline[2])[c(2)]/unlist(perpOnline[2])[3], 1)` krát častejším páchatelom neželanej sexuálnej pozornosti a až `r round(unlist(perpOnline[3])[c(2)]/unlist(perpOnline[3])[3], 1)` krát častejším páchatelom sexuálneho násilia.
 
@@ -797,11 +814,11 @@ Popri páchateľoch sexuálneho obťažovania, participanti mali pri každej ind
 Nižšie taktiež uvádzame dáta podľa jednotlivých klastrov sexuálneho obťažovania (Tabuľka \@ref(tab:whereTable)). Z hľadiska klastrov sexuálneho obťažovania, rodovo motivované obťažovanie sa najčastejšie vyskytuje počas edukačného procesu a v rámci prestávok. Neželaná sexuálna pozornosť sa najčastejšie deje v prostredí prestávok a internátov. Sexuálne donútenie sa taktiež najčastejšie odohráva na internáte a počas prestávok.
 
 ```{r whereOverall}
-kbl(rq4where_table, digits = 3, caption = "Miesto sexuálneho obťažovania", booktabs = T) %>% kable_paper("hover") %>% kable_styling(latex_options = c("striped", "scale_down", "HOLD_position"), full_width = F, font_size = 12)
+kbl(rq4where_table, digits = 3, caption = "Miesto sexuálneho obťažovania", booktabs = T) %>% kable_paper("hover") %>% kable_styling(latex_options = c("striped", "scale_down", "HOLD_position"), full_width = F, font_size = fontSizeLarger)
 ```
 
 ```{r whereTable}
-kbl(whereTable, digits = 3, caption = "Miesto sexuálneho obťažovania", booktabs = T) %>% kable_paper("hover") %>% kable_styling(latex_options = c("striped", "scale_down", "HOLD_position"), full_width = F, font_size = 12)
+kbl(whereTable, digits = 3, caption = "Miesto sexuálneho obťažovania", booktabs = T) %>% kable_paper("hover") %>% kable_styling(latex_options = c("striped", "scale_down", "HOLD_position"), full_width = F, font_size = fontSizeLarger)
 ```
 
 ## Subjektívne dôsledky sexuálneho obťažovania
@@ -810,9 +827,8 @@ V dôsledku sexuálneho obťažovania, obete udávali nasledujúce subjektívne 
 Dáta ale indikujú, že rozsah uvádzaných dôsledkov je asociovaný so závažnosťou zažitého sexuálneho obťažovania. Napriek tomu, že veľkosť daného efektu je skôr striedma *r* = `r round(rq5_harrassedByImpactSeverity_cor$estimate, 2)`, *p* < .001, efekt je empiricky značne robustný, <I>BF<sub>10</sub></I> = `r round(extractBF(rq5_harrassedByImpactSeverity_bf)[1])`. Dá sa teda predpokladať, že obete sexuálneho obťažovania majú častejšie následky na mentálnom zdraví. Na druhej strane však rozsah uvádzaných dôsledkov nebol podmienený tým, kto bol u daného participanta najčastejším páchateľom najzávažnejšej formy sexuálneho obťažovania, `r out(rq5_severPerpBF, rq5_severPerpAnova)`. Zároveň, nebol zistený vzťah medzi závažnosťou uvádzaných dôsledkov a (1) príslušnosťou k niektorej menšine, `r out(rq5_severMinorityBF, rq5_severMinorityAnova)`, alebo (2), vierovyznaním `r out(rq5_severBelieverBF, rq5_severBelieverAnova)`.
 
 ```{r suffer}
-kbl(sufferOverallTable, digits = 3, caption = "Subjektívne dôsledky sexuálneho obťažovania", booktabs = T) %>% kable_paper("hover") %>% kable_styling(latex_options = c("striped", "scale_down", "HOLD_position"), full_width = F, font_size = 12)
+kbl(sufferOverallTable, digits = 3, caption = "Subjektívne dôsledky sexuálneho obťažovania", booktabs = T) %>% kable_paper("hover") %>% kable_styling(latex_options = c("striped", "scale_down", "HOLD_position"), full_width = F, font_size = fontSizeLarger)
 ```
-
 
 ## Hľadanie pomoci
 Z celkového počtu obetí sexuálneho obťažovania, `r round(rq6_disclosureOverall$percent[2])`% participantov hľadalo pomoc alebo radu (z toho `r round(rq6_disclosureN$percent[5])`% žien a `r round(rq6_disclosureN$percent[4])`% mužov). U žien bola tendencia zdôveriť sa s udalosťou sexuálneho obťažovania viac než o polovicu silnejšia, než u mužov, `r rr(rq6_genderDisclosureOR, rq6_genderDisclosureBF)`. Obete sexuálneho obťažovania sa so svojim zážitkom najčastejšie zdôverili inému študentovi (`r round(rq6_disclosureWhoFreq$perc[1])`%), priateľovi (`r round(rq6_disclosureWhoFreq$perc[2])`%), členovi rodiny (`r round(rq6_disclosureWhoFreq$perc[3])`%), či partnerovi (`r round(rq6_disclosureWhoFreq$perc[4])`%).
@@ -832,13 +848,13 @@ Participanti výskumu mali zároveň možnosť uviesť mieru súhlasu s tvrdení
 Predposledná časť výskumného nástroja konfrontovala participantov so sadou 19 krátkych tvrdení/situácií s cieľom posúdiť mieru vnímania daných situácií ako sexuálne obťažovanie. Nižšie v tabuľke \@ref(tab:attList) je uvedený kompletný zoznam daných postojových položiek.
 
 ```{r attList}
-kbl(attitudesList, digits = 3, caption = "Zoznam položiek merajúcich postoje k sexuálnemu obťažovaniu", booktabs = T) %>% kable_paper("hover") %>% kable_styling(latex_options = c("striped", "scale_down", "HOLD_position"), full_width = F, font_size = 12)
+suppressWarnings(kbl(attitudesList, caption = "Zoznam položiek merajúcich postoje k sexuálnemu obťažovaniu", booktabs = T, longtable = T) %>% kable_paper("hover") %>% kable_styling(latex_options = c("striped", "scale_down", "HOLD_position", "repeat_header"), full_width = T, font_size = fontSizeLarger))
 ```
 
 Ako možno vidieť z grafu \@ref(fig:attPlot), participanti vo veľkej väčšine vnímali predložené situácie ako prejavy obťažujúceho správania. Až na 1 položku vykazovali ženy vo vzorke vyššiu mieru vnímania daných prejavov ako obťažujúcich. Rozdiely však boli vo väčšine položiek triviálne a napriek tomu, že efekt rodu bol signifikantný (`r out(rq8_genderSensitivityBF, rq8_genderSensitivityAnova)`), súčasné dáta formálne nepredstavujú dostatočný empirický dôkaz v prospech rodových rozdielov z hľadiska celkovej senzitivity na sexuálne obťažovanie.
 
 ```{r attPlot, fig.cap="Miera vnímania sexuálneho obťažovania"}
-rq8_attitudes_plot %>% ggplotly()
+rq8_attitudes_plot #%>% ggplotly()
 ```
 
 Nižšie je zároveň možné vidieť tzv. heatmaps grafy pre obe pohlavia. Heatmaps zobrazujú frekvencie ako farby, pričom tmavšie farby vyjadrujú vyššiu senzitivitu na jednotlivé formy sexuálneho obťažovania a svetlejšie farby naopak nižšiu mieru senzitivity na sexuálne obťažovanie. Lepšie tak vizualizujú populačnú štruktúru vnímania sexuálneho obťažovania. Z grafov je zrejmé, že štruktúra postojov k sexuálnemu obťažovaniu je u žien (Graf \@ref(fig:attHeatF)) a mužov (Graf \@ref(fig:attHeatM)) v zásade podobná.
@@ -861,17 +877,17 @@ suppressWarnings(heatmap.2(as.matrix(rq8_attitudes_item_freqs_males), dendrogram
 Zároveň sa nepreukázal vzťah medzi senzitivitou na sexuálne obťažovanie a závažnosťou obťažovania, ktorému bol participant vystavený, *r* = `r round(rq8_harrassedSensitivity_cor$estimate, 2)`, *p* = `r round(rq8_harrassedSensitivity_cor$p.value, 2)`, <I>BF<sub>01</sub></I> = `r round(1/extractBF(rq8_harrassedSensitivity_bf)[1], 2)` a ani statusom obete, `r out(rq8_harrassedSensitivityBF, rq8_harrassedSensitivityAnova)`. Medzi participantami študujúcimi iné odbory však boli detekované rozdiely, `r out(rq8_fieldSensitivityBF, rq8_fieldSensitivityAnova)`. V tabuľke \@ref(tab:sensField) je možné vidieť priemery (vyššia hodnota značí vyššiu mieru senzitivity) a smerodajné odchýlky senzitivity na sexuálne obťažovanie naprieč všetkými odbormi. Ako je vidieť v tabuľke regresných koeficinetov \@ref(tab:sensFieldReg), kde odbor "filozofický, humanitný, pedagogický, teologický" predstavuje referenčnú skupinu, študenti prírodovedných, technických a zdravotníckych odborov vykazujú v porovnaní so spoločensko-humanitnými odbormi signifikantne nižšiu senzitivitu na sexuálne obťažovanie^[Regresné koeficinety predstavujú rozdiel v priemeroch v porovnaní s referenčnou skupinou (intercept modelu)] filozofických, humanitných, pedagogických, a teologických odborov.] Výrazne nižší priemer v porovnaní s referenčnou skupinou bol aj v mediálnych a umeleckých odboroch, no v danom prípade je možné predpokladať nižšiu štatistickú silu na detekciu signifikantného rozdielu z dôvodu malej početnosti participantov tohto odboru vo vzorke.
 
 ```{r sensField}
-kbl(rq8_fieldSensitivity_means, digits = 3, caption = "Senzitivita na sexuálne obťažovanie - deskriptívne charakteristiky", booktabs = T) %>% kable_paper("hover") %>% kable_styling(latex_options = c("striped", "HOLD_position"), full_width = F, font_size = 12)
+kbl(rq8_fieldSensitivity_means, digits = 3, caption = "Senzitivita na sexuálne obťažovanie - deskriptívne charakteristiky", booktabs = T) %>% kable_paper("hover") %>% kable_styling(latex_options = c("striped", "HOLD_position"), full_width = F, font_size = fontSizeLarger)
 ```
 
 ```{r sensFieldReg}
-kbl(sensRegTable, digits = 3, caption = "Senzitivita na sexuálne obťažovanie - regresný model", booktabs = T) %>% kable_paper("hover") %>% kable_styling(latex_options = c("striped", "scale_down", "HOLD_position"), full_width = F, font_size = 12)
+kbl(sensRegTable, digits = 3, caption = "Senzitivita na sexuálne obťažovanie - regresný model", booktabs = T) %>% kable_paper("hover") %>% kable_styling(latex_options = c("striped", "scale_down", "HOLD_position"), full_width = F, font_size = fontSizeLarger)
 ```
 
 Následne sme testovali, či existuje súvis medzi tým, čo participanti považujú za SO a tým, či majú tendenciou hľadať pomoc, ak sa s niektorou z foriem sexuálneho obťažovania osobne stretli? Táto substantívna otázka bola testovaná regresným modelom kontrolujúcim závažnosť sexuálneho obťažovania. Regresný model^[Prediktormi v modeli boli (1) či sa obeť sexuálneho obťažovania niekomu zdôverila a (2) závažnosť zažitého sexuálneho obťažovania] dokázal robustným spôsobom predikovať senzitivitu voči sexuálnemu obťažovaniu. Aj po zohľadnení závažnosti zažitého sexuálneho obťažovania teda existuje veľmi silná asociácia medzi senzitivitu voči obťažovaniu a tendenciou zdôveriť sa,  *F*(1, 1046) = 21.84, *p* < .001, *BF<sub>10</sub>* = 520.76, *d* = 0.29.
 
 ```{r }
-kbl(rq8_disclosureSensitivity_means, digits = 3, caption = "Senzitivita na sexuálne obťažovanie a zdôverenie sa", booktabs = T) %>% kable_paper("hover") %>% kable_styling(latex_options = c("striped", "HOLD_position"), full_width = F, font_size = 12)
+kbl(rq8_disclosureSensitivity_means, digits = 3, caption = "Senzitivita na sexuálne obťažovanie a zdôverenie sa", booktabs = T) %>% kable_paper("hover") %>% kable_styling(latex_options = c("striped", "HOLD_position"), full_width = F, font_size = fontSizeLarger)
 ```
 
 Na druhej strane sa nepreukázal empiricky robustný vzťah medzi senzitivitou voči sexuálnemu obťažovaniu a (1) regiónom odkiaľ obete pochádzajú, `r out(rq8_regionSensitivityBF, rq8_regionSensitivityAnova)`, alebo (2) vierovyznaním participanta, `r out(rq8_believerSensitivityBF, rq8_believerSensitivityAnova)`.
@@ -880,12 +896,12 @@ Na druhej strane sa nepreukázal empiricky robustný vzťah medzi senzitivitou v
 V závere výskumu bolo participantom administrovaných 11 výrokov reprezentujúcich miskoncepcie o sexuálnom obťažovaní. Ich zoznam je uvedený v Tabuľke \@ref(tab:miscList)).
 
 ```{r miscList}
-kbl(misconceptsList, digits = 3, caption = "Zoznam miskonceptov o sexuálnom obťažovaní", booktabs = T) %>% kable_paper("hover") %>% kable_styling(latex_options = c("striped", "scale_down", "HOLD_position"), full_width = F, font_size = 12)
+suppressWarnings(kbl(misconceptsList, caption = "Zoznam miskonceptov o sexuálnom obťažovaní", booktabs = T, longtable = T) %>% kable_paper("hover") %>% kable_styling(latex_options = c("striped", "scale_down", "HOLD_position", "repeat_header"), full_width = T, font_size = fontSize))
 ```
 Na grafe \@ref(fig:miscPlot) je zobrazená priemerná miera súhlasu s miskonceptmi o sexuálnom obťažovaní separátne pre ženy a mužov. Priemerné miery súhlasu s danými tvrdeniami pomerne konzistentne indikujú mierne vyššiu mieru miskoncepcií o sexuálnom obťažovaní v aktuálnej vzorke mužov. V celkovej miere súhlasu s miskonceptami^[Celková miera súhlasu s miskoncepciami o sexuálnom obťažovaní bola vypočítaná ako nevážený súčet skóre jednotlivých položiek po preškálovaní inverzných položiek č. 2, 3, 4, 9, 11.] však medzi pohlaviami nebol zistený štatisticky signifikantný rozdiel, `r out(rq.10_genderMisconceptionsBF, rq.10_genderMisconceptionsAnova)`. Jediný štatisticky signifikantný rozdiel v miere akceptácie miskonceptov bol zistený v závislosti od regiónu, z ktorého participantami pochádzali, no miera dôkazov v prospech tohto efektu prakticky absentovala, `r out(rq.10_regionMisconceptionsBF, rq.10_regionMisconceptionsAnova)`.
 
 ```{r miscPlot, fig.cap="Miera súhlasu s miskonceptmi o sexuálnom obťažovaní"}
-rq10_misconcept_plot %>% ggplotly()
+rq10_misconcept_plot #%>% ggplotly()
 ```
 
 Exaktné distribúcie odpovedí na položky merajúce miskoncepty o sexuálnom obťažovaní jednotlivo pre ženy a mužov sú zobrazené na Grafe \@ref(fig:miscHeatF) a Tabuľke \@ref(tab:miscF), resp. Grafe \@ref(fig:miscHeatM) a Tabuľke \@ref(tab:miscM). Ako je zrejmé z grafov, štruktúra miskonceptov u oboch pohlaví je v zásade podobná.
@@ -905,11 +921,11 @@ suppressWarnings(heatmap.2(as.matrix(rq10_misconcept_item_freqs_males), cexRow =
 
 
 ```{r miscF}
-kbl(rq10_misconcept_item_freqs_females, digits = 3, caption = "Distribúcia odpovedí u žien", booktabs = T) %>% kable_paper("hover") %>% kable_styling(latex_options = c("striped", "scale_down", "HOLD_position"), full_width = F, font_size = 12)
+kbl(rq10_misconcept_item_freqs_females, digits = 3, caption = "Distribúcia odpovedí u žien", booktabs = T) %>% kable_paper("hover") %>% kable_styling(latex_options = c("striped", "scale_down", "HOLD_position"), full_width = F, font_size = fontSizeLarger)
 ```
 
 ```{r miscM}
-kbl(rq10_misconcept_item_freqs_males, digits = 3, caption = "Distribúcia odpovedí u mužov", booktabs = T) %>% kable_paper("hover") %>% kable_styling(latex_options = c("striped", "scale_down", "HOLD_position"), full_width = F, font_size = 12)
+kbl(rq10_misconcept_item_freqs_males, digits = 3, caption = "Distribúcia odpovedí u mužov", booktabs = T) %>% kable_paper("hover") %>% kable_styling(latex_options = c("striped", "scale_down", "HOLD_position"), full_width = F, font_size = fontSizeLarger)
 ```
 
 V aktuálnom výskume nebola zistená systematická asociácia medzi celkovou mierou akceptácie miskonceptov a vekom participantov, `r out(rq.10_ageMisconceptionsBF, rq.10_ageMisconceptionsAnova)`, ich odborom štúdia, `r out(rq.10_fieldMisconceptionsBF, rq.10_fieldMisconceptionsAnova)`, či ich vierovyznaním, `r out(rq.10_believerMisconceptionsBF, rq.10_believerMisconceptionsAnova)`. Zároveň bolo testované, či osoby, ktoré majú viac skúseností so sexuálnym obťažovaním zvyknú aj viac situácií vyhodnocovať ako obťažujúce správanie. U obetí obťažovania však nebola detekovaná výrazne nižšia miera akceptácie miskonceptov, `r out(rq.10_harrassedMisconceptionsBF, rq.10_harrassedMisconceptionsAnova)`. Rozdiel v miere akceptácie miskonceptov nebol ani medzi obeťami, ktoré sa zdôverili a tými, čo sa nezdôverili, *F*(1, 1046) = 0.03, *p* = 0.86, *BF<sub>01</sub>* = 130.01, *d* = 0.01. 
@@ -1319,7 +1335,7 @@ Yentes R.D., & Wilhelm, F. (2018). careless: Procedures for computing indices of
 Zákon č. 365/2004 Z. z. o rovnakom zaobchádzaní v niektorých oblastiach a o ochrane pred diskrimináciou a o zmene a doplnení niektorých zákonov (2004). https://www.slov-lex.sk/pravne-predpisy/SK/ZZ/2004/365/
 
 
-# O autorkách a autoroch {#autori -}
+# O autorkách a autoroch {-}
 
 **Mgr. Veronika Valkovičová, PhD.** je výskumníčka a pedagogička v oblasti verejných politík a sociálnych hnutí. Doktorát získala v spojenom doktorandskom programe na Fakulte sociálnych a ekonomických vied Univerzity Komenského a na Fakulte sociálnych vied Univerzity v Antverpách. V Národnom projekte Prevencia a eliminácia rodovej diskriminácie na Inštitúte pre výskum práce a rodiny sa venuje oblasti sexuálneho obťažovania v akademickom prostredí a v zamestnaní. Publikačná činnosť dostupná tu: [Researchgate](https://www.researchgate.net/profile/Veronika-Valkovicova). 
 

@@ -12,7 +12,7 @@ bookdown::gitbook:
         <li><a href="https://ivpr.gov.sk" target="_blank">Inštitút pre výskum práce a rodiny</a></li>
     toolbar:
       position: fixed
-    download: [pdf, epub, mobi]
+    download: [pdf]
     sharing:
       github: yes
       facebook: yes
@@ -24,4 +24,5 @@ bookdown::pdf_book:
     in_header: preamble.tex
   latex_engine: xelatex
   keep_tex: false
-bookdown::epub_book: default
+  number_sections: true
+  toc: false

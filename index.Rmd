@@ -35,7 +35,7 @@ header-includes:
 
 ```{r, include = FALSE}
 # edited for the purpose of rendering pdf
-# #%>% ggplotly(
+# %>% ggplotly(
 
 # rendering pdf?
 renderPDF <- TRUE
@@ -679,7 +679,7 @@ Všetky analýzy boli realizované v R, verzii 4.0.3. s využitím nasledujúcic
 Výskumná vzorka pozostávala z `r ss_total_n` participantov, študentov slovenských vysokých škôl. Priemerný vek participantov bol `r round(mean(data$age, na.rm = T), 2)` rokov (*SD* = `r round(sd(data$age, na.rm = T), 2)`). Z hľadiska pohlavia, vzorku tvorilo `r round(ss_gender_n[1,3], 0)`% žien, `r round(ss_gender_n[2,3], 0)`% mužov a menej než 1% transrodových osôb (`r round(ss_gender_n[4,3], 0)`% participantov rod neuviedlo). Graf \@ref(fig:ageplot) zobrazuje distribúciu veku podľa rodu (ako binárnej premennej). 
 
 ```{r ageplot, fig.cap= "Distribúcia veku podľa pohlavia"}
-ss_age_plot #%>% ggplotly()
+ss_age_plot %>% ggplotly()
 ```
 
 Z celkovej vzorky, 2,7% participantov sa hlásilo k etnickej minorite, 3.5% k sexuálnej menšine (queer), 5,2% k náboženskej minorite, a po 1,0% participantov uvádzalo postihnutie alebo status imigranta.
@@ -706,11 +706,11 @@ kbl(arrange(ss_fieldStudy_n, desc(percent)), digits = 3, caption = "Skupiny štu
 Nižšie je možné vidieť skupiny odborov rozdelené podľa pohlavia (Graf \@ref(fig:fieldPlotMF)) a podľa ročníka (Graf \@ref(fig:fieldPlotYear)).
 
 ```{r fieldPlotMF, fig.cap="Odbor štúdia podľa pohlavia"}
-ss_fieldStudy_plot #%>% ggplotly()
+ss_fieldStudy_plot %>% ggplotly()
 ```
 
 ```{r fieldPlotYear, fig.cap="Odbor štúdia podľa ročníka"}
-ss_fieldStudyYear_plot #%>% ggplotly()
+ss_fieldStudyYear_plot %>% ggplotly()
 ```
 
 ### Vylúčenie nedbanlivých participantov
@@ -722,13 +722,13 @@ Primárnym výsledkom výskumu sú odhady populačných proporcií jednotlivých
 Dvadsať konkrétnych foriem uvedených v danej tabuľke spadá do 3 nadradených klastrov, ktorými sú (1) rodovo motivované obťažovanie (formy 1-8, vyznačené žltou farbou), (2) neželaná sexuálna pozornosť (formy 9-16, vyznačené modrou farbou), a (3) sexuálny nátlak (formy 17-20, vyznačené sivou farbou). Na grafe \@ref(fig:prevItems) sú zobrazené vážené percentuálne prevalencie 20 individuálnych foriem, s farebným odlíšením foriem, do ktorých spadajú.
 
 ```{r prevItems, fig.cap="Prevalencia individuálnych foriem sexuálneho obťažovania"}
-rq1.1_items_plot #%>% ggplotly()
+rq1.1_items_plot %>% ggplotly()
 ```
 
 Prevalencia rodovo motivovaného obťažovania variuje od `r round(rq1.1_items_n$q7_perc[1], 1)`% do `r round(rq1.1_items_n$q1_perc[1], 1)`%, prevalencia foriem neželanej sexuálnej pozornosti od `r round(rq1.1_items_n$q13_perc[1], 1)`% do `r round(rq1.1_items_n$q12_perc[1], 1)`%, a najmenej frekventovanou formou sexuálneho obťažovania je sexuálne násilie, kde sa prevalencia jednotlivých foriem pohybuje medzi `r round(rq1.1_items_n$q20_perc[1], 1)`% a `r round(rq1.1_items_n$q17_perc[1], 1)`%. Celkovo `r round(rq1.2_cluster_n[4][1], 2)`% (*N* = `r table(as.logical(data$"Rodovo motivované obťažovanie"))[2]`) participantov uvádzalo, že zažilo aspoň jednu z foriem rodovo motivovaného obťažovania, `r round(rq1.2_cluster_n[5][1], 2)`% (*N* = `r table(as.logical(data$"Neželaná sexuálna pozornosť"))[2]`) neželanú sexuálnu pozornosť a `r round(rq1.2_cluster_n[6][1], 2)`% (*N* = `r table(as.logical(data$"Sexuálny nátlak"))[2]`) sexuálny nátlak.^[Reportované frekvencie reflektujú na rozdiel od percent prirodzené, nie vážené počty participantov-obetí.] 
 
 ```{r prevItemsG, fig.cap="Prevalencia individuálnych foriem sexuálneho obťažovania podľa rodu"}
-rq1.1_itemsGender_plot #%>% ggplotly()
+rq1.1_itemsGender_plot %>% ggplotly()
 ```
 
 Celkovo výrazne vyššie percento obetí pritom uvádzalo, že boli vystavení sexuálnemu obťažovaniu skôr opakovane, než jednorázovo, až `r repExpGMH`% obetí rodovo motivovaného obťažovania (`r repExpGMHf`% žien a `r repExpGMHm`% mužov), `r repExpUSA`% obetí neželanej sexuálnej pozornosti (`r repExpUSAf`% žien a `r repExpUSAm`% mužov), a `r repExpSAB`% obetí sexuálneho nátlaku (`r repExpSABf`% žien a `r repExpSABm`% mužov).
@@ -736,7 +736,7 @@ Celkovo výrazne vyššie percento obetí pritom uvádzalo, že boli vystavení 
 Populačné odhady prevalencií pre jednotlivé formy, separátne pre ženy a mužov je možné vidieť na grafe \@ref(fig:prevItemsG) a prevalencie sexuálneho obťažovania pre klastre na grafe \@ref(fig:prevClust). 
 
 ```{r prevClust, fig.cap="Prevalencia klastrov sexuálneho obťažovania podľa pohlavia"}
-rq1.2_clusterGender_plot #%>% ggplotly()
+rq1.2_clusterGender_plot %>% ggplotly()
 ```
 
 Nižšie v tabuľkách \@ref(tab:prevTabFemale) a \@ref(tab:prevTabMale) sú uvedené prevalencie pre ženy, respektíve pre mužov s 95% intervalmi spoľahlivosti z binomiálneho testu proporcií (založeného na prirodzených vážených počtoch participantov).
@@ -799,11 +799,11 @@ kbl(perpertatorsTable_male, digits = 3, caption = "Najčastejší páchatelia u 
 Na nasledujúcich grafoch je možné vidieť úplné dáta páchateľov sexuálneho obťažovania separátne pre ženy \@ref(fig:perpAllFemale) a pre mužov \@ref(fig:perpAllMale). Jednotlivé stĺpce predstavujú proporčné rozdelenie páchateľov označených obeťami sexuálneho obťažovania.
 
 ```{r perpAllFemale, fig.cap="Páchatelia jednotlivých foriem u žien", warning=FALSE}
-perpAllFemalePlot #%>% ggplotly(tooltip = c("value", "Páchateľ"))
+perpAllFemalePlot %>% ggplotly(tooltip = c("value", "Páchateľ"))
 ```
 
 ```{r perpAllMale, fig.cap="Páchatelia jednotlivých foriem u mužov", warning=FALSE}
-perpAllMalePlot #%>% ggplotly(tooltip = c("value", "Páchateľ"))
+perpAllMalePlot %>% ggplotly(tooltip = c("value", "Páchateľ"))
 ```
 
 Z pomedzi rôznych druhov prostredia sme separátne analyzovali online prostredie. Jednoznačne najčastejším páchateľom sexuálneho obťažovania vo všetkých 3 klastroch sú študenti alebo študentky. V porovnaní s druhou najfrekventovanejšou skupinou, učiteľmi, sú študenti `r round(unlist(perpOnline[1])[c(2)]/unlist(perpOnline[1])[3], 1)` krát častejším páchatelom rodovo motivovaného obťažovania, `r round(unlist(perpOnline[2])[c(2)]/unlist(perpOnline[2])[3], 1)` krát častejším páchatelom neželanej sexuálnej pozornosti a až `r round(unlist(perpOnline[3])[c(2)]/unlist(perpOnline[3])[3], 1)` krát častejším páchatelom sexuálneho násilia.
@@ -854,7 +854,7 @@ suppressWarnings(kbl(attitudesList, caption = "Zoznam položiek merajúcich post
 Ako možno vidieť z grafu \@ref(fig:attPlot), participanti vo veľkej väčšine vnímali predložené situácie ako prejavy obťažujúceho správania. Až na 1 položku vykazovali ženy vo vzorke vyššiu mieru vnímania daných prejavov ako obťažujúcich. Rozdiely však boli vo väčšine položiek triviálne a napriek tomu, že efekt rodu bol signifikantný (`r out(rq8_genderSensitivityBF, rq8_genderSensitivityAnova)`), súčasné dáta formálne nepredstavujú dostatočný empirický dôkaz v prospech rodových rozdielov z hľadiska celkovej senzitivity na sexuálne obťažovanie.
 
 ```{r attPlot, fig.cap="Miera vnímania sexuálneho obťažovania"}
-rq8_attitudes_plot #%>% ggplotly()
+rq8_attitudes_plot %>% ggplotly()
 ```
 
 Nižšie je zároveň možné vidieť tzv. heatmaps grafy pre obe pohlavia. Heatmaps zobrazujú frekvencie ako farby, pričom tmavšie farby vyjadrujú vyššiu senzitivitu na jednotlivé formy sexuálneho obťažovania a svetlejšie farby naopak nižšiu mieru senzitivity na sexuálne obťažovanie. Lepšie tak vizualizujú populačnú štruktúru vnímania sexuálneho obťažovania. Z grafov je zrejmé, že štruktúra postojov k sexuálnemu obťažovaniu je u žien (Graf \@ref(fig:attHeatF)) a mužov (Graf \@ref(fig:attHeatM)) v zásade podobná.
@@ -901,7 +901,7 @@ suppressWarnings(kbl(misconceptsList, caption = "Zoznam miskonceptov o sexuálno
 Na grafe \@ref(fig:miscPlot) je zobrazená priemerná miera súhlasu s miskonceptmi o sexuálnom obťažovaní separátne pre ženy a mužov. Priemerné miery súhlasu s danými tvrdeniami pomerne konzistentne indikujú mierne vyššiu mieru miskoncepcií o sexuálnom obťažovaní v aktuálnej vzorke mužov. V celkovej miere súhlasu s miskonceptami^[Celková miera súhlasu s miskoncepciami o sexuálnom obťažovaní bola vypočítaná ako nevážený súčet skóre jednotlivých položiek po preškálovaní inverzných položiek č. 2, 3, 4, 9, 11.] však medzi pohlaviami nebol zistený štatisticky signifikantný rozdiel, `r out(rq.10_genderMisconceptionsBF, rq.10_genderMisconceptionsAnova)`. Jediný štatisticky signifikantný rozdiel v miere akceptácie miskonceptov bol zistený v závislosti od regiónu, z ktorého participantami pochádzali, no miera dôkazov v prospech tohto efektu prakticky absentovala, `r out(rq.10_regionMisconceptionsBF, rq.10_regionMisconceptionsAnova)`.
 
 ```{r miscPlot, fig.cap="Miera súhlasu s miskonceptmi o sexuálnom obťažovaní"}
-rq10_misconcept_plot #%>% ggplotly()
+rq10_misconcept_plot %>% ggplotly()
 ```
 
 Exaktné distribúcie odpovedí na položky merajúce miskoncepty o sexuálnom obťažovaní jednotlivo pre ženy a mužov sú zobrazené na Grafe \@ref(fig:miscHeatF) a Tabuľke \@ref(tab:miscF), resp. Grafe \@ref(fig:miscHeatM) a Tabuľke \@ref(tab:miscM). Ako je zrejmé z grafov, štruktúra miskonceptov u oboch pohlaví je v zásade podobná.

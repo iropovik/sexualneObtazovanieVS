@@ -111,7 +111,7 @@ Inštitút pre výskum práce a rodiny vydal túto správu ako súčasť výstup
 
 **ISBN:** 978-80-7138-175-4  
 
-```{r}
+```{r, out.width = "100%"}
 knitr::include_graphics("funders.png", dpi = 300)
 ```
 

@@ -99,10 +99,6 @@ textTable3 <- read_excel("bodyTextTables.xlsx", sheet = "table3")
 
 Inštitút pre výskum práce a rodiny vydal túto správu ako súčasť výstupov národného projektu Prevencia a eliminácia rodovej diskriminácie OP ĽZ NP 2018/4.1.2/01., ktorý sa realizuje vďaka podpore z Európskeho sociálneho fondu a Európskeho fondu regionálneho rozvoja v rámci Operačného programu Ľudské zdroje  [www.esf.gov.sk](www.esf.gov.sk)
 
-```{r}
-knitr::include_graphics("funders.png")
-```
-
 **Autori:** Veronika Valkovičová, Andrej Kuruc, Ivan Ropovik, Slávka Karkošková
 
 **Vydavateľ:** Inštitút pre výskum práce a rodiny, Bratislava
@@ -114,6 +110,10 @@ knitr::include_graphics("funders.png")
 **Externá spolupráca:** Natália Heriban
 
 **ISBN:** 978-80-7138-175-4  
+
+```{r}
+knitr::include_graphics("funders.png", dpi = 300)
+```
 
 # Obsah {-}
 

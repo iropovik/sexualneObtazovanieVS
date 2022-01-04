@@ -109,7 +109,9 @@ Inštitút pre výskum práce a rodiny vydal túto správu ako súčasť výstup
 
 **Externá spolupráca:** Natália Heriban
 
-**ISBN:** 978-80-7138-175-4  
+**ISBN:** 978-80-7138-175-4
+
+**Interaktívna HTML verzia:** [https://iropovik.github.io/sexualneObtazovanieVS](https://iropovik.github.io/sexualneObtazovanieVS) 
 
 ```{r, out.width = "100%"}
 knitr::include_graphics("funders.png", dpi = 300)
